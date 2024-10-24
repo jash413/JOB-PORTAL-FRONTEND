@@ -7,7 +7,10 @@ const GlobalProvider = ({ children }) => {
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
   const [applicationModalVisible, setApplicationModalVisible] = useState(false);
   const [signInModalVisible, setSignInModalVisible] = useState(false);
-  const [signUpModalVisible, setSignUpModalVisible] = useState(false);
+  const [signUpModalVisible, setSignUpModalVisible] = useState({
+    visible: false,
+    type: "CND",
+  });
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
   const [header, setHeader] = useState({
@@ -46,7 +49,11 @@ const GlobalProvider = ({ children }) => {
   };
 
   const toggleSignUpModal = () => {
-    setSignUpModalVisible(!signUpModalVisible);
+    setSignUpModalVisible((prevState) => ({
+      ...prevState,
+      visible: !prevState.visible,
+      type: "CND",
+    }));
   };
 
   const toggleOffCanvas = () => {
@@ -79,6 +86,7 @@ const GlobalProvider = ({ children }) => {
         setHeader,
         footer,
         setFooter,
+        setSignUpModalVisible,
       }}
     >
       {children}
