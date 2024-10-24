@@ -74,3 +74,14 @@ export const menuItems = [
     isExternal: true,
   },
 ];
+
+export const SignUpOptionsItems = [
+  {
+    name: "Sign Up",
+    label: "Sign Up",
+    items: [
+      { name: "for-employers", value: "EMP", label: "For employers" },
+      { name: "for-candidates", value: "CND", label: "For candidates" },
+    ],
+  },
+];
