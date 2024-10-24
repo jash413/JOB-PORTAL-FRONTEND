@@ -83,6 +83,7 @@ const MenuItem = ({
   label,
   isExternal = false,
   name,
+  value,
   items,
   depthStep = 20,
   depth = 0,
@@ -119,6 +120,21 @@ const MenuItem = ({
             <a
               href={`${name}`}
               onClick={() => {
+                if (gContext.visibleOffCanvas) {
+                  gContext.toggleOffCanvas();
+                }
+              }}
+            >
+              {label}
+            </a>
+          ) : value ? (
+            <a
+              type="button"
+              onClick={() => {
+                gContext.setSignUpModalVisible({
+                  visible: true,
+                  type: value,
+                });
                 if (gContext.visibleOffCanvas) {
                   gContext.toggleOffCanvas();
                 }

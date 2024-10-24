@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from "react";
 
 import GlobalContext from "../../context/GlobalContext";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const headerConfigDefault = {
   theme: "light",
   bgClass: "dynamic-sticky-bg",
@@ -43,7 +44,12 @@ const PageWrapper = ({
     }
   }, [gContext.themeDark]);
 
-  return <>{children}</>;
+  return (
+    <>
+      <ToastContainer />
+      {children}
+    </>
+  );
 };
 
 export default PageWrapper;

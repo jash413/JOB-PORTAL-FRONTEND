@@ -10,7 +10,7 @@ import Offcanvas from "../Offcanvas";
 import NestedMenu from "../NestedMenu";
 import { device } from "../../utils";
 import Logo from "../Logo";
-import { menuItems } from "./menuItems";
+import { menuItems, SignUpOptionsItems } from "./menuItems";
 
 import imgP from "../../assets/image/header-profile.png";
 
@@ -336,13 +336,74 @@ const Header = () => {
                   href="/#"
                   onClick={(e) => {
                     e.preventDefault();
-                    gContext.toggleSignUpModal();
+                    gContext.setSignUpModalVisible({
+                      visible: true,
+                      type: "CND",
+                    });
                   }}
                 >
                   Sign Up
                 </a>
               </div>
             )}
+
+            <div className="collapse navbar-collapse">
+              <div className="">
+                <ul className="navbar-nav main-menu d-none d-lg-flex">
+                  {SignUpOptionsItems.map(
+                    ({ label, name, items, ...rest }, index) => {
+                      const hasSubItems = Array.isArray(items);
+
+                      return (
+                        <React.Fragment key={name + index}>
+                          {hasSubItems ? (
+                            <li className="nav-item dropdown" {...rest}>
+                              <a
+                                className="nav-link dropdown-toggle gr-toggle-arrow"
+                                role="button"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                href="/#"
+                                onClick={(e) => e.preventDefault()}
+                              >
+                                {label}
+                                <i className="icon icon-small-down"></i>
+                              </a>
+                              {/* Dropdown items for "Sign Up" */}
+                              <ul className="gr-menu-dropdown dropdown-menu">
+                                {items.map((subItem, indexSub) => (
+                                  <li
+                                    className="drop-menu-item"
+                                    key={subItem.value + indexSub}
+                                  >
+                                    <span
+                                      onClick={() => {
+                                        gContext.setSignUpModalVisible({
+                                          visible: true,
+                                          type: subItem.value,
+                                        });
+                                      }}
+                                      className="dropdown-item"
+                                    >
+                                      {subItem.label}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          ) : (
+                            <li className="nav-item" {...rest}>
+                              <span className="nav-link">{label}</span>
+                            </li>
+                          )}
+                        </React.Fragment>
+                      );
+                    }
+                  )}
+                </ul>
+              </div>
+            </div>
 
             <ToggleButton
               className={`navbar-toggler btn-close-off-canvas ml-3 ${
@@ -367,6 +428,7 @@ const Header = () => {
         show={gContext.visibleOffCanvas}
         onHideOffcanvas={gContext.toggleOffCanvas}
       >
+        <NestedMenu menuItems={SignUpOptionsItems} />
         <NestedMenu menuItems={menuItems} />
       </Offcanvas>
     </>
