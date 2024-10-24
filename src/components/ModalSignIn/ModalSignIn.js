@@ -2,6 +2,11 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
+import { useFormik } from "formik";
+import { REQ } from "../../libs/constants";
+import { toast } from "react-toastify";
+import axiosInterceptors from "../../libs/integration/axiosInterceptors";
+import { loginUserValidationSchema } from "../../utils/validations/validations";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -21,6 +26,29 @@ const ModalSignIn = (props) => {
     setShowPass(!showPass);
   };
 
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginUserValidationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      try {
+        console.log(values, "async");
+        const response = await axiosInterceptors.post(REQ.LOGIN_USER, {
+          login_email: values.email,
+          login_pass: values.password,
+        });
+        gContext.toggleSignInModal();
+        toast.success("User login successful!");
+        resetForm();
+      } catch (error) {
+        toast.error("Error logging in. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
   return (
     <ModalStyled
       {...props}
@@ -73,17 +101,6 @@ const ModalSignIn = (props) => {
                   <div className="col-4 col-xs-12">
                     <a
                       href="/#"
-                      className="font-size-4 font-weight-semibold position-relative text-white bg-allports h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                    >
-                      <i className="fab fa-linkedin pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                      <span className="d-none d-xs-block">
-                        Log in with LinkedIn
-                      </span>
-                    </a>
-                  </div>
-                  <div className="col-4 col-xs-12">
-                    <a
-                      href="/#"
                       className="font-size-4 font-weight-semibold position-relative text-white bg-poppy h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
                     >
                       <i className="fab fa-google pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
@@ -92,22 +109,11 @@ const ModalSignIn = (props) => {
                       </span>
                     </a>
                   </div>
-                  <div className="col-4 col-xs-12">
-                    <a
-                      href="/#"
-                      className="font-size-4 font-weight-semibold position-relative text-white bg-marino h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                    >
-                      <i className="fab fa-facebook-square pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                      <span className="d-none d-xs-block">
-                        Log in with Facebook
-                      </span>
-                    </a>
-                  </div>
                 </div>
                 <div className="or-devider">
                   <span className="font-size-3 line-height-reset ">Or</span>
                 </div>
-                <form action="/">
+                <form action="/" onSubmit={formik.handleSubmit}>
                   <div className="form-group">
                     <label
                       htmlFor="email"
@@ -120,7 +126,11 @@ const ModalSignIn = (props) => {
                       className="form-control"
                       placeholder="example@gmail.com"
                       id="email"
+                      {...formik.getFieldProps("email")}
                     />
+                    {formik.errors.email && formik.touched.email ? (
+                      <div className="text-danger">{formik.errors.email}</div>
+                    ) : null}
                   </div>
                   <div className="form-group">
                     <label
@@ -135,6 +145,7 @@ const ModalSignIn = (props) => {
                         className="form-control"
                         id="password"
                         placeholder="Enter password"
+                        {...formik.getFieldProps("password")}
                       />
                       <a
                         href="/#"
@@ -146,6 +157,11 @@ const ModalSignIn = (props) => {
                       >
                         <span className="d-none">none</span>
                       </a>
+                      {formik.errors.password && formik.touched.password ? (
+                        <div className="text-danger">
+                          {formik.errors.password}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                   <div className="form-group d-flex flex-wrap justify-content-between">
@@ -171,16 +187,13 @@ const ModalSignIn = (props) => {
                     </a>
                   </div>
                   <div className="form-group mb-8">
-                    <button className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase">
+                    <button
+                      className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase"
+                      disabled={formik.isSubmitting}
+                    >
                       Log in{" "}
                     </button>
                   </div>
-                  <p className="font-size-4 text-center heading-default-color">
-                    Don’t have an account?{" "}
-                    <a href="/#" className="text-primary">
-                      Create a free account
-                    </a>
-                  </p>
                 </form>
               </div>
             </div>
