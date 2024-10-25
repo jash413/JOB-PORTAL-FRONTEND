@@ -124,7 +124,7 @@ const ModalSignIn = (props) => {
       password: "",
     },
     validationSchema: loginUserValidationSchema,
-    onSubmit: async (values, { setSubmitting, resetForm }) => {
+    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
         const response = await axiosInterceptors.post(REQ.LOGIN_USER, {
           login_email: values.email,
@@ -148,9 +148,13 @@ const ModalSignIn = (props) => {
           resetForm();
         }
       } catch (error) {
-        toast.error(
-          error?.data?.error ?? "Error logging in. Please try again."
-        );
+        const errorMessage =
+          error?.response?.data?.error ||
+          error?.response?.data?.message ||
+          "Error logging in. Please try again.";
+
+        toast.error(errorMessage);
+        setErrors({ apiError: errorMessage });
       } finally {
         setSubmitting(false);
       }
