@@ -4,7 +4,7 @@ import Cookies from "js-cookie"
 import { REQ } from "../constants";
 
 const axiosInterceptors = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL
+    baseURL: process.env.GATSBY_API_URL
 })
 
 axiosInterceptors.interceptors.request.use(
