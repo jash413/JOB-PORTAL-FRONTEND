@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { loginUserValidationSchema } from "../../utils/validations/validations";
 import OtpInput from "react-otp-input";
+import { navigate } from "gatsby";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -34,7 +35,7 @@ const ModalSignIn = (props) => {
   };
 
   const sendPhoneOtp = async () => {
-    const token = gContext.token;
+    const token = localStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -58,7 +59,7 @@ const ModalSignIn = (props) => {
   };
 
   const sendEmailVerify = async () => {
-    const token = gContext.token;
+    const token = localStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -83,7 +84,7 @@ const ModalSignIn = (props) => {
   };
 
   const handleOTPverification = async () => {
-    const token = gContext.token;
+    const token = localStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -130,6 +131,8 @@ const ModalSignIn = (props) => {
         });
         const { email_ver_status, phone_ver_status } = response.user;
         const token = response.token;
+        localStorage.setItem("authToken", token);
+        gContext.setUser(JSON.stringify(response?.user));
         gContext.setToken(token);
         if (phone_ver_status === 0) {
           setVerificationStep("phone");
@@ -142,7 +145,8 @@ const ModalSignIn = (props) => {
           await sendEmailVerify();
         } else {
           toast.success("User login successful!");
-          // navigate("/dashboard");
+          navigate("/dashboard-main");
+          gContext.toggleSignInModal();
           resetForm();
         }
       } catch (error) {

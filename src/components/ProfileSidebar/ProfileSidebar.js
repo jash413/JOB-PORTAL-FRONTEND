@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "gatsby";
-
+import { VscVerified, VscUnverified } from "react-icons/vsc";
 import imgP from "../../assets/image/l3/png/pro-img.png";
+import GlobalContext from "../../context/GlobalContext";
 
 const Sidebar = (props) => {
+  const gContext = useContext(GlobalContext);
+  const userDetails = JSON.parse(gContext?.user);
+
   return (
     <>
       {/* <!-- Sidebar Start --> */}
@@ -21,7 +25,7 @@ const Sidebar = (props) => {
                   to="/#"
                   className="text-black-2 font-size-6 font-weight-semibold"
                 >
-                  David Henricks
+                  {userDetails?.login_name}
                 </Link>
               </h4>
               <p className="mb-8">
@@ -77,24 +81,45 @@ const Sidebar = (props) => {
               {/* <!-- Single List --> */}
               <div className="mb-7">
                 <p className="font-size-4 mb-0">E-mail</p>
-                <h5 className="font-size-4 font-weight-semibold mb-0">
-                  <a
-                    className="text-black-2 text-break"
-                    href="mailto:name_ac@gmail.com"
-                  >
-                    name_ac@gmail.com
-                  </a>
-                </h5>
+                <div className="d-flex align-items-center justify-content-between w-100">
+                  <h5 className="font-size-4 font-weight-semibold mb-0">
+                    <a
+                      className="text-black-2 text-break"
+                      href="mailto:name_ac@gmail.com"
+                    >
+                      {userDetails?.login_email}
+                    </a>
+                  </h5>
+                  <span>
+                    {userDetails?.email_ver_status === 1 ? (
+                      <VscVerified color="green" title="Email verified" />
+                    ) : (
+                      <VscUnverified color="red" title="Email unverified" />
+                    )}
+                  </span>
+                </div>
               </div>
               {/* <!-- Single List --> */}
               {/* <!-- Single List --> */}
               <div className="mb-7">
                 <p className="font-size-4 mb-0">Phone</p>
-                <h5 className="font-size-4 font-weight-semibold mb-0">
-                  <a className="text-black-2 text-break" href="tel:+999565562">
-                    +999 565 562
-                  </a>
-                </h5>
+                <div className="d-flex align-items-center justify-content-between w-100">
+                  <h5 className="font-size-4 font-weight-semibold mb-0">
+                    <a
+                      className="text-black-2 text-break"
+                      href="tel:+999565562"
+                    >
+                      {userDetails?.login_mobile}
+                    </a>
+                  </h5>
+                  <span>
+                    {userDetails?.phone_ver_status === 1 ? (
+                      <VscVerified color="green" title="Phone no. verified" />
+                    ) : (
+                      <VscUnverified color="red" title="Phone no. unverified" />
+                    )}
+                  </span>
+                </div>
               </div>
               {/* <!-- Single List --> */}
               {/* <!-- Single List --> */}

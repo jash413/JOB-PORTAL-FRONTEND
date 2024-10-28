@@ -10,6 +10,7 @@ import imgB3 from "../assets/image/l1/png/feature-brand-3.png";
 import imgB4 from "../assets/image/l1/png/feature-brand-4.png";
 import imgB5 from "../assets/image/l1/png/feature-brand-5.png";
 import imgB6 from "../assets/image/l1/png/feature-brand-6.png";
+import withAuth from "../hooks/withAuth";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -558,4 +559,4 @@ const SearchGrid = () => {
     </>
   );
 };
-export default SearchGrid;
+export default withAuth(SearchGrid);

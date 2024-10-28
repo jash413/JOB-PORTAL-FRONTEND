@@ -6,6 +6,7 @@ import imgF1 from "../assets/image/l2/png/featured-job-logo-1.png";
 import iconD from "../assets/image/svg/icon-dolor.svg";
 import iconB from "../assets/image/svg/icon-briefcase.svg";
 import iconL from "../assets/image/svg/icon-location.svg";
+import withAuth from "../hooks/withAuth";
 
 const JobDetails = () => {
   return (
@@ -267,4 +268,4 @@ const JobDetails = () => {
     </>
   );
 };
-export default JobDetails;
+export default withAuth(JobDetails);

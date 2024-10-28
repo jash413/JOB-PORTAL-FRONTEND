@@ -9,6 +9,7 @@ import imgB2 from "../assets/image/l1/png/feature-brand-4.png";
 import imgB3 from "../assets/image/l1/png/feature-brand-5.png";
 import imgB4 from "../assets/image/l3/png/github-mark.png";
 import imgB5 from "../assets/image/l3/png/universal.png";
+import withAuth from "../hooks/withAuth";
 
 const CandidateProfile = () => {
   return (
@@ -411,4 +412,4 @@ const CandidateProfile = () => {
     </>
   );
 };
-export default CandidateProfile;
+export default withAuth(CandidateProfile);

@@ -241,7 +241,7 @@ const Header = () => {
               </div>
             )}
 
-            {gContext.header.button === "profile" && (
+            {gContext?.authenticated && (
               <div className="header-btn-devider ml-auto ml-lg-5 pl-2 d-none d-xs-flex align-items-center">
                 <div>
                   <Link
@@ -307,7 +307,8 @@ const Header = () => {
                           Edit Profile
                         </Link>
                         <Link
-                          to="/#"
+                          to="/"
+                          onClick={gContext.handleLogout}
                           className=" dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase"
                         >
                           Log Out
@@ -319,7 +320,7 @@ const Header = () => {
               </div>
             )}
 
-            {gContext.header.button === "account" && (
+            {!gContext?.authenticated && (
               <div className="header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex">
                 <a
                   className="btn btn-transparent text-uppercase font-size-3 heading-default-color focus-reset"
@@ -347,63 +348,65 @@ const Header = () => {
               </div>
             )}
 
-            <div className="collapse navbar-collapse">
-              <div className="">
-                <ul className="navbar-nav main-menu d-none d-lg-flex">
-                  {SignUpOptionsItems.map(
-                    ({ label, name, items, ...rest }, index) => {
-                      const hasSubItems = Array.isArray(items);
+            {!gContext?.authenticated && (
+              <div className="collapse navbar-collapse">
+                <div className="">
+                  <ul className="navbar-nav main-menu d-none d-lg-flex">
+                    {SignUpOptionsItems.map(
+                      ({ label, name, items, ...rest }, index) => {
+                        const hasSubItems = Array.isArray(items);
 
-                      return (
-                        <React.Fragment key={name + index}>
-                          {hasSubItems ? (
-                            <li className="nav-item dropdown" {...rest}>
-                              <a
-                                className="nav-link dropdown-toggle gr-toggle-arrow"
-                                role="button"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                href="/#"
-                                onClick={(e) => e.preventDefault()}
-                              >
-                                {label}
-                                <i className="icon icon-small-down"></i>
-                              </a>
-                              {/* Dropdown items for "Sign Up" */}
-                              <ul className="gr-menu-dropdown dropdown-menu">
-                                {items.map((subItem, indexSub) => (
-                                  <li
-                                    className="drop-menu-item"
-                                    key={subItem.value + indexSub}
-                                  >
-                                    <span
-                                      onClick={() => {
-                                        gContext.setSignUpModalVisible({
-                                          visible: true,
-                                          type: subItem.value,
-                                        });
-                                      }}
-                                      className="dropdown-item"
+                        return (
+                          <React.Fragment key={name + index}>
+                            {hasSubItems ? (
+                              <li className="nav-item dropdown" {...rest}>
+                                <a
+                                  className="nav-link dropdown-toggle gr-toggle-arrow"
+                                  role="button"
+                                  data-toggle="dropdown"
+                                  aria-haspopup="true"
+                                  aria-expanded="false"
+                                  href="/#"
+                                  onClick={(e) => e.preventDefault()}
+                                >
+                                  {label}
+                                  <i className="icon icon-small-down"></i>
+                                </a>
+                                {/* Dropdown items for "Sign Up" */}
+                                <ul className="gr-menu-dropdown dropdown-menu">
+                                  {items.map((subItem, indexSub) => (
+                                    <li
+                                      className="drop-menu-item"
+                                      key={subItem.value + indexSub}
                                     >
-                                      {subItem.label}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </li>
-                          ) : (
-                            <li className="nav-item" {...rest}>
-                              <span className="nav-link">{label}</span>
-                            </li>
-                          )}
-                        </React.Fragment>
-                      );
-                    }
-                  )}
-                </ul>
+                                      <span
+                                        onClick={() => {
+                                          gContext.setSignUpModalVisible({
+                                            visible: true,
+                                            type: subItem.value,
+                                          });
+                                        }}
+                                        className="dropdown-item"
+                                      >
+                                        {subItem.label}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </li>
+                            ) : (
+                              <li className="nav-item" {...rest}>
+                                <span className="nav-link">{label}</span>
+                              </li>
+                            )}
+                          </React.Fragment>
+                        );
+                      }
+                    )}
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
 
             <ToggleButton
               className={`navbar-toggler btn-close-off-canvas ml-3 ${
