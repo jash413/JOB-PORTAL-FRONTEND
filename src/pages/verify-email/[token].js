@@ -1,32 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { navigate } from "gatsby";
 import { Oval } from "react-loader-spinner";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
+import GlobalContext from "../../context/GlobalContext";
 
 const VerifyEmail = ({ params }) => {
   const { token } = params;
   const [message, setMessage] = useState("Email verification in progress...");
   const [loading, setLoading] = useState(true);
+  const gContext = useContext(GlobalContext);
 
   useEffect(() => {
     const verifyEmail = async () => {
+      const authToken = gContext.token;
+
+      if (!authToken) {
+        setMessage("Token not found. Verification failed.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        await axiosInterceptors.get(
-          REQ.VERIFY_EMAIL,
-          {
-            token,
+        await axiosInterceptors.get(`${REQ.VERIFY_EMAIL}?token=${token}`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        });
         setMessage("Email verified successfully!");
         setLoading(false);
-
         setTimeout(() => {
           navigate("/");
         }, 3000);

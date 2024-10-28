@@ -7,7 +7,6 @@ import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { loginUserValidationSchema } from "../../utils/validations/validations";
-// import { useNavigate } from "react-router-dom";
 import OtpInput from "react-otp-input";
 
 const ModalStyled = styled(Modal)`
@@ -19,7 +18,6 @@ const ModalStyled = styled(Modal)`
 const ModalSignIn = (props) => {
   const [showPass, setShowPass] = useState(true);
   const gContext = useContext(GlobalContext);
-  // const navigate = useNavigate();
   const [verificationStep, setVerificationStep] = useState(null);
   const [otp, setOtp] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -36,7 +34,7 @@ const ModalSignIn = (props) => {
   };
 
   const sendPhoneOtp = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = gContext.token;
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -60,7 +58,7 @@ const ModalSignIn = (props) => {
   };
 
   const sendEmailVerify = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = gContext.token;
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -85,7 +83,7 @@ const ModalSignIn = (props) => {
   };
 
   const handleOTPverification = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = gContext.token;
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -132,7 +130,7 @@ const ModalSignIn = (props) => {
         });
         const { email_ver_status, phone_ver_status } = response.user;
         const token = response.token;
-        localStorage.setItem("authToken", token);
+        gContext.setToken(token);
         if (phone_ver_status === 0) {
           setVerificationStep("phone");
           setOtp("");
@@ -160,8 +158,6 @@ const ModalSignIn = (props) => {
       }
     },
   });
-
-  console.log(verificationStep, "verificationStep");
 
   useEffect(() => {
     if (resendTimer > 0) {
@@ -219,7 +215,7 @@ const ModalSignIn = (props) => {
               ) : verificationStep === "phone" ? (
                 <div className="pt-10 pb-6 pl-11 pr-12 bg-black-2 h-100 d-flex flex-column dark-mode-texts">
                   <div className="pb-9">
-                    <p className="mb-0 font-size-4 text-white">
+                    <p className="mb-0 font-size-6 text-white">
                       Phone Verification
                     </p>
                   </div>
@@ -243,7 +239,7 @@ const ModalSignIn = (props) => {
               ) : (
                 <div className="pt-10 pb-6 pl-11 pr-12 bg-black-2 h-100 d-flex flex-column dark-mode-texts">
                   <div className="pb-9">
-                    <p className="mb-0 font-size-4 text-white">
+                    <p className="mb-0 font-size-6 text-white">
                       Email Verification
                     </p>
                   </div>

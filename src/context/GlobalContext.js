@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { navigate } from "gatsby";
 
 const GlobalContext = React.createContext();
 
@@ -13,6 +14,7 @@ const GlobalProvider = ({ children }) => {
   });
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("authToken"));
   const [header, setHeader] = useState({
     theme: "light",
     bgClass: "default",
@@ -64,6 +66,16 @@ const GlobalProvider = ({ children }) => {
     setVisibleOffCanvas(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setToken(null);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    localStorage.setItem("authToken", token);
+  }, [token]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -87,6 +99,9 @@ const GlobalProvider = ({ children }) => {
         footer,
         setFooter,
         setSignUpModalVisible,
+        handleLogout,
+        token,
+        setToken,
       }}
     >
       {children}
