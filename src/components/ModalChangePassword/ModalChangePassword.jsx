@@ -50,6 +50,7 @@ const ModalChangePassword = (props) => {
         const successMessage =
           response?.data || response?.message || "Password reset successfull!";
         toast.success(successMessage);
+        gContext.toggleSignInModal();
         resetForm();
       } catch (error) {
         const errorMessage =

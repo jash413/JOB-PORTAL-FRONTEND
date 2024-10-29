@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { navigate } from "gatsby";
+import { useLocation } from "react-router-dom";
 const GlobalContext = React.createContext();
 
 const GlobalProvider = ({ children }) => {
@@ -36,7 +37,14 @@ const GlobalProvider = ({ children }) => {
     style: "style1",
   });
 
-const authenticated = useMemo(
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes("reset-password")) {
+      setChangePasswordModalVisible(true);
+    }
+  }, [location.pathname]);
+  const authenticated = useMemo(
     () => !!token && user && !!JSON.parse(user)?.login_id,
     [token, user]
   );
@@ -49,7 +57,7 @@ const authenticated = useMemo(
       JSON.parse(user)?.email_ver_status !== 0,
     [token, user]
   );
-  
+
   const toggleTheme = () => {
     setThemeDark(!themeDark);
   };
