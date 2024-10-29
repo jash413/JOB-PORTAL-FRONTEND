@@ -17,6 +17,8 @@ const GlobalProvider = ({ children }) => {
     visible: false,
     type: "CND",
   });
+  const [optVerifyVisible, setOptVerifyVisible] = useState(false);
+  const [emailVerifyVisible, setEmailVerifyVisible] = useState(false);
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
   const [token, setToken] = useState(
@@ -69,8 +71,9 @@ const GlobalProvider = ({ children }) => {
 
     try {
       const parsedUser = JSON.parse(user);
+      if (parsedUser === null) return false;
       return (
-        parsedUser?.phone_ver_status !== 0 && parsedUser?.email_ver_status !== 0
+        parsedUser?.phone_ver_status !== 0 || parsedUser?.email_ver_status !== 0
       );
     } catch (error) {
       console.error("Invalid JSON in user:", error);
@@ -105,6 +108,15 @@ const GlobalProvider = ({ children }) => {
   const toggleChangePasswordModal = () => {
     setChangePasswordModalVisible(!changePasswordModalVisible);
   };
+
+  const toggleOptVerifyModal = () => {
+    setOptVerifyVisible(!optVerifyVisible);
+  };
+
+  const toggleEmailVerifyModal = () => {
+    setEmailVerifyVisible(!emailVerifyVisible);
+  };
+
   const toggleSignUpModal = () => {
     setSignUpModalVisible((prevState) => ({
       ...prevState,
@@ -159,6 +171,10 @@ const GlobalProvider = ({ children }) => {
         visibleOffCanvas,
         toggleOffCanvas,
         closeOffCanvas,
+        optVerifyVisible,
+        toggleOptVerifyModal,
+        emailVerifyVisible,
+        toggleEmailVerifyModal,
         header,
         setHeader,
         footer,
