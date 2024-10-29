@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { navigate } from "gatsby";
-import { useLocation } from "react-router-dom";
 const GlobalContext = React.createContext();
 
 const GlobalProvider = ({ children }) => {
@@ -20,8 +19,13 @@ const GlobalProvider = ({ children }) => {
   });
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("authToken"));
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  const [token, setToken] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("authToken") : null
+  );
+  const [user, setUser] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("user") : null
+  );
+
   const [header, setHeader] = useState({
     theme: "light",
     bgClass: "default",
@@ -37,26 +41,42 @@ const GlobalProvider = ({ children }) => {
     style: "style1",
   });
 
-  const location = useLocation();
-
   useEffect(() => {
-    if (location.pathname.includes("reset-password")) {
-      setChangePasswordModalVisible(true);
+    if (typeof window !== "undefined") {
+      const path = window.location.pathname;
+      if (path.includes("reset-password")) {
+        setChangePasswordModalVisible(true);
+      } else {
+        setChangePasswordModalVisible(false);
+      }
     }
-  }, [location.pathname]);
-  const authenticated = useMemo(
-    () => !!token && user && !!JSON.parse(user)?.login_id,
-    [token, user]
-  );
+  }, []);
 
-  const authVerified = useMemo(
-    () =>
-      !!token &&
-      user !== undefined &&
-      JSON.parse(user)?.phone_ver_status !== 0 &&
-      JSON.parse(user)?.email_ver_status !== 0,
-    [token, user]
-  );
+  const authenticated = useMemo(() => {
+    if (!token || !user) return false;
+
+    try {
+      const parsedUser = JSON.parse(user);
+      return !!parsedUser?.login_id;
+    } catch (error) {
+      console.error("Invalid JSON in user:", error);
+      return false;
+    }
+  }, [token, user]);
+
+  const authVerified = useMemo(() => {
+    if (!token || !user) return false;
+
+    try {
+      const parsedUser = JSON.parse(user);
+      return (
+        parsedUser?.phone_ver_status !== 0 && parsedUser?.email_ver_status !== 0
+      );
+    } catch (error) {
+      console.error("Invalid JSON in user:", error);
+      return false;
+    }
+  }, [token, user]);
 
   const toggleTheme = () => {
     setThemeDark(!themeDark);
