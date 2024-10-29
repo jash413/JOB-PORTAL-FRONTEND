@@ -90,7 +90,15 @@ const Sidebar = (props) => {
                       {userDetails?.login_email}
                     </a>
                   </h5>
-                  <span>
+                  <span
+                    onClick={() => {
+                      if (userDetails?.email_ver_status === 0) {
+                        return gContext.toggleEmailVerifyModal();
+                      } else {
+                        return null;
+                      }
+                    }}
+                  >
                     {userDetails?.email_ver_status === 1 ? (
                       <VscVerified color="green" title="Email verified" />
                     ) : (
@@ -112,7 +120,15 @@ const Sidebar = (props) => {
                       {userDetails?.login_mobile}
                     </a>
                   </h5>
-                  <span>
+                  <span
+                    onClick={() => {
+                      if (userDetails?.phone_ver_status === 0) {
+                        return gContext.toggleOptVerifyModal();
+                      } else {
+                        return null;
+                      }
+                    }}
+                  >
                     {userDetails?.phone_ver_status === 1 ? (
                       <VscVerified color="green" title="Phone no. verified" />
                     ) : (

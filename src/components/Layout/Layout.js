@@ -48,6 +48,8 @@ import { get, merge } from "lodash";
 // the full theme object
 import { theme as baseTheme } from "../../utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import ModalOtpVerify from "../ModalOtpVerify";
+import ModalEmailVerify from "../ModalEmailVerify";
 
 const Loader = styled.div`
   position: fixed;
@@ -138,6 +140,8 @@ const Layout = ({ children, pageContext }) => {
             <ModalSignIn />
             <ModalSignUp />
             <ModalForgetPassword />
+            <ModalOtpVerify />
+            <ModalEmailVerify />
           </div>
         </ThemeProvider>
       </GoogleOAuthProvider>
@@ -177,6 +181,8 @@ const Layout = ({ children, pageContext }) => {
             <ModalSignIn />
             <ModalSignUp />
             <ModalForgetPassword />
+            <ModalOtpVerify />
+            <ModalEmailVerify />
           </div>
         </ThemeProvider>
       </GoogleOAuthProvider>
@@ -210,6 +216,8 @@ const Layout = ({ children, pageContext }) => {
             <ModalSignIn />
             <ModalSignUp />
             <ModalForgetPassword />
+            <ModalOtpVerify />
+            <ModalEmailVerify />
           </div>
         </ThemeProvider>
       </GoogleOAuthProvider>

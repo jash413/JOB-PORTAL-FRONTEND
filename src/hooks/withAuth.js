@@ -9,19 +9,18 @@ const withAuth = (WrappedComponent) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      if (!gContext?.authenticated || !gContext?.authVerified) {
+      const isAuthenticated = gContext?.authenticated;
+      const isAuthVerified = gContext?.authVerified;
+      const currentPath = window.location.pathname;
+
+      if (!isAuthenticated) {
         navigate("/");
-        setTimeout(() => {
-          gContext.toggleSignInModal();
-        }, 3000);
-      } else if (
-        window.location.pathname === "/candidate-profile" &&
-        !gContext?.authVerified
-      ) {
+        toast.warn("You need to log in to access this page.");
+      } else if (!isAuthVerified && currentPath !== "/candidate-profile") {
         navigate("/");
-        setTimeout(() => {
-          gContext.toggleSignInModal();
-        }, 3000);
+        toast.warn(
+          "You need to complete verification steps to access this page."
+        );
       } else {
         setLoading(false);
       }
