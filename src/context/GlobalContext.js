@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { navigate } from "gatsby";
-
 const GlobalContext = React.createContext();
 
 const GlobalProvider = ({ children }) => {
@@ -8,6 +7,12 @@ const GlobalProvider = ({ children }) => {
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
   const [applicationModalVisible, setApplicationModalVisible] = useState(false);
   const [signInModalVisible, setSignInModalVisible] = useState(false);
+  const [forgetPasswordModalVisible, setForgetPasswordModalVisible] = useState(
+    false
+  );
+  const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(
+    false
+  );
   const [signUpModalVisible, setSignUpModalVisible] = useState({
     visible: false,
     type: "CND",
@@ -31,7 +36,7 @@ const GlobalProvider = ({ children }) => {
     style: "style1",
   });
 
-  const authenticated = useMemo(
+const authenticated = useMemo(
     () => !!token && user && !!JSON.parse(user)?.login_id,
     [token, user]
   );
@@ -44,7 +49,7 @@ const GlobalProvider = ({ children }) => {
       JSON.parse(user)?.email_ver_status !== 0,
     [token, user]
   );
-
+  
   const toggleTheme = () => {
     setThemeDark(!themeDark);
   };
@@ -65,6 +70,13 @@ const GlobalProvider = ({ children }) => {
     setSignInModalVisible(!signInModalVisible);
   };
 
+  const toggleForgetPasswordModal = () => {
+    setForgetPasswordModalVisible(!forgetPasswordModalVisible);
+  };
+
+  const toggleChangePasswordModal = () => {
+    setChangePasswordModalVisible(!changePasswordModalVisible);
+  };
   const toggleSignUpModal = () => {
     setSignUpModalVisible((prevState) => ({
       ...prevState,
@@ -110,6 +122,10 @@ const GlobalProvider = ({ children }) => {
         toggleApplicationModal,
         signInModalVisible,
         toggleSignInModal,
+        forgetPasswordModalVisible,
+        toggleForgetPasswordModal,
+        changePasswordModalVisible,
+        toggleChangePasswordModal,
         signUpModalVisible,
         toggleSignUpModal,
         visibleOffCanvas,
