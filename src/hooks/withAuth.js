@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { navigate } from "gatsby";
 import { Oval } from "react-loader-spinner";
 import GlobalContext from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 const withAuth = (WrappedComponent) => {
   return (props) => {
@@ -11,17 +12,15 @@ const withAuth = (WrappedComponent) => {
     useEffect(() => {
       if (!gContext?.authenticated || !gContext?.authVerified) {
         navigate("/");
-        setTimeout(() => {
-          gContext.toggleSignInModal();
-        }, 3000);
+        toast.warn(
+          "You need to complete verification steps to access this page."
+        );
       } else if (
         window.location.pathname === "/candidate-profile" &&
         !gContext?.authVerified
       ) {
         navigate("/");
-        setTimeout(() => {
-          gContext.toggleSignInModal();
-        }, 3000);
+        toast.warn("You need to login to access this page.");
       } else {
         setLoading(false);
       }

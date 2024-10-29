@@ -23,16 +23,21 @@ const VerifyEmail = ({ params }) => {
 
       try {
         setLoading(true);
-        await axiosInterceptors.get(`${REQ.VERIFY_EMAIL}?token=${token}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-        setMessage("Email verified successfully!");
+        const response = await axiosInterceptors.get(
+          `${REQ.VERIFY_EMAIL}?token=${token}`
+        );
+
+        if (response?.message === "Email verified successfully") {
+          const userObj = JSON.parse(gContext.user);
+          userObj.email_ver_status = 1;
+          const updatedUserJson = JSON.stringify(userObj);
+          gContext.setUser(updatedUserJson);
+          setMessage("Email verified successfully!");
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
+        }
         setLoading(false);
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
       } catch (error) {
         setMessage("Verification failed. Please try again.");
         setLoading(false);
