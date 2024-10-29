@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-
+import React, { useEffect, useMemo, useState } from "react";
+import { navigate } from "gatsby";
 const GlobalContext = React.createContext();
 
 const GlobalProvider = ({ children }) => {
@@ -20,28 +19,37 @@ const GlobalProvider = ({ children }) => {
   });
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("authToken"));
+  const [user, setUser] = useState(localStorage.getItem("user"));
   const [header, setHeader] = useState({
     theme: "light",
     bgClass: "default",
     variant: "primary",
     align: "left",
     isFluid: false,
-    button: "cta", // profile, account, null
-    buttonText: "Get started free", // profile, account, null
+    button: "cta",
+    buttonText: "Get started free",
     reveal: true,
   });
   const [footer, setFooter] = useState({
     theme: "dark",
-    style: "style1", //style1, style2
+    style: "style1",
   });
 
-  const location = useLocation();
+const authenticated = useMemo(
+    () => !!token && user && !!JSON.parse(user)?.login_id,
+    [token, user]
+  );
 
-  useEffect(() => {
-    if (location.pathname.includes("reset-password")) {
-      setChangePasswordModalVisible(true);
-    }
-  }, [location.pathname]);
+  const authVerified = useMemo(
+    () =>
+      !!token &&
+      user !== undefined &&
+      JSON.parse(user)?.phone_ver_status !== 0 &&
+      JSON.parse(user)?.email_ver_status !== 0,
+    [token, user]
+  );
+  
   const toggleTheme = () => {
     setThemeDark(!themeDark);
   };
@@ -85,6 +93,22 @@ const GlobalProvider = ({ children }) => {
     setVisibleOffCanvas(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setToken(null);
+    setUser(null);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    localStorage.setItem("authToken", token);
+  }, [token]);
+
+  useEffect(() => {
+    localStorage.setItem("user", user);
+  }, [user]);
+
   return (
     <GlobalContext.Provider
       value={{
@@ -112,6 +136,13 @@ const GlobalProvider = ({ children }) => {
         footer,
         setFooter,
         setSignUpModalVisible,
+        handleLogout,
+        token,
+        setToken,
+        user,
+        setUser,
+        authenticated,
+        authVerified,
       }}
     >
       {children}

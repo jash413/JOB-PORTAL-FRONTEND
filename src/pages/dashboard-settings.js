@@ -2,6 +2,7 @@ import React from "react";
 
 import PageWrapper from "../components/PageWrapper";
 import { Select } from "../components/Core";
+import withAuth from "../hooks/withAuth";
 
 const defaultTypes = [
   { value: "b2b", label: "B2B" },
@@ -185,4 +186,4 @@ const DashboardSettings = () => {
     </>
   );
 };
-export default DashboardSettings;
+export default withAuth(DashboardSettings);

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "gatsby";
 import PageWrapper from "../components/PageWrapper";
 import { Select } from "../components/Core";
+import withAuth from "../hooks/withAuth";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -303,4 +304,4 @@ const DashboardJobs = () => {
     </>
   );
 };
-export default DashboardJobs;
+export default withAuth(DashboardJobs);

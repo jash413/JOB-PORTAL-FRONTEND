@@ -9,6 +9,7 @@ import imgP2 from "../assets/image/table-one-profile-image-2.png";
 import imgP3 from "../assets/image/table-one-profile-image-3.png";
 import imgP4 from "../assets/image/table-one-profile-image-4.png";
 import imgP5 from "../assets/image/table-one-profile-image-5.png";
+import withAuth from "../hooks/withAuth";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -459,4 +460,4 @@ const DashboardApplicants = () => {
     </>
   );
 };
-export default DashboardApplicants;
+export default withAuth(DashboardApplicants);
