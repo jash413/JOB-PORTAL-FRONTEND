@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const GlobalContext = React.createContext();
 
@@ -7,6 +8,12 @@ const GlobalProvider = ({ children }) => {
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
   const [applicationModalVisible, setApplicationModalVisible] = useState(false);
   const [signInModalVisible, setSignInModalVisible] = useState(false);
+  const [forgetPasswordModalVisible, setForgetPasswordModalVisible] = useState(
+    false
+  );
+  const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(
+    false
+  );
   const [signUpModalVisible, setSignUpModalVisible] = useState({
     visible: false,
     type: "CND",
@@ -28,6 +35,13 @@ const GlobalProvider = ({ children }) => {
     style: "style1", //style1, style2
   });
 
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes("reset-password")) {
+      setChangePasswordModalVisible(true);
+    }
+  }, [location.pathname]);
   const toggleTheme = () => {
     setThemeDark(!themeDark);
   };
@@ -48,6 +62,13 @@ const GlobalProvider = ({ children }) => {
     setSignInModalVisible(!signInModalVisible);
   };
 
+  const toggleForgetPasswordModal = () => {
+    setForgetPasswordModalVisible(!forgetPasswordModalVisible);
+  };
+
+  const toggleChangePasswordModal = () => {
+    setChangePasswordModalVisible(!changePasswordModalVisible);
+  };
   const toggleSignUpModal = () => {
     setSignUpModalVisible((prevState) => ({
       ...prevState,
@@ -77,6 +98,10 @@ const GlobalProvider = ({ children }) => {
         toggleApplicationModal,
         signInModalVisible,
         toggleSignInModal,
+        forgetPasswordModalVisible,
+        toggleForgetPasswordModal,
+        changePasswordModalVisible,
+        toggleChangePasswordModal,
         signUpModalVisible,
         toggleSignUpModal,
         visibleOffCanvas,

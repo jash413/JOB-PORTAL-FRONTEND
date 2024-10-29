@@ -8,4 +8,6 @@ export const REQ = {
   VERIFY_OTP: SERVER + "/api/v1/auth/verify-phone",
   SEND_EMAIL_VERIFY: SERVER + "/api/v1/auth/send-email-verification",
   VERIFY_EMAIL: SERVER + "/api/v1/auth/verify-email",
+  FORGET_PASSWORD: SERVER + "/api/v1/auth/forgot-password",
+  RESET_PASSWORD: SERVER + "/api/v1/auth/reset-password",
 };

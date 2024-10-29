@@ -2,6 +2,7 @@ import React from "react";
 import { GlobalProvider } from "./src/context/GlobalContext";
 import { CartProvider } from "./src/context/CartContext";
 import Layout from "./src/components/Layout";
+import { BrowserRouter as Router } from "react-router-dom";
 
 export const wrapPageElement = ({ element, props }) => {
   // props provide same data to Layout as Page element will get
@@ -19,7 +20,9 @@ export const wrapPageElement = ({ element, props }) => {
 };
 
 export const wrapRootElement = ({ element }) => (
-  <GlobalProvider>
-    <CartProvider>{element}</CartProvider>
-  </GlobalProvider>
+  <Router>
+    <GlobalProvider>
+      <CartProvider>{element}</CartProvider>
+    </GlobalProvider>
+  </Router>
 );

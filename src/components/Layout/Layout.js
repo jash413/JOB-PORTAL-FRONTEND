@@ -18,6 +18,7 @@ import ModalVideo from "../ModalVideo";
 import ModalApplication from "../ModalApplication";
 import ModalSignIn from "../ModalSignIn";
 import ModalSignUp from "../ModalSignUp";
+import ModalForgetPassword from "../ModalForgetPassword";
 
 import GlobalContext from "../../context/GlobalContext";
 
@@ -46,6 +47,7 @@ import { get, merge } from "lodash";
 
 // the full theme object
 import { theme as baseTheme } from "../../utils";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const Loader = styled.div`
   position: fixed;
@@ -74,6 +76,8 @@ const getTheme = (mode) =>
     colors: get(baseTheme.colors.modes, mode, baseTheme.colors),
   });
 
+const GOOGLE_CLIENT_ID =
+  "541827871924-l3gh00r9ajhkiui0ad61c6se89nv9tf3.apps.googleusercontent.com";
 const Layout = ({ children, pageContext }) => {
   const gContext = useContext(GlobalContext);
 
@@ -108,98 +112,107 @@ const Layout = ({ children, pageContext }) => {
 
   if (pageContext.layout === "bare") {
     return (
-      <ThemeProvider
-        theme={
-          gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
-        }
-      >
-        <div data-theme-mode-panel-active data-theme="light">
-          <GlobalStyle />
-          <Helmet>
-            <title>JustCamp</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
-          </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
-            <div className="load-circle">
-              <span className="one"></span>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ThemeProvider
+          theme={
+            gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
+          }
+        >
+          <div data-theme-mode-panel-active data-theme="light">
+            <GlobalStyle />
+            <Helmet>
+              <title>JustCamp</title>
+              <link rel="icon" type="image/png" href={imgFavicon} />
+            </Helmet>
+            <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
+              <div className="load-circle">
+                <span className="one"></span>
+              </div>
+            </Loader>
+            <div className="site-wrapper overflow-hidden" ref={eleRef}>
+              {children}
             </div>
-          </Loader>
-          <div className="site-wrapper overflow-hidden" ref={eleRef}>
-            {children}
-          </div>
 
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
-          <ModalSignUp />
-        </div>
-      </ThemeProvider>
+            <ModalVideo />
+            <ModalApplication />
+            <ModalSignIn />
+            <ModalSignUp />
+            <ModalForgetPassword />
+          </div>
+        </ThemeProvider>
+      </GoogleOAuthProvider>
     );
   }
 
   if (pageContext.layout === "dashboard") {
     return (
-      <ThemeProvider
-        theme={
-          gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
-        }
-      >
-        <div data-theme-mode-panel-active data-theme="light">
-          <GlobalStyle />
-          <Helmet>
-            <title>JustCamp</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
-          </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
-            <div className="load-circle">
-              <span className="one"></span>
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ThemeProvider
+          theme={
+            gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
+          }
+        >
+          <div data-theme-mode-panel-active data-theme="light">
+            <GlobalStyle />
+            <Helmet>
+              <title>JustCamp</title>
+              <link rel="icon" type="image/png" href={imgFavicon} />
+            </Helmet>
+            <Loader id="loading" className={visibleLoader ? "" : "inActive"}>
+              <div className="load-circle">
+                <span className="one"></span>
+              </div>
+            </Loader>
+            <div
+              className="site-wrapper overflow-hidden bg-default-2"
+              ref={eleRef}
+            >
+              <Header isDark={gContext.headerDark} />
+              <SidebarDashboard />
+              {children}
             </div>
-          </Loader>
-          <div
-            className="site-wrapper overflow-hidden bg-default-2"
-            ref={eleRef}
-          >
-            <Header isDark={gContext.headerDark} />
-            <SidebarDashboard />
-            {children}
-          </div>
 
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
-          <ModalSignUp />
-        </div>
-      </ThemeProvider>
+            <ModalVideo />
+            <ModalApplication />
+            <ModalSignIn />
+            <ModalSignUp />
+            <ModalForgetPassword />
+          </div>
+        </ThemeProvider>
+      </GoogleOAuthProvider>
     );
   }
 
   return (
     <>
-      <ThemeProvider
-        theme={
-          gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
-        }
-      >
-        <div data-theme-mode-panel-active data-theme="light">
-          <GlobalStyle />
-          <Helmet>
-            <title>JustCamp</title>
-            <link rel="icon" type="image/png" href={imgFavicon} />
-          </Helmet>
-          <Loader id="loading" className={visibleLoader ? "" : "inActive"} />
-          <div className="site-wrapper overflow-hidden" ref={eleRef}>
-            <Header isDark={gContext.headerDark} />
-            {children}
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <ThemeProvider
+          theme={
+            gContext.themeDark ? getTheme(modes.dark) : getTheme(modes.light)
+          }
+        >
+          <div data-theme-mode-panel-active data-theme="light">
+            <GlobalStyle />
+            <Helmet>
+              <title>JustCamp</title>
+              <link rel="icon" type="image/png" href={imgFavicon} />
+            </Helmet>
+            <Loader id="loading" className={visibleLoader ? "" : "inActive"} />
+            <div className="site-wrapper overflow-hidden" ref={eleRef}>
+              <Header isDark={gContext.headerDark} />
+              {children}
 
-            <Footer isDark={gContext.footerDark} />
+              <Footer isDark={gContext.footerDark} />
+            </div>
+
+            <ModalVideo />
+            <ModalApplication />
+            <ModalSignIn />
+            <ModalSignUp />
+            <ModalForgetPassword />
           </div>
-
-          <ModalVideo />
-          <ModalApplication />
-          <ModalSignIn />
-          <ModalSignUp />
-        </div>
-      </ThemeProvider>
+        </ThemeProvider>
+      </GoogleOAuthProvider>
     </>
   );
 };

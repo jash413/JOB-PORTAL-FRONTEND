@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
@@ -7,6 +7,7 @@ import { registerUserValidationSchema } from "../../utils/validations/validation
 import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
+import { GoogleLogin } from "@react-oauth/google";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -37,14 +38,21 @@ const ModalSignUp = (props) => {
     try {
       const response = await axiosInterceptors.post(REQ.REGISTER_USER, payload);
       toast.success("User registered successfully!");
-      console.log("API Response:", response.data);
       gContext.toggleSignUpModal();
     } catch (error) {
       toast.error(error?.data?.error || "Something went wrong!");
-      console.error("API Error:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle Google login success and failure
+  const handleGoogleSuccess = (response) => {
+    toast.success("Logged in with Google successfully!");
+  };
+
+  const handleGoogleFailure = (error) => {
+    toast.error("Google login failed!");
   };
 
   return (
@@ -270,6 +278,12 @@ const ModalSignUp = (props) => {
                         >
                           Sign Up
                         </button>
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={handleGoogleFailure}
+                          logo="path-to-your-logo"
+                          isSignedIn={true}
+                        />
                       </div>
 
                       <p className="font-size-4 text-center heading-default-color">
