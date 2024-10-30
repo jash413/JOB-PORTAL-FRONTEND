@@ -60,8 +60,13 @@ const CandidateProfile = () => {
         <div className="bg-default-2 pt-22 pt-lg-25 pb-13 pb-xxl-32">
           <div className="container">
             {isUserVerified && (
-              <div className="ml-3 px-8 py-5 mb-5 row justify-content-between bg-light rounded border position-relative w-100">
-                <p className="mb-0">
+              <div
+                style={{
+                  backgroundColor: "#fff3b0",
+                }}
+                className="ml-3 px-8 py-5 mb-5 row justify-content-between rounded border position-relative w-100"
+              >
+                <p className="mb-0 font-size-4 line-height-1p4 text-yellow">
                   Please complete your profile verification to access the
                   dashboard and enjoy all the features of our app!
                 </p>

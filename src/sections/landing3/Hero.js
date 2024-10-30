@@ -4,6 +4,7 @@ import { Button } from "react-bootstrap";
 import { Select } from "../../components/Core";
 import imgC1 from "../../assets/image/l3/png/hero-image-1.png";
 import imgC2 from "../../assets/image/l3/png/hero-image-2.png";
+import withAuth from "../../hooks/withAuth";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -112,4 +113,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default withAuth(Hero);
