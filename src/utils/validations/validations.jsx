@@ -14,15 +14,10 @@ export const registerUserValidationSchema = Yup.object({
     .required("Email is required"),
   login_pass: Yup.string()
     .min(8, "Password must be at least 8 characters long")
-    .matches(/[A-Z]/, "Password must contain at least 1 uppercase letter")
-    .matches(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least 2 special characters"
-    )
-    .matches(
-      /(?:[^A-Za-z0-9].*[^A-Za-z0-9])/,
-      "Password must contain at least 2 special characters"
-    )
+    .max(20, "Password cannot exceed 20 characters")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/[0-9]/, "Password must contain at least one digit")
     .required("Password is required"),
   login_mobile: Yup.string()
     .matches(/^[0-9]+$/, "Phone number must only contain digits")
