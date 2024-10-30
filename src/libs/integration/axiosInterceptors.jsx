@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { navigate } from "gatsby";
 import Cookies from "js-cookie";
 import { REQ } from "../constants";
 
@@ -51,7 +51,6 @@ axiosInterceptors.interceptors.response.use(
                     Cookies.remove("theme_system", { path: "/" });
                     Cookies.remove("token");
                     Cookies.remove("refreshToken");
-                    const navigate = useNavigate();
                     navigate("/");
                 }
                 return axiosInterceptors(originalConfig);

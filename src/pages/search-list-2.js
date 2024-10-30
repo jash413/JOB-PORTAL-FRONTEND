@@ -3,6 +3,7 @@ import PageWrapper from "../components/PageWrapper";
 import { Select } from "../components/Core";
 
 import SearchTab from "../sections/search/SearchTab";
+import withAuth from "../hooks/withAuth";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -152,4 +153,4 @@ const SearchGrid = () => {
     </>
   );
 };
-export default SearchGrid;
+export default withAuth(SearchGrid);
