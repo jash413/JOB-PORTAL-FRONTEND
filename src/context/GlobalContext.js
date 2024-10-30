@@ -73,7 +73,7 @@ const GlobalProvider = ({ children }) => {
       const parsedUser = JSON.parse(user);
       if (parsedUser === null) return false;
       return (
-        parsedUser?.phone_ver_status !== 0 || parsedUser?.email_ver_status !== 0
+        parsedUser?.phone_ver_status !== 0 && parsedUser?.email_ver_status !== 0
       );
     } catch (error) {
       console.error("Invalid JSON in user:", error);

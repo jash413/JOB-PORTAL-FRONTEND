@@ -16,6 +16,7 @@ const ModalStyled = styled(Modal)`
 const ModalOtpVerify = (props) => {
   const gContext = useContext(GlobalContext);
   const [otp, setOtp] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
   const [phoneNumber] = useState(
     gContext.user ? JSON.parse(gContext.user)?.login_mobile : ""
   );
@@ -26,6 +27,7 @@ const ModalOtpVerify = (props) => {
   };
 
   const sendPhoneOtp = async () => {
+    setOtpSending(true);
     const token = localStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
@@ -45,6 +47,8 @@ const ModalOtpVerify = (props) => {
       setResendTimer(30);
     } catch (error) {
       toast.error("Error sending OTP. Please try again.");
+    } finally {
+      setOtpSending(false);
     }
   };
 
@@ -67,6 +71,7 @@ const ModalOtpVerify = (props) => {
         }
       );
       toast.success("OTP verified successfully");
+      gContext.toggleOptVerifyModal();
       // const { email_ver_status } = response.user;
       gContext.setUser(JSON.stringify(response?.user));
       //   if (email_ver_status === 0) {
@@ -77,7 +82,7 @@ const ModalOtpVerify = (props) => {
       //     setVerificationStep(null);
       //   }
     } catch (error) {
-      toast.error("Error verifying OTP. Please try again.");
+      toast.error(error?.data?.error ?? "Error verifying OTP. Please try again.");
     }
   };
 
@@ -173,6 +178,7 @@ const ModalOtpVerify = (props) => {
                         className={`text-primary cursor-pointer ${resendTimer > 0 ? "disabled" : ""
                           }`}
                         onClick={resendTimer === 0 ? sendPhoneOtp : null}
+                        disabled={otpSending}
                       >
                         {resendTimer > 0
                           ? `Resend OTP in ${resendTimer}s`

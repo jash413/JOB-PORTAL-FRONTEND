@@ -29,6 +29,7 @@ const VerifyEmail = ({ params }) => {
           },
         });
         setMessage("Email verified successfully!");
+        gContext.toggleOptVerifyModal();
         setLoading(false);
         setTimeout(() => {
           navigate("/");

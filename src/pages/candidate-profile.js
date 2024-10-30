@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Nav, Tab } from "react-bootstrap";
 import { Link } from "gatsby";
 import PageWrapper from "../components/PageWrapper";
@@ -16,13 +16,60 @@ import imgT4 from "../assets/image/l3/png/team-member-4.png";
 import imgT5 from "../assets/image/l3/png/team-member-5.png";
 
 import imgL from "../assets/image/svg/icon-loaction-pin-black.svg";
+import GlobalContext from "../context/GlobalContext";
+import axiosInterceptors from "../libs/integration/axiosInterceptors";
+import { REQ } from "../libs/constants";
+import { toast } from "react-toastify";
+import { VscClose } from "react-icons/vsc";
+import withAuth from "../hooks/withAuth";
 
 const CandidateProfile = () => {
+  const gContext = useContext(GlobalContext);
+  const [isUserVerified, setIsUserVerified] = useState(false);
+
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Please log in again.");
+      return;
+    }
+    try {
+      const response = await axiosInterceptors.get(REQ.PROFILE_DETAILS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      gContext.setUser(JSON.stringify(response));
+      if (
+        response?.email_ver_status === 0 ||
+        response?.phone_ver_status === 0
+      ) {
+        setIsUserVerified(true);
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
   return (
     <>
       <PageWrapper headerConfig={{ button: "profile" }}>
         <div className="bg-default-2 pt-22 pt-lg-25 pb-13 pb-xxl-32">
           <div className="container">
+            {isUserVerified && (
+              <div className="ml-3 px-8 py-5 mb-5 row justify-content-between bg-light rounded border position-relative w-100">
+                <p className="mb-0">
+                  Please complete your profile verification to access the
+                  dashboard and enjoy all the features of our app!
+                </p>
+                <span onClick={() => setIsUserVerified(false)}>
+                  <VscClose className="button" size={30} />
+                </span>
+              </div>
+            )}
             {/* <!-- back Button --> */}
             <div className="row justify-content-center">
               <div className="col-12 dark-mode-texts">
@@ -597,4 +644,4 @@ const CandidateProfile = () => {
     </>
   );
 };
-export default CandidateProfile;
+export default withAuth(CandidateProfile);

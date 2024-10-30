@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { navigate } from "gatsby";
 import { Oval } from "react-loader-spinner";
 import GlobalContext from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 const withAuth = (WrappedComponent) => {
   return (props) => {
@@ -17,7 +18,7 @@ const withAuth = (WrappedComponent) => {
         navigate("/");
         toast.warn("You need to log in to access this page.");
       } else if (!isAuthVerified && currentPath !== "/candidate-profile") {
-        navigate("/");
+        navigate("/candidate-profile");
         toast.warn(
           "You need to complete verification steps to access this page."
         );

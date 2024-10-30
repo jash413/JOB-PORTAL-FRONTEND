@@ -301,7 +301,7 @@ const Header = () => {
                           Settings
                         </Link>
                         <Link
-                          to="/#"
+                          to="/candidate-profile"
                           className="dropdown-item py-2 font-size-3 font-weight-semibold line-height-1p2 text-uppercase"
                         >
                           Edit Profile
@@ -331,19 +331,6 @@ const Header = () => {
                   }}
                 >
                   Log In
-                </a>
-                <a
-                  className={`btn btn-${gContext.header.variant} text-uppercase font-size-3`}
-                  href="/#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    gContext.setSignUpModalVisible({
-                      visible: true,
-                      type: "CND",
-                    });
-                  }}
-                >
-                  Sign Up
                 </a>
               </div>
             )}

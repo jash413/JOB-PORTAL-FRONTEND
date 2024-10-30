@@ -21,17 +21,12 @@ const Sidebar = (props) => {
                 <img className="circle-54" src={imgP} alt="" />
               </Link>
               <h4 className="mb-0">
-                <Link
-                  to="/#"
-                  className="text-black-2 font-size-6 font-weight-semibold"
-                >
+                <p className="text-black-2 font-size-6 font-weight-semibold">
                   {userDetails?.login_name}
-                </Link>
+                </p>
               </h4>
               <p className="mb-8">
-                <Link to="/#" className="text-gray font-size-4">
-                  Product Designer
-                </Link>
+                <p className="text-gray font-size-4">Product Designer</p>
               </p>
               <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
                 <Link
@@ -81,14 +76,11 @@ const Sidebar = (props) => {
               {/* <!-- Single List --> */}
               <div className="mb-7">
                 <p className="font-size-4 mb-0">E-mail</p>
-                <div className="d-flex align-items-center justify-content-between w-100">
+                <div className="d-flex align-items-start justify-content-between w-100">
                   <h5 className="font-size-4 font-weight-semibold mb-0">
-                    <a
-                      className="text-black-2 text-break"
-                      href="mailto:name_ac@gmail.com"
-                    >
+                    <p className="text-black-2 text-break">
                       {userDetails?.login_email}
-                    </a>
+                    </p>
                   </h5>
                   <span
                     onClick={() => {
@@ -113,12 +105,9 @@ const Sidebar = (props) => {
                 <p className="font-size-4 mb-0">Phone</p>
                 <div className="d-flex align-items-center justify-content-between w-100">
                   <h5 className="font-size-4 font-weight-semibold mb-0">
-                    <a
-                      className="text-black-2 text-break"
-                      href="tel:+999565562"
-                    >
+                    <span className="text-black-2 text-break">
                       {userDetails?.login_mobile}
-                    </a>
+                    </span>
                   </h5>
                   <span
                     onClick={() => {
