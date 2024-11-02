@@ -22,6 +22,8 @@ import { REQ } from "../libs/constants";
 import { toast } from "react-toastify";
 import { VscClose } from "react-icons/vsc";
 import withAuth from "../hooks/withAuth";
+import { useFormik } from "formik";
+import { changePasswordValidationSchema } from "../utils/validations/validations";
 
 const CandidateProfile = () => {
   const gContext = useContext(GlobalContext);
@@ -53,6 +55,51 @@ const CandidateProfile = () => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
+
+  //handle change password
+  const formik = useFormik({
+    initialValues: {
+      oldPass: "",
+      newPass: "",
+    },
+    validationSchema: changePasswordValidationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        toast.error("Authentication required. Please log in.");
+        setSubmitting(false);
+        return;
+      }
+      try {
+        const response = await axiosInterceptors.put(
+          REQ.CHANGE_PASSWORD,
+          {
+            oldPass: values.oldPass,
+            newPass: values.newPass,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        toast.success(
+          `Password changed successfully for ${response.login_name}.`
+        );
+        resetForm();
+      } catch (error) {
+        const errorMessage =
+          error?.data?.error ||
+          error?.data?.message ||
+          "Error changing password. Please try again.";
+
+        toast.error(errorMessage);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <>
@@ -119,6 +166,14 @@ const CandidateProfile = () => {
                           className="text-uppercase font-size-3 font-weight-bold text-default-color py-3 px-0"
                         >
                           Contact
+                        </Nav.Link>
+                      </li>
+                      <li className="tab-menu-items nav-item pr-12">
+                        <Nav.Link
+                          eventKey="three"
+                          className="text-uppercase font-size-3 font-weight-bold text-default-color py-3 px-0"
+                        >
+                          Change Password
                         </Nav.Link>
                       </li>
                     </Nav>
@@ -477,6 +532,66 @@ const CandidateProfile = () => {
                               <div className="col-lg-12 pt-4">
                                 <button className="btn btn-primary text-uppercase w-100 h-px-48">
                                   Send Now
+                                </button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                        {/* <!-- Excerpt End --> */}
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="three">
+                        {/* <!-- Excerpt Start --> */}
+                        <div className="pr-xl-11 p-5 pl-xs-12 pt-9 pb-11">
+                          <form onSubmit={formik.handleSubmit}>
+                            <div className="row">
+                              <div className="col-12 mb-7">
+                                <label
+                                  htmlFor="oldPass"
+                                  className="font-size-4 font-weight-semibold text-black-2 mb-5 line-height-reset"
+                                >
+                                  Old Password
+                                </label>
+                                <input
+                                  id="oldPass"
+                                  type="password"
+                                  className="form-control"
+                                  placeholder="Old Password"
+                                  {...formik.getFieldProps("oldPass")}
+                                />
+                                {formik.errors.oldPass &&
+                                formik.touched.oldPass ? (
+                                  <div className="text-danger">
+                                    {formik.errors.oldPass}
+                                  </div>
+                                ) : null}
+                              </div>
+                              <div className="col-12 mb-7">
+                                <label
+                                  htmlFor="newPass"
+                                  className="font-size-4 font-weight-semibold text-black-2 mb-5 line-height-reset"
+                                >
+                                  New Password
+                                </label>
+                                <input
+                                  id="newPass"
+                                  type="password"
+                                  className="form-control"
+                                  placeholder="New Password"
+                                  {...formik.getFieldProps("newPass")}
+                                />
+                                {formik.errors.newPass &&
+                                formik.touched.newPass ? (
+                                  <div className="text-danger">
+                                    {formik.errors.newPass}
+                                  </div>
+                                ) : null}
+                              </div>
+                              <div className="col-lg-12 pt-4">
+                                <button
+                                  className="btn btn-primary text-uppercase w-100 h-px-48"
+                                  disabled={formik.isSubmitting}
+                                >
+                                  Submit
                                 </button>
                               </div>
                             </div>

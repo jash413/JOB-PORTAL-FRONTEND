@@ -30,9 +30,14 @@ export const forgetPasswordValidationSchema = Yup.object({
     .email("Invalid email format")
     .required("Email is required"),
 });
-export const changePasswordValidationSchema = Yup.object({
+export const resetPasswordValidationSchema = Yup.object({
   newPassword: Yup.string().required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
     .required("Confirm Password is required"),
+});
+
+export const changePasswordValidationSchema = Yup.object({
+  oldPass: Yup.string().required("Old Password is required"),
+  newPass: Yup.string().required("New Password is required"),
 });
