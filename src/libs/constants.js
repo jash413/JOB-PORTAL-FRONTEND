@@ -11,4 +11,5 @@ export const REQ = {
   FORGET_PASSWORD: SERVER + "/api/v1/auth/forgot-password",
   RESET_PASSWORD: SERVER + "/api/v1/auth/reset-password",
   PROFILE_DETAILS: SERVER + "/api/v1/auth/profile",
+  CHANGE_PASSWORD: SERVER + "/api/v1/auth/change-password",
 };

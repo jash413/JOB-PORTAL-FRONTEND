@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
-import { changePasswordValidationSchema } from "../../utils/validations/validations";
+import { resetPasswordValidationSchema } from "../../utils/validations/validations";
 import { getContrast } from "polished";
 import { data } from "@remix-run/router";
 
@@ -39,7 +39,7 @@ const ModalChangePassword = (props) => {
       newPassword: "",
       confirmPassword: "",
     },
-    validationSchema: changePasswordValidationSchema,
+    validationSchema: resetPasswordValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
       try {
         const response = await axiosInterceptors.post(REQ.RESET_PASSWORD, {
