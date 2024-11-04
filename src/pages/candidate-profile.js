@@ -24,10 +24,13 @@ import { VscClose } from "react-icons/vsc";
 import withAuth from "../hooks/withAuth";
 import { useFormik } from "formik";
 import { changePasswordValidationSchema } from "../utils/validations/validations";
+import ModalWorkExprerience from "../components/ModalWorkExprerience/ModalWorkExprerience";
 
 const CandidateProfile = () => {
   const gContext = useContext(GlobalContext);
   const [isUserVerified, setIsUserVerified] = useState(false);
+  const [isUserApproved, setIsUserApproved] = useState(false);
+  const [expModal, setExpModal] = useState(false);
 
   const fetchUserProfile = async () => {
     const token = localStorage.getItem("authToken");
@@ -45,6 +48,9 @@ const CandidateProfile = () => {
         response?.phone_ver_status === 0
       ) {
         setIsUserVerified(true);
+      }
+      if (response?.user_approval_status === 0) {
+        setIsUserApproved(true);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);
@@ -118,6 +124,29 @@ const CandidateProfile = () => {
                   dashboard and enjoy all the features of our app!
                 </p>
                 <span onClick={() => setIsUserVerified(false)}>
+                  <VscClose className="button" size={30} />
+                </span>
+              </div>
+            )}
+            {isUserApproved && (
+              <div
+                style={{
+                  backgroundColor: "#fff3b0",
+                }}
+                className="ml-3 px-8 py-5 mb-5 row justify-content-between rounded border position-relative w-100"
+              >
+                <p className="mb-0 font-size-4 line-height-1p4 text-yellow">
+                  Your profile approval status is currently pending. Please
+                  check back soon. For furture assistance, contact support{" "}
+                  <a
+                    href="mailto:justcamp@support.com"
+                    className="font-weight-bold"
+                  >
+                    justcamp@support.com
+                  </a>
+                  .
+                </p>
+                <span onClick={() => setIsUserApproved(false)}>
                   <VscClose className="button" size={30} />
                 </span>
               </div>
@@ -267,9 +296,21 @@ const CandidateProfile = () => {
                         {/* <!-- Skills End --> */}
                         {/* <!-- Card Section Start --> */}
                         <div className="border-top p-5 pl-xs-12 pt-7 pb-5">
-                          <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
-                            Work Exprerience
-                          </h4>
+                          <div className="w-100 d-flex justify-content-between align-items-center">
+                            <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
+                              Work Exprerience
+                            </h4>
+                            <button
+                              onClick={() => setExpModal(true)}
+                              className="btn btn-green btn-h-30 btn-2xl text-uppercase"
+                            >
+                              Add Work Exprerience
+                            </button>
+                            <ModalWorkExprerience
+                              expModal={expModal}
+                              setExpModal={setExpModal}
+                            />
+                          </div>
                           {/* <!-- Single Card --> */}
                           <div className="w-100">
                             <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">

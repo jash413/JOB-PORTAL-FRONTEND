@@ -21,6 +21,7 @@ const GlobalProvider = ({ children }) => {
   const [emailVerifyVisible, setEmailVerifyVisible] = useState(false);
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
+  const [profileModal, setProfileModal] = useState(false);
   const [token, setToken] = useState(
     typeof window !== "undefined" ? localStorage.getItem("authToken") : null
   );
@@ -117,6 +118,10 @@ const GlobalProvider = ({ children }) => {
     setEmailVerifyVisible(!emailVerifyVisible);
   };
 
+  const toggleProfileModal = () => {
+    setProfileModal(!profileModal);
+  };
+
   const toggleSignUpModal = () => {
     setSignUpModalVisible((prevState) => ({
       ...prevState,
@@ -175,6 +180,8 @@ const GlobalProvider = ({ children }) => {
         toggleOptVerifyModal,
         emailVerifyVisible,
         toggleEmailVerifyModal,
+        profileModal,
+        toggleProfileModal,
         header,
         setHeader,
         footer,
