@@ -15,4 +15,6 @@ export const REQ = {
   JOB_CATEGORIES: SERVER + "/api/v1/job-categories/get-job-categories",
   CREATE_CANDIDATE: SERVER + "/api/v1/candidates",
   GET_CANDIDATE: SERVER + "/api/v1/candidates",
+  CREATE_EXPERIENCE: SERVER + "/api/v1/experience",
+  CANDIDATE_EXP_LIST: SERVER + "/api/v1/experience/candidate",
 };

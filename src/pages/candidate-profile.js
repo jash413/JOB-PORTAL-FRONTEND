@@ -25,12 +25,14 @@ import withAuth from "../hooks/withAuth";
 import { useFormik } from "formik";
 import { changePasswordValidationSchema } from "../utils/validations/validations";
 import ModalWorkExprerience from "../components/ModalWorkExprerience/ModalWorkExprerience";
+import calculateDuration from "../utils/calculateDuration";
 
 const CandidateProfile = () => {
   const gContext = useContext(GlobalContext);
   const [isUserVerified, setIsUserVerified] = useState(false);
   const [isUserApproved, setIsUserApproved] = useState(false);
   const [expModal, setExpModal] = useState(false);
+  const [mappedExperienceData, setMappedExperienceData] = useState([]);
 
   const fetchUserProfile = async () => {
     const token = localStorage.getItem("authToken");
@@ -60,7 +62,33 @@ const CandidateProfile = () => {
 
   useEffect(() => {
     fetchUserProfile();
+    gContext.fetchExperienceDetails();
   }, []);
+
+  useEffect(() => {
+    if (gContext?.experienceData?.length) {
+      const formattedData = gContext.experienceData.map((exp) => {
+        const startDate = new Date(exp.job_stdt);
+        const endDate = new Date(exp.job_endt);
+        const duration = `${startDate.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        })} - ${endDate.toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        })}`;
+        const totalDuration = calculateDuration(exp.job_stdt, exp.job_endt);
+
+        return {
+          position: exp.exp_desg,
+          companyName: exp.emp_name,
+          duration: `${duration} - ${totalDuration}`,
+          location: "Bangalore, India",
+        };
+      });
+      setMappedExperienceData(formattedData);
+    }
+  }, [gContext?.experienceData]);
 
   //handle change password
   const formik = useFormik({
@@ -312,6 +340,98 @@ const CandidateProfile = () => {
                             />
                           </div>
                           {/* <!-- Single Card --> */}
+                          {
+                            // <div className="w-100">
+                            //   <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
+                            //     <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
+                            //       <img src={imgB1} alt="" />
+                            //     </div>
+                            //     <div className="w-100 mt-n2">
+                            //       <h3 className="mb-0">
+                            //         <Link
+                            //           to="/#"
+                            //           className="font-size-6 text-black-2 font-weight-semibold"
+                            //         >
+                            //           Position
+                            //         </Link>
+                            //       </h3>
+                            //       <Link
+                            //         to="/#"
+                            //         className="font-size-4 text-default-color line-height-2"
+                            //       >
+                            //         Comapny Name
+                            //       </Link>
+                            //       <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                            //         <Link
+                            //           to="/#"
+                            //           className="font-size-4 text-gray mr-5"
+                            //         >
+                            //           Jun 2017 - April 2020- 3 years
+                            //         </Link>
+                            //         <Link
+                            //           to="/#"
+                            //           className="font-size-3 text-gray"
+                            //         >
+                            //           <span
+                            //             className="mr-4"
+                            //             css={`
+                            //               margin-top: -2px;
+                            //             `}
+                            //           >
+                            //             <img src={imgL} alt="" />
+                            //           </span>
+                            //           New York, USA
+                            //         </Link>
+                            //       </div>
+                            //     </div>
+                            //   </div>
+                            // </div>
+                            <div className="w-100">
+                              {mappedExperienceData.length > 0 ? (
+                                mappedExperienceData.map((exp, index) => (
+                                  <div className="w-100" key={index}>
+                                    <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
+                                      <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
+                                        <img src={imgB1} alt="Company Logo" />
+                                      </div>
+                                      <div className="w-100 mt-n2">
+                                        <h3 className="mb-0">
+                                          <Link
+                                            to="/#"
+                                            className="font-size-6 text-black-2 font-weight-semibold"
+                                          >
+                                            {exp.position}
+                                          </Link>
+                                        </h3>
+                                        <Link
+                                          to="/#"
+                                          className="font-size-4 text-default-color line-height-2"
+                                        >
+                                          {exp.companyName}
+                                        </Link>
+                                        <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                                          <span className="font-size-4 text-gray mr-5">
+                                            {exp.duration}
+                                          </span>
+                                          <span className="font-size-3 text-gray">
+                                            <span className="mr-4">
+                                              <img
+                                                src={imgL}
+                                                alt="Location Icon"
+                                              />
+                                            </span>
+                                            {exp.location}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <p>No experience data available.</p>
+                              )}
+                            </div>
+                          }
                           <div className="w-100">
                             <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
                               <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
