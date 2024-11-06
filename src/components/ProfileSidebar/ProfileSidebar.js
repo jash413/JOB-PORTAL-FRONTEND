@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import { VscVerified, VscUnverified } from "react-icons/vsc";
 import imgP from "../../assets/image/l3/png/pro-img.png";
 import GlobalContext from "../../context/GlobalContext";
+import { MdEdit } from "react-icons/md";
 
 const Sidebar = (props) => {
   const gContext = useContext(GlobalContext);
@@ -16,49 +17,61 @@ const Sidebar = (props) => {
         <div className="pl-lg-5">
           {/* <!-- Top Start --> */}
           <div className="bg-white shadow-9 rounded-4">
-            <div className="px-5 py-11 text-center border-bottom border-mercury">
-              <Link to="/#" className="mb-4">
-                <img className="circle-54" src={imgP} alt="" />
-              </Link>
-              <h4 className="mb-0">
-                <p className="text-black-2 font-size-6 font-weight-semibold">
-                  {userDetails?.login_name}
+            <div className="px-5 text-center border-bottom border-mercury">
+              <div className="d-flex justify-content-end align-items-end">
+                <span
+                  className="p-2"
+                  onClick={() => {
+                    gContext.toggleProfileModal();
+                  }}
+                >
+                  <MdEdit />
+                </span>
+              </div>
+              <div className="py-11">
+                <Link to="/#" className="mb-4">
+                  <img className="circle-54" src={imgP} alt="" />
+                </Link>
+                <h4 className="mb-0">
+                  <p className="text-black-2 font-size-6 font-weight-semibold">
+                    {userDetails?.login_name}
+                  </p>
+                </h4>
+                <p className="mb-8">
+                  <p className="text-gray font-size-4">Product Designer</p>
                 </p>
-              </h4>
-              <p className="mb-8">
-                <p className="text-gray font-size-4">Product Designer</p>
-              </p>
-              <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
-                <Link
-                  to="/#"
-                  className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
-                >
-                  <i className="fab fa-linkedin-in"></i>
-                </Link>
-                <Link
-                  to="/#"
-                  className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
-                >
-                  <i className="fab fa-facebook-f"></i>
-                </Link>
-                <Link
-                  to="/#"
-                  className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
-                >
-                  <i className="fab fa-twitter"></i>
-                </Link>
-                <Link
-                  to="/#"
-                  className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
-                >
-                  <i className="fab fa-dribbble"></i>
-                </Link>
-                <Link
-                  to="/#"
-                  className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
-                >
-                  <i className="fab fa-behance"></i>
-                </Link>
+                <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
+                  <Link
+                    to="/#"
+                    className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                  >
+                    <i className="fab fa-linkedin-in"></i>
+                  </Link>
+                  <Link
+                    to="/#"
+                    className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                  >
+                    <i className="fab fa-facebook-f"></i>
+                  </Link>
+                  <Link
+                    to="/#"
+                    className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                  >
+                    <i className="fab fa-twitter"></i>
+                  </Link>
+                  <Link
+                    to="/#"
+                    className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                  >
+                    <i className="fab fa-dribbble"></i>
+                  </Link>
+                  <Link
+                    to="/#"
+                    className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                  >
+                    <i className="fab fa-behance"></i>
+                  </Link>
+                </div>
               </div>
             </div>
             {/* <!-- Top End --> */}
@@ -78,7 +91,14 @@ const Sidebar = (props) => {
                 <p className="font-size-4 mb-0">E-mail</p>
                 <div className="d-flex align-items-start justify-content-between w-100">
                   <h5 className="font-size-4 font-weight-semibold mb-0">
-                    <p className="text-black-2 text-break">
+                    <p
+                      className="text-black-2 text-break"
+                      style={{
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {userDetails?.login_email}
                     </p>
                   </h5>

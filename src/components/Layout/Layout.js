@@ -50,6 +50,7 @@ import { theme as baseTheme } from "../../utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ModalOtpVerify from "../ModalOtpVerify";
 import ModalEmailVerify from "../ModalEmailVerify";
+import ModalProfile from "../ModalProfile";
 
 const Loader = styled.div`
   position: fixed;

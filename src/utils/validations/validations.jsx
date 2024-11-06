@@ -41,3 +41,59 @@ export const changePasswordValidationSchema = Yup.object({
   oldPass: Yup.string().required("Old Password is required"),
   newPass: Yup.string().required("New Password is required"),
 });
+
+export const workExprerienceValidationSchema = Yup.object().shape({
+  emp_name: Yup.string().required("Company name is required"),
+  exp_type: Yup.string().required("Experience type is required"),
+  exp_desg: Yup.string().required("Job designation is required"),
+  cur_ctc: Yup.number()
+    .typeError("Current CTC must be a number")
+    .required("Current CTC is required"),
+  job_stdt: Yup.date().required("Start date is required"),
+  job_endt: Yup.date()
+    .min(Yup.ref("job_stdt"), "End date cannot be before start date")
+    .required("End date is required"),
+});
+
+export const educationDetailsValidationSchema = Yup.object().shape({
+  can_edu: Yup.string()
+    .required("Education level is required")
+    .matches(/^[a-zA-Z\s]+$/, "Education level should only contain letters"),
+  can_scho: Yup.string()
+    .required("School/University name is required")
+    .max(100, "School/University name should not exceed 100 characters"),
+  can_pasy: Yup.string()
+    .required("Passing year is required")
+    .matches(/^(19|20)\d{2}$/, "Please enter a valid year"),
+  can_perc: Yup.number()
+    .required("Percentage is required")
+    .min(0, "Percentage cannot be less than 0")
+    .max(100, "Percentage cannot be more than 100")
+    .typeError("Percentage must be a number"),
+  can_stre: Yup.string()
+    .required("Stream/Major is required")
+    .max(50, "Stream/Major should not exceed 50 characters"),
+  can_cgpa: Yup.number()
+    .required("CGPA is required")
+    .min(0, "CGPA cannot be less than 0")
+    .max(10, "CGPA cannot be more than 10")
+    .typeError("CGPA must be a number"),
+  // can_code: Yup.string()
+  //   .required("Unique code is required")
+  //   .matches(/^[0-9]+$/, "Unique code should only contain numbers")
+  //   .max(10, "Unique code should not exceed 10 digits"),
+});
+
+export const profileValidationSchema = Yup.object().shape({
+  can_name: Yup.string().required("Name is required"),
+  can_email: Yup.string().email("Invalid email").required("Email is required"),
+  can_mobn: Yup.string()
+    .matches(/^\d+$/, "Mobile number must be digits only")
+    .required("Mobile number is required"),
+  can_job_cate: Yup.number()
+    .typeError("Job category must be a number")
+    .required("Job category is required"),
+  // reg_date: Yup.date().required("Registration date is required"),
+  // profileImage: Yup.mixed().required("Profile image is required"),
+  // resume: Yup.mixed().required("Resume is required"),
+});
