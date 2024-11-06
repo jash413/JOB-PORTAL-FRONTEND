@@ -25,6 +25,10 @@ import withAuth from "../hooks/withAuth";
 import { useFormik } from "formik";
 import { changePasswordValidationSchema } from "../utils/validations/validations";
 import ModalWorkExprerience from "../components/ModalWorkExprerience/ModalWorkExprerience";
+import ModalEducationDetails from "../components/ModalEducationDetails";
+import ModalProfile from "../components/ModalProfile/ModalProfile";
+import { GrScorecard } from "react-icons/gr";
+import { MdEdit } from "react-icons/md";
 import calculateDuration from "../utils/calculateDuration";
 
 const CandidateProfile = () => {
@@ -32,7 +36,18 @@ const CandidateProfile = () => {
   const [isUserVerified, setIsUserVerified] = useState(false);
   const [isUserApproved, setIsUserApproved] = useState(false);
   const [expModal, setExpModal] = useState(false);
+  const [eduExpModal, setEduExpModal] = useState(false);
+  const [candidateRegistered, setCandidateRegistered] = useState(false);
+  const userDetails = JSON.parse(gContext?.user);
+  const [candEduDetailsList, setCandEduDetailsList] = useState([]);
+  const [candEduId, setCandEduId] = useState(null);
   const [mappedExperienceData, setMappedExperienceData] = useState([]);
+  const [selectedExperience, setSelectedExperience] = useState(null);
+
+  const handleEditClick = (exp) => {
+    setSelectedExperience(exp);
+    setExpModal(true);
+  };
 
   const fetchUserProfile = async () => {
     const token = localStorage.getItem("authToken");
@@ -84,6 +99,12 @@ const CandidateProfile = () => {
           companyName: exp.emp_name,
           duration: `${duration} - ${totalDuration}`,
           location: "Bangalore, India",
+          currentCTC: exp.cur_ctc,
+          exp_type: exp.exp_type,
+          startDate: exp.job_stdt,
+          endDate: exp.job_endt,
+          exp_id: exp.exp_id,
+          can_code: exp.can_code,
         };
       });
       setMappedExperienceData(formattedData);
@@ -135,6 +156,44 @@ const CandidateProfile = () => {
     },
   });
 
+  const fetchCandidateDetails = async () => {
+    try {
+      const response = await axiosInterceptors.get(
+        REQ.GET_CANDIDATE.replace(":id", userDetails?.login_id)
+      );
+
+      if (response?.can_code) {
+        setCandidateRegistered(true);
+      }
+    } catch (error) {
+      console.error("Error fetching candidate details:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (userDetails && userDetails?.login_id) {
+      fetchCandidateDetails();
+    }
+  }, []);
+
+  const fetchEducationDetailsList = async () => {
+    try {
+      const response = await axiosInterceptors.post(REQ.CAND_EDU_DETAILS_LIST, {
+        page: 1,
+        limit: 50,
+      });
+
+      if (response) {
+        setCandEduDetailsList(response?.records);
+      }
+    } catch (error) {
+      console.error("Error fetching candidate educations details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEducationDetailsList();
+  }, []);
   return (
     <>
       <PageWrapper headerConfig={{ button: "profile" }}>
@@ -161,7 +220,7 @@ const CandidateProfile = () => {
                 style={{
                   backgroundColor: "#fff3b0",
                 }}
-                className="ml-3 px-8 py-5 mb-5 row justify-content-between rounded border position-relative w-100"
+                className="ml-3 px-8 py-5 mb-5 d-flex justify-content-between rounded border position-relative w-100"
               >
                 <p className="mb-0 font-size-4 line-height-1p4 text-yellow">
                   Your profile approval status is currently pending. Please
@@ -323,309 +382,142 @@ const CandidateProfile = () => {
                         </div>
                         {/* <!-- Skills End --> */}
                         {/* <!-- Card Section Start --> */}
-                        <div className="border-top p-5 pl-xs-12 pt-7 pb-5">
+                        <div className="border-top p-5 pt-7 pb-5">
                           <div className="w-100 d-flex justify-content-between align-items-center">
                             <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
-                              Work Exprerience
+                              Work Experience
                             </h4>
-                            <button
-                              onClick={() => setExpModal(true)}
-                              className="btn btn-green btn-h-30 btn-2xl text-uppercase"
-                            >
-                              Add Work Exprerience
-                            </button>
+                            {candidateRegistered && (
+                              <button
+                                onClick={() => setExpModal(true)}
+                                className="btn btn-green btn-h-30 btn-2xl text-uppercase"
+                              >
+                                Add Work Experience
+                              </button>
+                            )}
                             <ModalWorkExprerience
                               expModal={expModal}
                               setExpModal={setExpModal}
+                              experienceData={selectedExperience}
                             />
                           </div>
                           {/* <!-- Single Card --> */}
-                          {
-                            // <div className="w-100">
-                            //   <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                            //     <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                            //       <img src={imgB1} alt="" />
-                            //     </div>
-                            //     <div className="w-100 mt-n2">
-                            //       <h3 className="mb-0">
-                            //         <Link
-                            //           to="/#"
-                            //           className="font-size-6 text-black-2 font-weight-semibold"
-                            //         >
-                            //           Position
-                            //         </Link>
-                            //       </h3>
-                            //       <Link
-                            //         to="/#"
-                            //         className="font-size-4 text-default-color line-height-2"
-                            //       >
-                            //         Comapny Name
-                            //       </Link>
-                            //       <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            //         <Link
-                            //           to="/#"
-                            //           className="font-size-4 text-gray mr-5"
-                            //         >
-                            //           Jun 2017 - April 2020- 3 years
-                            //         </Link>
-                            //         <Link
-                            //           to="/#"
-                            //           className="font-size-3 text-gray"
-                            //         >
-                            //           <span
-                            //             className="mr-4"
-                            //             css={`
-                            //               margin-top: -2px;
-                            //             `}
-                            //           >
-                            //             <img src={imgL} alt="" />
-                            //           </span>
-                            //           New York, USA
-                            //         </Link>
-                            //       </div>
-                            //     </div>
-                            //   </div>
-                            // </div>
-                            <div className="w-100">
-                              {mappedExperienceData.length > 0 ? (
-                                mappedExperienceData.map((exp, index) => (
-                                  <div className="w-100" key={index}>
-                                    <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                                      <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                                        <img src={imgB1} alt="Company Logo" />
-                                      </div>
-                                      <div className="w-100 mt-n2">
-                                        <h3 className="mb-0">
-                                          <Link
-                                            to="/#"
-                                            className="font-size-6 text-black-2 font-weight-semibold"
-                                          >
-                                            {exp.position}
-                                          </Link>
-                                        </h3>
-                                        <Link
-                                          to="/#"
-                                          className="font-size-4 text-default-color line-height-2"
-                                        >
-                                          {exp.companyName}
-                                        </Link>
-                                        <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                                          <span className="font-size-4 text-gray mr-5">
-                                            {exp.duration}
-                                          </span>
-                                          <span className="font-size-3 text-gray">
-                                            <span className="mr-4">
-                                              <img
-                                                src={imgL}
-                                                alt="Location Icon"
-                                              />
-                                            </span>
-                                            {exp.location}
-                                          </span>
-                                        </div>
-                                      </div>
+                          {mappedExperienceData &&
+                          mappedExperienceData.length > 0 ? (
+                            mappedExperienceData.map((exp, index) => (
+                              <div className="w-100 mb-9" key={index}>
+                                <div className="d-flex align-items-center px-5 py-2 flex-wrap flex-sm-nowrap border rounded">
+                                  <div className="w-100 mt-n2">
+                                    <h3 className="mb-0 d-flex align-items-center justify-content-md-between flex-wrap">
+                                      <p className="font-size-6 text-black-2 font-weight-semibold">
+                                        {exp.position}
+                                      </p>
+                                      <span
+                                        onClick={() => handleEditClick(exp)}
+                                      >
+                                        <MdEdit size={20} />
+                                      </span>
+                                    </h3>
+                                    <p className="font-size-4 text-default-color line-height-2">
+                                      {exp.companyName}
+                                    </p>
+                                    <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                                      <p className="font-size-3 text-gray mr-5">
+                                        {exp.duration}
+                                      </p>
+                                      <p className="font-size-3 text-gray">
+                                        <span className="mr-4">
+                                          <img src={imgL} alt="Location Icon" />
+                                        </span>
+                                        {exp.location}
+                                      </p>
                                     </div>
                                   </div>
-                                ))
-                              ) : (
-                                <p>No experience data available.</p>
-                              )}
-                            </div>
-                          }
-                          <div className="w-100">
-                            <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                              <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                                <img src={imgB1} alt="" />
-                              </div>
-                              <div className="w-100 mt-n2">
-                                <h3 className="mb-0">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-6 text-black-2 font-weight-semibold"
-                                  >
-                                    Lead Product Designer
-                                  </Link>
-                                </h3>
-                                <Link
-                                  to="/#"
-                                  className="font-size-4 text-default-color line-height-2"
-                                >
-                                  Airabnb
-                                </Link>
-                                <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-4 text-gray mr-5"
-                                  >
-                                    Jun 2017 - April 2020- 3 years
-                                  </Link>
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray"
-                                  >
-                                    <span
-                                      className="mr-4"
-                                      css={`
-                                        margin-top: -2px;
-                                      `}
-                                    >
-                                      <img src={imgL} alt="" />
-                                    </span>
-                                    New York, USA
-                                  </Link>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          {/* <!-- Single Card End --> */}
-                          {/* <!-- Single Card --> */}
-                          <div className="w-100">
-                            <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                              <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                                <img src={imgB2} alt="" />
-                              </div>
-                              <div className="w-100 mt-n2">
-                                <h3 className="mb-0">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-6 text-black-2 font-weight-semibold"
-                                  >
-                                    Senior UI/UX Designer
-                                  </Link>
-                                </h3>
-                                <Link
-                                  to="/#"
-                                  className="font-size-4 text-default-color line-height-2"
-                                >
-                                  Google Inc
-                                </Link>
-                                <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray mr-5"
-                                  >
-                                    Jun 2017 - April 2020- 3 years
-                                  </Link>
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray"
-                                  >
-                                    <span
-                                      className="mr-4"
-                                      css={`
-                                        margin-top: -2px;
-                                      `}
-                                    >
-                                      <img src={imgL} alt="" />
-                                    </span>
-                                    New York, USA
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* <!-- Single Card End --> */}
+                            ))
+                          ) : (
+                            <p className="font-size-4 text-gray">
+                              No experience data available.
+                            </p>
+                          )}
                         </div>
                         {/* <!-- Card Section End --> */}
+
                         {/* <!-- Card Section Start --> */}
-                        <div className="border-top p-5 pl-xs-12 pt-7 pb-5">
-                          <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
+                        <div className="border-top p-5 pt-7 pb-5">
+                          {/* <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
                             Education
-                          </h4>
+                          </h4> */}
+
+                          <div className="w-100 d-flex justify-content-between align-items-center">
+                            <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
+                              Education
+                            </h4>
+                            {candidateRegistered && (
+                              <button
+                                onClick={() => setEduExpModal(true)}
+                                className="btn btn-green btn-h-30 btn-2xl text-uppercase"
+                              >
+                                Add Education
+                              </button>
+                            )}
+                            <ModalEducationDetails
+                              open={eduExpModal}
+                              setOpen={setEduExpModal}
+                              candEduId={candEduId}
+                              setCandEduId={setCandEduId}
+                            />
+                          </div>
                           {/* <!-- Single Card --> */}
-                          <div className="w-100">
-                            <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                              <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                                <img src={imgB3} alt="" />
-                              </div>
-                              <div className="w-100 mt-n2">
-                                <h3 className="mb-0">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-6 text-black-2"
-                                  >
-                                    Masters in Art Design
-                                  </Link>
-                                </h3>
-                                <Link
-                                  to="/#"
-                                  className="font-size-4 text-default-color line-height-2"
-                                >
-                                  Harvard University
-                                </Link>
-                                <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray mr-5"
-                                  >
-                                    Jun 2017 - April 2020- 3 years
-                                  </Link>
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray"
-                                  >
-                                    <span
-                                      className="mr-4"
-                                      css={`
-                                        margin-top: -2px;
-                                      `}
-                                    >
-                                      <img src={imgL} alt="" />
-                                    </span>
-                                    Brylin, USA
-                                  </Link>
+                          {candEduDetailsList &&
+                          candEduDetailsList.length > 0 ? (
+                            candEduDetailsList?.map((edu, i) => (
+                              <div className="w-100 mb-9">
+                                <div className="d-flex align-items-center px-5 py-2 flex-wrap flex-sm-nowrap border rounded">
+                                  {/* <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
+                                    <img src={imgB3} alt="" />
+                                  </div> */}
+                                  <div className="w-100 mt-n2">
+                                    <h3 className="mb-0 d-flex align-items-center justify-content-md-between flex-wrap">
+                                      <p className="font-size-6 text-black-2">
+                                        {edu?.can_edu} in {edu?.can_stre}
+                                      </p>
+                                      <span
+                                        onClick={() => {
+                                          setCandEduId(edu);
+                                          setEduExpModal(true);
+                                        }}
+                                      >
+                                        <MdEdit size={20} />
+                                      </span>
+                                    </h3>
+                                    <p className="font-size-4 text-default-color line-height-2">
+                                      {edu?.can_scho}
+                                    </p>
+                                    <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                                      <p className="font-size-3 text-gray mr-5">
+                                        {edu?.can_pasy}
+                                      </p>
+                                      <p className="font-size-3 text-gray">
+                                        <span
+                                          className="mr-4"
+                                          css={`
+                                            margin-top: -2px;
+                                          `}
+                                        >
+                                          <GrScorecard />
+                                        </span>
+                                        {edu?.can_cgpa} CGPA / {edu?.can_perc} %
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-                          {/* <!-- Single Card End --> */}
-                          {/* <!-- Single Card --> */}
-                          <div className="w-100">
-                            <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                              <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                                <img src={imgB4} alt="" />
-                              </div>
-                              <div className="w-100 mt-n2">
-                                <h3 className="mb-0">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-6 text-black-2"
-                                  >
-                                    Bachelor in Software Engineering{" "}
-                                  </Link>
-                                </h3>
-                                <Link
-                                  to="/#"
-                                  className="font-size-4 text-default-color line-height-2"
-                                >
-                                  Manipal Institute of Technology
-                                </Link>
-                                <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray mr-5"
-                                  >
-                                    Fed 2012 - April 2016 - 4 years
-                                  </Link>
-                                  <Link
-                                    to="/#"
-                                    className="font-size-3 text-gray"
-                                  >
-                                    <span
-                                      className="mr-4"
-                                      css={`
-                                        margin-top: -2px;
-                                      `}
-                                    >
-                                      <img src={imgL} alt="" />
-                                    </span>
-                                    New York, USA
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* <!-- Single Card End --> */}
+                            ))
+                          ) : (
+                            <></>
+                          )}
                         </div>
                         {/* <!-- Card Section End --> */}
                       </Tab.Pane>
@@ -921,6 +813,7 @@ const CandidateProfile = () => {
             </div>
           </div>
         </div>
+        <ModalProfile fetchDetails={fetchCandidateDetails} />
       </PageWrapper>
     </>
   );

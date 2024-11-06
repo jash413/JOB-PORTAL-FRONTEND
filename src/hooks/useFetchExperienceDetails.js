@@ -8,14 +8,9 @@ export const useFetchExperienceDetails = () => {
 
   const fetchExperienceDetails = async () => {
     const token = localStorage.getItem("authToken");
-    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!token) {
       toast.error("Please log in again.");
-      return;
-    }
-    if (!user?.can_code) {
-      toast.error("upload profile picture and resume");
       return;
     }
 
@@ -24,10 +19,7 @@ export const useFetchExperienceDetails = () => {
         REQ.CANDIDATE_EXP_LIST,
         {
           page: 1,
-          limit: 10,
-          sortBy: "exp_id",
-          sortOrder: "asc",
-          can_code: user?.can_code,
+          limit: 50,
         },
         {
           headers: {

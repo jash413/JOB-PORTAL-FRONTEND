@@ -110,18 +110,22 @@ const ResumeUpload = ({ setFieldValue }) => {
 };
 
 const ModalProfile = (props) => {
+  const { fetchDetails } = props;
   const gContext = useContext(GlobalContext);
   const [profileImage, setProfileImage] = useState(null);
+  const [candidateRegistered, setCandidateRegistered] = useState(false);
+  const [resumeLink, setResumeLink] = useState(null);
+  const [candidateId, setCandidateId] = useState(null);
   const [jobCategories, setJobCategories] = useState([]);
+  const userDetails = JSON.parse(gContext?.user);
   const [initialValues, setInitialValues] = useState({
-    can_name: "",
-    can_email: "",
-    can_mobn: "",
+    can_name: userDetails?.login_name || "",
+    can_email: userDetails?.login_email || "",
+    can_mobn: userDetails?.login_mobile || "",
     can_job_cate: "",
     profileImage: null,
     resume: null,
   });
-  const userDetails = JSON.parse(gContext?.user);
 
   const handleClose = () => {
     gContext.toggleProfileModal();
@@ -137,6 +141,20 @@ const ModalProfile = (props) => {
         "Please select a file with a valid extension (JPEG, JPG, PNG)."
       );
     }
+  };
+
+  const handleDownload = async (fileName) => {
+    const response = await axiosInterceptors.get(
+      REQ.DOWNLOAD_RESUME.replace(":id", candidateId)
+    );
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${fileName}_resume`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
   };
 
   const handleSubmit = async (values, actions) => {
@@ -158,18 +176,35 @@ const ModalProfile = (props) => {
     }
 
     try {
-      const response = await axiosInterceptors.post(
-        REQ?.CREATE_CANDIDATE,
-        formData
-      );
-      const userDetails = JSON.parse(gContext?.user);
+      if (candidateRegistered) {
+        const response = await axiosInterceptors.put(
+          REQ?.CREATE_CANDIDATE,
+          formData
+        );
+        const userDetails = JSON.parse(gContext?.user);
 
-      const updatedUserDetails = {
-        ...userDetails,
-        can_code: response?.can_code,
-      };
-      gContext.setUser(JSON.stringify(updatedUserDetails));
-      handleClose();
+        const updatedUserDetails = {
+          ...userDetails,
+          can_code: response?.can_code,
+        };
+        gContext.setUser(JSON.stringify(updatedUserDetails));
+        handleClose();
+        fetchDetails();
+      } else {
+        const response = await axiosInterceptors.post(
+          REQ?.CREATE_CANDIDATE,
+          formData
+        );
+        const userDetails = JSON.parse(gContext?.user);
+
+        const updatedUserDetails = {
+          ...userDetails,
+          can_code: response?.can_code,
+        };
+        gContext.setUser(JSON.stringify(updatedUserDetails));
+        handleClose();
+        fetchDetails();
+      }
     } catch (error) {
       console.error("API error:", error);
     } finally {
@@ -195,9 +230,9 @@ const ModalProfile = (props) => {
 
   useEffect(() => {
     const userDetails = JSON.parse(gContext?.user);
-    if (userDetails && userDetails?.login_id) {
+    if (userDetails && userDetails?.login_id && gContext.profileModal) {
       axiosInterceptors
-        .get(REQ.GET_CANDIDATE + `/${userDetails?.login_id}`, {
+        .get(REQ.GET_CANDIDATE.replace(":id", userDetails?.login_id), {
           id: userDetails?.login_id,
         })
         .then((response) => {
@@ -207,25 +242,14 @@ const ModalProfile = (props) => {
             can_email: response?.can_email || "",
             can_mobn: response?.can_mobn || "",
             can_job_cate: response?.can_job_cate || "",
-            profileImage: `${SERVER}/${response?.can_profile_img}` || null,
-            resume: response?.can_resume || null,
+            profileImage: null,
+            resume: null,
           });
-          // {
-          //     "login_id": 60,
-          //     "can_code": 21,
-          //     "can_name": "React Dev",
-          //     "can_email": "react.dev@yopmail.com",
-          //     "can_mobn": "8780761335",
-          //     "can_job_cate": 5,
-          //     "can_profile_img": "uploads/candidates/profileImage-1730809668235-619950937.jpg",
-          //     "reg_date": "2024-11-05",
-          //     "can_about": null,
-          //     "can_skill": null,
-          //     "can_appr": false,
-          //     "can_resume": "uploads/candidates/resume-1730809668729-530876935.pdf",
-          //     "createdAt": "2024-11-05T12:27:48.000Z",
-          //     "updatedAt": "2024-11-05T12:27:48.000Z"
-          // }
+          setResumeLink(`${SERVER}/${response?.can_resume}`);
+          if (response?.can_code) {
+            setCandidateRegistered(true);
+            setCandidateId(response?.can_code);
+          }
         })
         .catch((error) => {
           console.error("Error fetching user details:", error);
@@ -259,7 +283,7 @@ const ModalProfile = (props) => {
                   validationSchema={profileValidationSchema}
                   onSubmit={handleSubmit}
                 >
-                  {({ setFieldValue, isSubmitting }) => (
+                  {({ setFieldValue, isSubmitting, values }) => (
                     <Form>
                       <div className="d-flex justify-content-center align-items-center">
                         <ProfilePictureWrapper>

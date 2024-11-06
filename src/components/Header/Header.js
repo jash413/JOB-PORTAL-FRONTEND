@@ -283,7 +283,8 @@ const Header = () => {
                           Edit Profile
                         </Link>
                         <Link
-                          to="/#"
+                          to="/"
+                          onClick={gContext.handleLogout}
                           className=" dropdown-item py-2 text-red font-size-3 font-weight-semibold line-height-1p2 text-uppercase"
                         >
                           Log Out
@@ -315,18 +316,29 @@ const Header = () => {
             )}
 
             {!gContext?.authenticated && (
-              <div className="header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex">
-                <a
-                  className="btn btn-transparent text-uppercase font-size-3 heading-default-color focus-reset"
-                  href="/#"
+              <>
+                <div className="header-btns header-btn-devider ml-auto pr-2 ml-lg-6 d-none d-xs-flex">
+                  <a
+                    className="btn btn-transparent text-uppercase font-size-3 heading-default-color focus-reset"
+                    href="/#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      gContext.toggleSignInModal();
+                    }}
+                  >
+                    Log In
+                  </a>
+                </div>
+                <span
                   onClick={(e) => {
                     e.preventDefault();
                     gContext.toggleSignInModal();
                   }}
+                  className="d-flex d-xs-none font-size-3 heading-default-color px-4 py-1 rounded border"
                 >
-                  Log In
-                </a>
-              </div>
+                  Log in
+                </span>
+              </>
             )}
 
             {!gContext?.authenticated && (

@@ -17,4 +17,10 @@ export const REQ = {
   GET_CANDIDATE: SERVER + "/api/v1/candidates",
   CREATE_EXPERIENCE: SERVER + "/api/v1/experience",
   CANDIDATE_EXP_LIST: SERVER + "/api/v1/experience/candidate",
+  GET_CANDIDATE: SERVER + "/api/v1/candidates/:id",
+  DOWNLOAD_RESUME: SERVER + "/api/v1/candidates/:id/resume",
+  CANDIDATE_EDUCATION: SERVER + "/api/v1/education",
+  UPDATE_CANDIDATE_EDUCATION: SERVER + "/api/v1/education/:id",
+  CAND_EDU_DETAILS_LIST: SERVER + "/api/v1/education/get-edu-details",
+  UPDATE_EXPERIENCE: (exp_id) => SERVER + `/api/v1/experience/${exp_id}`,
 };

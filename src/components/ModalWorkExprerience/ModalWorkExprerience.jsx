@@ -15,7 +15,7 @@ const ModalStyled = styled(Modal)`
 `;
 
 const ModalWorkExprerience = (props) => {
-  const { expModal, setExpModal } = props;
+  const { expModal, setExpModal, experienceData } = props;
   const gContext = useContext(GlobalContext);
 
   const handleClose = () => {
@@ -25,16 +25,34 @@ const ModalWorkExprerience = (props) => {
   const handleSubmit = async (values, actions) => {
     // API call or form handling logic here
     try {
-      const response = await axiosInterceptors.post(REQ.CREATE_EXPERIENCE, {
-        emp_name: values.emp_name,
-        exp_type: values.exp_type,
-        exp_desg: values.exp_desg,
-        cur_ctc: values.cur_ctc,
-        job_stdt: values.job_stdt,
-        job_endt: values.job_endt,
-      });
+      if (experienceData) {
+        // Update existing experience
+        await axiosInterceptors.put(
+          REQ.UPDATE_EXPERIENCE(experienceData.exp_id),
+          {
+            emp_name: values.emp_name,
+            exp_type: values.exp_type,
+            exp_desg: values.exp_desg,
+            cur_ctc: values.cur_ctc,
+            job_stdt: values.job_stdt,
+            job_endt: values.job_endt,
+            can_code: experienceData?.can_code,
+          }
+        );
+        toast.success("Experience updated successfully.");
+      } else {
+        // Create new experience
+        await axiosInterceptors.post(REQ.CREATE_EXPERIENCE, {
+          emp_name: values.emp_name,
+          exp_type: values.exp_type,
+          exp_desg: values.exp_desg,
+          cur_ctc: values.cur_ctc,
+          job_stdt: values.job_stdt,
+          job_endt: values.job_endt,
+        });
+        toast.success("Experience added successfully.");
+      }
 
-      toast.success(`Experience added successfully.`);
       gContext.fetchExperienceDetails();
     } catch (error) {
       const errorMessage =
@@ -70,13 +88,14 @@ const ModalWorkExprerience = (props) => {
                 <h4 className="mb-5">Employee Experience Form</h4>
                 <Formik
                   initialValues={{
-                    emp_name: "",
-                    exp_type: "",
-                    exp_desg: "",
-                    cur_ctc: "",
-                    job_stdt: "",
-                    job_endt: "",
+                    emp_name: experienceData?.companyName || "",
+                    exp_type: experienceData?.exp_type || "",
+                    exp_desg: experienceData?.position || "",
+                    cur_ctc: experienceData?.currentCTC || "",
+                    job_stdt: experienceData?.startDate || "",
+                    job_endt: experienceData?.endDate || "",
                   }}
+                  enableReinitialize={true}
                   validationSchema={workExprerienceValidationSchema}
                   onSubmit={handleSubmit}
                 >
