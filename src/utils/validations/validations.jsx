@@ -55,6 +55,34 @@ export const workExprerienceValidationSchema = Yup.object().shape({
     .required("End date is required"),
 });
 
+export const educationDetailsValidationSchema = Yup.object().shape({
+  can_edu: Yup.string()
+    .required("Education level is required")
+    .matches(/^[a-zA-Z\s]+$/, "Education level should only contain letters"),
+  can_scho: Yup.string()
+    .required("School/University name is required")
+    .max(100, "School/University name should not exceed 100 characters"),
+  can_pasy: Yup.string()
+    .required("Passing year is required")
+    .matches(/^(19|20)\d{2}$/, "Please enter a valid year"),
+  can_perc: Yup.number()
+    .required("Percentage is required")
+    .min(0, "Percentage cannot be less than 0")
+    .max(100, "Percentage cannot be more than 100")
+    .typeError("Percentage must be a number"),
+  can_stre: Yup.string()
+    .required("Stream/Major is required")
+    .max(50, "Stream/Major should not exceed 50 characters"),
+  can_cgpa: Yup.number()
+    .required("CGPA is required")
+    .min(0, "CGPA cannot be less than 0")
+    .max(10, "CGPA cannot be more than 10")
+    .typeError("CGPA must be a number"),
+  // can_code: Yup.string()
+  //   .required("Unique code is required")
+  //   .matches(/^[0-9]+$/, "Unique code should only contain numbers")
+  //   .max(10, "Unique code should not exceed 10 digits"),
+});
 
 export const profileValidationSchema = Yup.object().shape({
   can_name: Yup.string().required("Name is required"),

@@ -219,7 +219,6 @@ const Layout = ({ children, pageContext }) => {
             <ModalForgetPassword />
             <ModalOtpVerify />
             <ModalEmailVerify />
-            <ModalProfile />
           </div>
         </ThemeProvider>
       </GoogleOAuthProvider>

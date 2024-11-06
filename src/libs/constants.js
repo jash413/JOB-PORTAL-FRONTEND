@@ -14,5 +14,9 @@ export const REQ = {
   CHANGE_PASSWORD: SERVER + "/api/v1/auth/change-password",
   JOB_CATEGORIES: SERVER + "/api/v1/job-categories/get-job-categories",
   CREATE_CANDIDATE: SERVER + "/api/v1/candidates",
-  GET_CANDIDATE: SERVER + "/api/v1/candidates",
+  GET_CANDIDATE: SERVER + "/api/v1/candidates/:id",
+  DOWNLOAD_RESUME: SERVER + "/api/v1/candidates/:id/resume",
+  CANDIDATE_EDUCATION: SERVER + "/api/v1/education",
+  UPDATE_CANDIDATE_EDUCATION: SERVER + "/api/v1/education/:id",
+  CAND_EDU_DETAILS_LIST: SERVER + "/api/v1/education/get-edu-details",
 };
