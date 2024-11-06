@@ -12,4 +12,7 @@ export const REQ = {
   RESET_PASSWORD: SERVER + "/api/v1/auth/reset-password",
   PROFILE_DETAILS: SERVER + "/api/v1/auth/profile",
   CHANGE_PASSWORD: SERVER + "/api/v1/auth/change-password",
+  JOB_CATEGORIES: SERVER + "/api/v1/job-categories/get-job-categories",
+  CREATE_CANDIDATE: SERVER + "/api/v1/candidates",
+  GET_CANDIDATE: SERVER + "/api/v1/candidates",
 };

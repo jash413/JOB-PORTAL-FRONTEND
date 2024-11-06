@@ -65,7 +65,7 @@ export const profileValidationSchema = Yup.object().shape({
   can_job_cate: Yup.number()
     .typeError("Job category must be a number")
     .required("Job category is required"),
-  reg_date: Yup.date().required("Registration date is required"),
-  profileImage: Yup.mixed().required("Profile image is required"),
-  resume: Yup.mixed().required("Resume is required"),
+  // reg_date: Yup.date().required("Registration date is required"),
+  // profileImage: Yup.mixed().required("Profile image is required"),
+  // resume: Yup.mixed().required("Resume is required"),
 });
