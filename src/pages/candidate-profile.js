@@ -469,7 +469,10 @@ const CandidateProfile = () => {
                             </h4>
                             {candidateRegistered && (
                               <button
-                                onClick={() => setEduExpModal(true)}
+                                onClick={() => {
+                                  setEduExpModal(true);
+                                  setCandEduId(null);
+                                }}
                                 className="btn btn-green btn-h-30 btn-2xl text-uppercase"
                               >
                                 Add Education
@@ -480,13 +483,14 @@ const CandidateProfile = () => {
                               setOpen={setEduExpModal}
                               candEduId={candEduId}
                               setCandEduId={setCandEduId}
+                              fetchEduDetailsList={fetchEducationDetailsList}
                             />
                           </div>
                           {/* <!-- Single Card --> */}
                           {candEduDetailsList &&
                           candEduDetailsList.length > 0 ? (
                             candEduDetailsList?.map((edu, i) => (
-                              <div className="w-100 mb-9">
+                              <div key={i} className="w-100 mb-9">
                                 <div className="d-flex align-items-center px-5 py-2 flex-wrap flex-sm-nowrap border rounded">
                                   {/* <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
                                     <img src={imgB3} alt="" />
@@ -498,7 +502,7 @@ const CandidateProfile = () => {
                                       </p>
                                       <span
                                         onClick={() => {
-                                          setCandEduId(edu);
+                                          setCandEduId(edu?.edu_id);
                                           setEduExpModal(true);
                                         }}
                                       >
@@ -529,7 +533,11 @@ const CandidateProfile = () => {
                               </div>
                             ))
                           ) : (
-                            <></>
+                            <>
+                              <p className="font-size-4">
+                                No education details found.
+                              </p>
+                            </>
                           )}
                         </div>
                         {/* <!-- Card Section End --> */}
@@ -826,7 +834,10 @@ const CandidateProfile = () => {
             </div>
           </div>
         </div>
-        <ModalProfile fetchDetails={fetchCandidateDetails} />
+        <ModalProfile
+          fetchDetails={fetchCandidateDetails}
+          fetchUserProfile={fetchUserProfile}
+        />
       </PageWrapper>
     </>
   );

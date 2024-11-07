@@ -7,6 +7,7 @@ import GlobalContext from "../../context/GlobalContext";
 import { REQ } from "../../libs/constants";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { toast } from "react-toastify";
+import { FaTrashCan } from "react-icons/fa6";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -15,7 +16,7 @@ const ModalStyled = styled(Modal)`
 `;
 
 const ModalEducationDetails = (props) => {
-    const { open, setOpen, candEduId, setCandEduId } = props;
+    const { open, setOpen, candEduId, fetchEduDetailsList } = props;
     const gContext = useContext(GlobalContext);
     const [candidateRegistered, setCandidateRegistered] = useState(false);
     const [candEduAdded, setCandEduAdded] = useState(false);
@@ -30,15 +31,6 @@ const ModalEducationDetails = (props) => {
 
     const handleClose = () => {
         setOpen((prev) => !prev);
-        setCandEduId(null);
-        // setInitialValues({
-        //     can_edu: "",
-        //     can_scho: "",
-        //     can_pasy: "",
-        //     can_perc: "",
-        //     can_stre: "",
-        //     can_cgpa: "",
-        // })
         setCandEduAdded(false);
         setCandidateRegistered(false);
     };
@@ -47,11 +39,12 @@ const ModalEducationDetails = (props) => {
         if (candidateRegistered) {
             actions.setSubmitting(false);
             try {
-                if (candEduAdded) {
+                if (candEduId) {
                     await axiosInterceptors.put(REQ?.UPDATE_CANDIDATE_EDUCATION.replace(":id", candEduId), values);
                 } else {
                     await axiosInterceptors.post(REQ?.CANDIDATE_EDUCATION, values);
                 }
+                fetchEduDetailsList();
                 handleClose();
             } catch (error) {
                 console.error('API error:', error);
@@ -61,6 +54,18 @@ const ModalEducationDetails = (props) => {
         } else {
             actions.setSubmitting(false);
             toast?.error('Please register first');
+        }
+    };
+
+    const handleRemoveEducation = async () => {
+        try {
+            if (candEduId) {
+                await axiosInterceptors.delete(REQ?.UPDATE_CANDIDATE_EDUCATION.replace(":id", candEduId));
+            }
+            fetchEduDetailsList();
+            handleClose();
+        } catch (error) {
+            console.error('API error:', error);
         }
     };
 
@@ -84,15 +89,32 @@ const ModalEducationDetails = (props) => {
 
 
     useEffect(() => {
-        if (candEduId && open) {
-            setInitialValues({
-                can_edu: candEduId?.can_edu || "",
-                can_scho: candEduId?.can_scho || "",
-                can_pasy: candEduId?.can_pasy || "",
-                can_perc: candEduId?.can_perc || "",
-                can_stre: candEduId?.can_stre || "",
-                can_cgpa: candEduId?.can_cgpa || "",
-            });
+        if (open) {
+            axiosInterceptors.get(REQ?.UPDATE_CANDIDATE_EDUCATION.replace(":id", candEduId))
+                .then((response) => {
+                    if (response) {
+                        // setCandEduAdded(true);
+                        setInitialValues({
+                            can_edu: response?.can_edu || "",
+                            can_scho: response?.can_scho || "",
+                            can_pasy: response?.can_pasy || "",
+                            can_perc: response?.can_perc || "",
+                            can_stre: response?.can_stre || "",
+                            can_cgpa: response?.can_cgpa || "",
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error fetching user details:", error);
+                    setInitialValues({
+                        can_edu: "",
+                        can_scho: "",
+                        can_pasy: "",
+                        can_perc: "",
+                        can_stre: "",
+                        can_cgpa: "",
+                    });
+                });
         }
     }, [candEduId, open]);
 
@@ -102,7 +124,7 @@ const ModalEducationDetails = (props) => {
             size="lg"
             centered
             show={open}
-        // onHide={() => setOpen(false)}
+            onHide={() => setOpen(false)}
         >
             <Modal.Body className="p-0">
                 <button
@@ -116,9 +138,21 @@ const ModalEducationDetails = (props) => {
                     <div className="row no-gutters">
                         <div className="col-lg-12 col-md-12">
                             <div className="p-6">
-                                <h4 className="mb-5">Educational Details Form</h4>
+                                <div className="d-flex justify-content-between align-items-center w-100">
+                                    <h4 className="mb-5">Educational Details Form</h4>
+                                    {candEduId && (
+                                        <span
+                                            title="Remove education"
+                                            className="bg-transpernent mr-2 rounded text-red px-2 py-1"
+                                            onClick={handleRemoveEducation}
+                                        >
+                                            <FaTrashCan size={20} />
+                                        </span>
+                                    )}
+                                </div>
                                 <Formik
                                     initialValues={initialValues}
+                                    enableReinitialize={true}
                                     validationSchema={educationDetailsValidationSchema}
                                     onSubmit={handleSubmit}
                                 >
@@ -214,22 +248,7 @@ const ModalEducationDetails = (props) => {
                                                 />
                                             </div>
 
-                                            {/* <div className="form-group">
-                                                <label>Unique Code</label>
-                                                <Field
-                                                    type="text"
-                                                    name="can_code"
-                                                    placeholder="Enter unique code"
-                                                    className="form-control"
-                                                />
-                                                <ErrorMessage
-                                                    name="can_code"
-                                                    component="div"
-                                                    className="text-danger"
-                                                />
-                                            </div> */}
-
-                                            <div className="d-flex justify-content-end">
+                                            <div className="d-flex justify-content-end flex-wrap">
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-black mr-2"
@@ -242,7 +261,7 @@ const ModalEducationDetails = (props) => {
                                                     className="btn btn-primary"
                                                     disabled={isSubmitting}
                                                 >
-                                                    Submit
+                                                    {candEduId ? "Update" : "Add Education"}
                                                 </button>
                                             </div>
                                         </Form>
