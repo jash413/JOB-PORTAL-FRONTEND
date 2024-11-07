@@ -45,18 +45,19 @@ axiosInterceptors.interceptors.response.use(
                     Cookies.set("refreshToken", newRefreshToken, { expires: 60 });
                 }
                 if (response.status === 417) {
-                    Cookies.remove("uid");
-                    Cookies.remove("user");
-                    Cookies.remove("theme", { path: "/" });
-                    Cookies.remove("theme_system", { path: "/" });
-                    Cookies.remove("token");
-                    Cookies.remove("refreshToken");
+                    localStorage.setItem("authToken", null);
+                    localStorage.setItem("user", null);
                     navigate("/");
                 }
                 return axiosInterceptors(originalConfig);
             } catch (_error) {
                 return Promise.reject(_error);
             }
+        }
+        if (error.response && error.response.data && error.response.data.error === "Invalid token") {
+            localStorage.setItem("authToken", null);
+            localStorage.setItem("user", null);
+            navigate("/");
         }
         return Promise.reject(error.response);
     }

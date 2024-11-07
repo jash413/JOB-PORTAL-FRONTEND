@@ -111,7 +111,7 @@ const ResumeUpload = ({ setFieldValue }) => {
 
 
 const ModalProfile = (props) => {
-    const { fetchDetails } = props;
+    const { fetchDetails, fetchUserProfile } = props;
     const gContext = useContext(GlobalContext);
     const [profileImage, setProfileImage] = useState(null);
     const [candidateRegistered, setCandidateRegistered] = useState(false);
@@ -183,6 +183,7 @@ const ModalProfile = (props) => {
                 gContext.setUser(JSON.stringify(updatedUserDetails));
                 handleClose();
                 fetchDetails();
+                fetchUserProfile();
             } else {
                 const response = await axiosInterceptors.post(REQ?.CREATE_CANDIDATE, formData);
                 const userDetails = JSON.parse(gContext?.user);
@@ -193,6 +194,7 @@ const ModalProfile = (props) => {
                 gContext.setUser(JSON.stringify(updatedUserDetails));
                 handleClose();
                 fetchDetails();
+                fetchUserProfile();
             }
         } catch (error) {
             console.error('API error:', error);
@@ -310,7 +312,6 @@ const ModalProfile = (props) => {
                                                     type="email"
                                                     name="can_email"
                                                     className="form-control"
-                                                    disabled={userDetails?.email_ver_status === 1}
                                                 />
                                                 <ErrorMessage
                                                     name="can_email"
@@ -325,7 +326,6 @@ const ModalProfile = (props) => {
                                                     type="text"
                                                     name="can_mobn"
                                                     className="form-control"
-                                                    disabled={userDetails?.phone_ver_status === 1}
                                                 />
                                                 <ErrorMessage
                                                     name="can_mobn"

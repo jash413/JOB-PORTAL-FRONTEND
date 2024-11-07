@@ -74,7 +74,9 @@ const GlobalProvider = ({ children }) => {
       const parsedUser = JSON.parse(user);
       if (parsedUser === null) return false;
       return (
-        parsedUser?.phone_ver_status !== 0 && parsedUser?.email_ver_status !== 0
+        parsedUser?.user_approval_status !== 0 &&
+        parsedUser?.email_ver_status !== 0 &&
+        parsedUser?.user_approval_status !== 0
       );
     } catch (error) {
       console.error("Invalid JSON in user:", error);
@@ -145,6 +147,18 @@ const GlobalProvider = ({ children }) => {
     setUser(null);
     navigate("/");
   };
+
+  useEffect(() => {
+    if (token === null) {
+      setToken(null);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (user === null) {
+      setUser(null);
+    }
+  }, [user]);
 
   useEffect(() => {
     localStorage.setItem("authToken", token);
