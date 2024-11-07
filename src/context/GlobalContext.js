@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { navigate } from "gatsby";
+import { useFetchExperienceDetails } from "../hooks/useFetchExperienceDetails";
 const GlobalContext = React.createContext();
 
 const GlobalProvider = ({ children }) => {
@@ -44,6 +45,10 @@ const GlobalProvider = ({ children }) => {
     style: "style1",
   });
 
+  const {
+    experienceData,
+    fetchExperienceDetails,
+  } = useFetchExperienceDetails();
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.pathname;
@@ -208,6 +213,8 @@ const GlobalProvider = ({ children }) => {
         setUser,
         authenticated,
         authVerified,
+        experienceData,
+        fetchExperienceDetails,
       }}
     >
       {children}

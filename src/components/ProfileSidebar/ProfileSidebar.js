@@ -91,14 +91,7 @@ const Sidebar = (props) => {
                 <p className="font-size-4 mb-0">E-mail</p>
                 <div className="d-flex align-items-start justify-content-between w-100">
                   <h5 className="font-size-4 font-weight-semibold mb-0">
-                    <p
-                      className="text-black-2 text-break"
-                      style={{
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                    <p className="text-black-2 text-break">
                       {userDetails?.login_email}
                     </p>
                   </h5>
