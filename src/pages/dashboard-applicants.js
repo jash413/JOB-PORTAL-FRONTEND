@@ -93,7 +93,7 @@ const DashboardApplicants = () => {
                       <tr className="border border-color-2">
                         <th scope="row" className="pl-6 border-0 py-7 pr-0">
                           <Link
-                            to="/candidate-profile"
+                            to="/profile"
                             className="media min-width-px-235 align-items-center"
                           >
                             <div className="circle-36 mr-6">
@@ -152,7 +152,7 @@ const DashboardApplicants = () => {
                       <tr className="border border-color-2">
                         <th scope="row" className="pl-6 border-0 py-7 pr-0">
                           <Link
-                            to="/candidate-profile"
+                            to="/profile"
                             className="media min-width-px-235 align-items-center"
                           >
                             <div className="circle-36 mr-6">
@@ -211,7 +211,7 @@ const DashboardApplicants = () => {
                       <tr className="border border-color-2">
                         <th scope="row" className="pl-6 border-0 py-7 pr-0">
                           <Link
-                            to="/candidate-profile"
+                            to="/profile"
                             className="media min-width-px-235 align-items-center"
                           >
                             <div className="circle-36 mr-6">
@@ -270,7 +270,7 @@ const DashboardApplicants = () => {
                       <tr className="border border-color-2">
                         <th scope="row" className="pl-6 border-0 py-7 pr-0">
                           <Link
-                            to="/candidate-profile"
+                            to="/profile"
                             className="media min-width-px-235 align-items-center"
                           >
                             <div className="circle-36 mr-6">
@@ -329,7 +329,7 @@ const DashboardApplicants = () => {
                       <tr className="border border-color-2">
                         <th scope="row" className="pl-6 border-0 py-7 pr-0">
                           <Link
-                            to="/candidate-profile"
+                            to="/profile"
                             className="media min-width-px-235 align-items-center"
                           >
                             <div className="circle-36 mr-6">

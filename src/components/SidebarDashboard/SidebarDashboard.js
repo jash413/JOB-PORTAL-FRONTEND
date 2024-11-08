@@ -55,7 +55,7 @@ const Sidebar = () => {
                 </span>
               </Link>
             </li>
-            <li className="">
+            {/* <li className="">
               <Link
                 to="/dashboard-settings"
                 activeClassName="active"
@@ -63,7 +63,7 @@ const Sidebar = () => {
               >
                 <i className="fas fa-cog mr-7"></i>Settings
               </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
       </Collapse>

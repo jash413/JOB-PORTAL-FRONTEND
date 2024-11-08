@@ -97,3 +97,20 @@ export const profileValidationSchema = Yup.object().shape({
   // profileImage: Yup.mixed().required("Profile image is required"),
   // resume: Yup.mixed().required("Resume is required"),
 });
+
+export const EmployerValidationSchema = Yup.object({
+  cmp_name: Yup.string()
+    .required("Company name is required")
+    .min(2, "Company name should be at least 2 characters"),
+  cmp_email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  cmp_mobn: Yup.string()
+    .required("Mobile number is required")
+    .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
+  cmp_webs: Yup.string()
+    .url("Enter a valid URL")
+    .required("Website URL is required"),
+  emp_loca: Yup.string().required("Location is required"),
+  emp_addr: Yup.string().required("Address is required"),
+});
