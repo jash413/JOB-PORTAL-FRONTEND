@@ -8,6 +8,9 @@ const withAuth = (WrappedComponent) => {
   return (props) => {
     const gContext = useContext(GlobalContext);
     const [loading, setLoading] = useState(true);
+    const userDetails = JSON.parse(gContext?.user);
+
+    const userType = userDetails?.login_type; // "CND" or "EMP"
 
     useEffect(() => {
       const isAuthenticated = gContext?.authenticated;
@@ -17,8 +20,8 @@ const withAuth = (WrappedComponent) => {
       if (!isAuthenticated) {
         navigate("/");
         toast.warn("You need to log in to access this page.");
-      } else if (!isAuthVerified && currentPath !== "/candidate-profile") {
-        navigate("/candidate-profile");
+      } else if (!isAuthVerified && currentPath !== "/profile") {
+        navigate("/profile");
         toast.warn(
           "You need to complete verification steps to access this page."
         );

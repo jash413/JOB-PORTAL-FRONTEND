@@ -8,6 +8,7 @@ import { MdEdit } from "react-icons/md";
 const Sidebar = (props) => {
   const gContext = useContext(GlobalContext);
   const userDetails = JSON.parse(gContext?.user);
+  const userType = userDetails?.login_type;
 
   return (
     <>
@@ -19,14 +20,16 @@ const Sidebar = (props) => {
           <div className="bg-white shadow-9 rounded-4">
             <div className="px-5 text-center border-bottom border-mercury">
               <div className="d-flex justify-content-end align-items-end">
-                <span
-                  className="p-2"
-                  onClick={() => {
-                    gContext.toggleProfileModal();
-                  }}
-                >
-                  <MdEdit />
-                </span>
+                {userType === "CND" && (
+                  <span
+                    className="p-2"
+                    onClick={() => {
+                      gContext.toggleProfileModal();
+                    }}
+                  >
+                    <MdEdit />
+                  </span>
+                )}
               </div>
               <div className="py-11">
                 <Link to="/#" className="mb-4">

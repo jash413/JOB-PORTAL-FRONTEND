@@ -1,14 +1,5 @@
 export const menuItems = [
   {
-    name: "home",
-    label: "Home",
-    items: [
-      { name: "", label: "Home 1" },
-      { name: "landing-2", label: "Home 2" },
-      { name: "landing-3", label: "Home 3" },
-    ],
-  },
-  {
     name: "pages",
     label: "Pages",
     items: [
@@ -16,40 +7,17 @@ export const menuItems = [
         name: "job-pages",
         label: "Job Pages",
         items: [
-          { name: "search-grid", label: "Job Grid" },
-          { name: "search-list", label: "Job List" },
+          { name: "search-grid", label: "Search Jobs" },
           { name: "job-details", label: "Job Details" },
         ],
       },
       {
-        name: "dashboard",
+        name: "dashboard-main",
         label: "Dashboard",
-        items: [
-          { name: "dashboard-main", label: "Dashboard Main" },
-          { name: "dashboard-settings", label: "Dashboard Settings" },
-          {
-            name: "dashboard-applicants",
-            label: "Dashboard Applicants",
-          },
-          { name: "dashboard-jobs", label: "Dashboard Posted Jobs" },
-        ],
       },
       {
-        name: "candidate",
-        label: "Candidate Pages",
-        items: [
-          { name: "candidate-profile", label: "Candidate Profile 01" },
-          { name: "candidate-profile-2", label: "Candidate Profile 02" },
-        ],
-      },
-      {
-        name: "search",
-        label: "Search Pages",
-        items: [
-          { name: "search-grid", label: "Search Grid" },
-          { name: "search-list", label: "Search List 01" },
-          { name: "search-list-2", label: "Search List 02" },
-        ],
+        name: "profile",
+        label: "Candidate Profile",
       },
       {
         name: "company-profile",
@@ -85,3 +53,31 @@ export const SignUpOptionsItems = [
     ],
   },
 ];
+
+export const getMenuItemsByUserType = (userType) => {
+  return menuItems.map((item) => {
+    if (item.items) {
+      const filteredItems = item.items.filter((subItem) => {
+        if (userType === "CND") {
+          // For "CND" users, keep Job Pages, Candidate Pages, and Company Profile
+          return (
+            subItem.name === "job-pages" ||
+            subItem.name === "profile" ||
+            subItem.name === "company-profile" ||
+            subItem.name === "essential"
+          );
+        } else if (userType === "EMP") {
+          // For "EMP" users, keep only Dashboard
+          return (
+            subItem.name === "dashboard-main" || subItem.name === "essential"
+          );
+        }
+        return true;
+      });
+
+      // Return only filtered items for CND or EMP; otherwise, return item as-is
+      return { ...item, items: filteredItems };
+    }
+    return item;
+  });
+};
