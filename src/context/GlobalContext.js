@@ -44,7 +44,8 @@ const GlobalProvider = ({ children }) => {
     theme: "dark",
     style: "style1",
   });
-
+  const [loginType, setLoginType] = useState(null);
+  const [companyRegistered, setCompanyRegistered] = useState(false);
   const {
     experienceData,
     fetchExperienceDetails,
@@ -164,6 +165,16 @@ const GlobalProvider = ({ children }) => {
       setUser(null);
     }
   }, [user]);
+  useEffect(() => {
+    if (user !== null) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setLoginType(parsedUser.login_type);
+      } catch (error) {
+        console.error("Failed to parse user:", error);
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     localStorage.setItem("authToken", token);
@@ -215,6 +226,8 @@ const GlobalProvider = ({ children }) => {
         authVerified,
         experienceData,
         fetchExperienceDetails,
+        companyRegistered,
+        setCompanyRegistered,
       }}
     >
       {children}

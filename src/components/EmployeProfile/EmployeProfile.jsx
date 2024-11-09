@@ -7,6 +7,7 @@ import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { toast } from "react-toastify";
 import { MdEdit } from "react-icons/md";
 import { FaTrashCan } from "react-icons/fa6";
+import withAuth from "../../hooks/withAuth";
 
 const EmployeProfile = () => {
   const gContext = useContext(GlobalContext);
@@ -14,6 +15,8 @@ const EmployeProfile = () => {
   const [empRegistered, setEmpRegistered] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [cmpCode, setCmpCode] = useState(null);
+  const { setCompanyRegistered } = gContext;
+  console.log(gContext.companyRegistered, "employer");
 
   const [initialValues, setInitialValues] = useState({
     cmp_name: "",
@@ -48,25 +51,28 @@ const EmployeProfile = () => {
     }
   };
 
-  const handleRemoveEmployer = async () => {
-    try {
-      await axiosInterceptors.delete(REQ?.GET_EMPLOYERS.replace(":id", cmpCode));
-      toast.success("Employer details removed successfully");
-      fetchEmployerDetails();
-      setEditMode(false);
-      setEmpRegistered(false);
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      fetchEmployerDetails();
-    }
-  }
+  // const handleRemoveEmployer = async () => {
+  //   try {
+  //     await axiosInterceptors.delete(
+  //       REQ?.GET_EMPLOYERS.replace(":id", cmpCode)
+  //     );
+  //     toast.success("Employer details removed successfully");
+  //     fetchEmployerDetails();
+  //     setEditMode(false);
+  //     setEmpRegistered(false);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   } finally {
+  //     fetchEmployerDetails();
+  //   }
+  // };
 
   const fetchEmployerDetails = async () => {
     await axiosInterceptors
       .get(REQ.GET_EMPLOYERS.replace(":id", userDetails?.login_id))
       .then((response) => {
         if (response?.cmp_code) {
+          setCompanyRegistered(true);
           setEmpRegistered(true);
           setInitialValues({
             cmp_name: response?.cmp_name || "",
@@ -81,6 +87,7 @@ const EmployeProfile = () => {
       })
       .catch((error) => {
         console.error("Error fetching user details:", error);
+        setCompanyRegistered(false);
         setInitialValues({
           cmp_name: "",
           cmp_email: "",
@@ -90,7 +97,7 @@ const EmployeProfile = () => {
           emp_addr: "",
         });
       });
-  }
+  };
 
   useEffect(() => {
     const userDetails = JSON.parse(gContext?.user);
@@ -102,13 +109,13 @@ const EmployeProfile = () => {
   return (
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center">
-        <h4 className="mb-4">Employer Profile</h4>
-        {(!editMode && empRegistered) && (
+        <h4 className="mb-4">Company Profile</h4>
+        {!editMode && empRegistered && (
           <span className="ml-5" onClick={() => setEditMode(true)}>
             <MdEdit fill="black" size={20} />
           </span>
         )}
-        {editMode && (
+        {/* {editMode && (
           <span
             title="Remove employer details"
             className="bg-transpernent mr-2 rounded text-red px-2 py-1"
@@ -116,7 +123,7 @@ const EmployeProfile = () => {
           >
             <FaTrashCan size={20} />
           </span>
-        )}
+        )} */}
       </div>
       <Formik
         initialValues={initialValues}
@@ -133,7 +140,7 @@ const EmployeProfile = () => {
               >
                 Company Name
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
                   <Field name="cmp_name" type="text" className="form-control" />
                   <ErrorMessage
@@ -141,9 +148,10 @@ const EmployeProfile = () => {
                     component="div"
                     className="text-danger"
                   />
-                </> :
+                </>
+              ) : (
                 <span>{initialValues?.cmp_name}</span>
-              }
+              )}
             </div>
 
             <div className="mb-3">
@@ -153,17 +161,22 @@ const EmployeProfile = () => {
               >
                 Email
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
-                  <Field name="cmp_email" type="email" className="form-control" />
+                  <Field
+                    name="cmp_email"
+                    type="email"
+                    className="form-control"
+                  />
                   <ErrorMessage
                     name="cmp_email"
                     component="div"
                     className="text-danger"
                   />
-                </> :
+                </>
+              ) : (
                 <span>{initialValues?.cmp_email}</span>
-              }
+              )}
             </div>
 
             <div className="mb-3">
@@ -173,7 +186,7 @@ const EmployeProfile = () => {
               >
                 Mobile Number
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
                   <Field name="cmp_mobn" type="text" className="form-control" />
                   <ErrorMessage
@@ -181,10 +194,10 @@ const EmployeProfile = () => {
                     component="div"
                     className="text-danger"
                   />
-                </> :
-
+                </>
+              ) : (
                 <span>{initialValues?.cmp_mobn}</span>
-              }
+              )}
             </div>
 
             <div className="mb-3">
@@ -194,7 +207,7 @@ const EmployeProfile = () => {
               >
                 Website
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
                   <Field name="cmp_webs" type="text" className="form-control" />
                   <ErrorMessage
@@ -202,9 +215,10 @@ const EmployeProfile = () => {
                     component="div"
                     className="text-danger"
                   />
-                </> :
+                </>
+              ) : (
                 <span>{initialValues?.cmp_webs}</span>
-              }
+              )}
             </div>
 
             <div className="mb-3">
@@ -214,7 +228,7 @@ const EmployeProfile = () => {
               >
                 Location
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
                   <Field name="emp_loca" type="text" className="form-control" />
                   <ErrorMessage
@@ -222,9 +236,10 @@ const EmployeProfile = () => {
                     component="div"
                     className="text-danger"
                   />
-                </> :
+                </>
+              ) : (
                 <span>{initialValues?.emp_loca}</span>
-              }
+              )}
             </div>
 
             <div className="mb-3">
@@ -234,7 +249,7 @@ const EmployeProfile = () => {
               >
                 Address
               </label>
-              {!empRegistered || editMode ?
+              {!empRegistered || editMode ? (
                 <>
                   <Field
                     name="emp_addr"
@@ -248,9 +263,10 @@ const EmployeProfile = () => {
                     component="div"
                     className="text-danger"
                   />
-                </> :
+                </>
+              ) : (
                 <span>{initialValues?.emp_addr}</span>
-              }
+              )}
             </div>
 
             <div className="mt-5 float-right">
@@ -266,7 +282,16 @@ const EmployeProfile = () => {
                   >
                     Cancel
                   </button>
-                  <button disabled={!dirty} title={!dirty ? "Please udpate deatils to continue" : "Update details"} type="submit" className="btn btn-primary">
+                  <button
+                    disabled={!dirty}
+                    title={
+                      !dirty
+                        ? "Please udpate deatils to continue"
+                        : "Update details"
+                    }
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Update
                   </button>
                 </div>
@@ -281,8 +306,8 @@ const EmployeProfile = () => {
           </Form>
         )}
       </Formik>
-    </div >
+    </div>
   );
 };
 
-export default EmployeProfile;
+export default withAuth(EmployeProfile);

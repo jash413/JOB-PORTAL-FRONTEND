@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -65,6 +65,7 @@ const ModalWorkExprerience = (props) => {
     actions.setSubmitting(false);
     handleClose();
   };
+
   const handleRemoveEducation = async () => {
     try {
       if (experienceData) {
@@ -76,6 +77,7 @@ const ModalWorkExprerience = (props) => {
           response?.data ||
           response?.message ||
           "Experience deleted successfully";
+
         toast.success(successMessage);
         handleClose();
       }
