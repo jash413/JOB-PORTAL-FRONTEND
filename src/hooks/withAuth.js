@@ -9,6 +9,8 @@ const withAuth = (WrappedComponent) => {
     const gContext = useContext(GlobalContext);
     const [loading, setLoading] = useState(true);
     const userDetails = JSON.parse(gContext?.user);
+    const companyRegistered = gContext?.companyRegistered;
+    const isAuthenticated = gContext?.authenticated;
 
     const userType = userDetails?.login_type; // "CND" or "EMP"
 
@@ -20,15 +22,20 @@ const withAuth = (WrappedComponent) => {
       if (!isAuthenticated) {
         navigate("/");
         toast.warn("You need to log in to access this page.");
-      } else if (!isAuthVerified && currentPath !== "/profile") {
+      }
+      // else if (!isAuthVerified && currentPath !== "/profile") {
+      //   navigate("/profile");
+      //   toast.warn(
+      //     "You need to complete verification steps to access this page."
+      //   );
+      // }
+      else if (!companyRegistered && currentPath !== "/profile") {
         navigate("/profile");
-        toast.warn(
-          "You need to complete verification steps to access this page."
-        );
+        toast.warn("Please complete your company profile to proceed.");
       } else {
         setLoading(false);
       }
-    }, [gContext]);
+    }, [isAuthenticated, companyRegistered]);
 
     if (loading) {
       return (

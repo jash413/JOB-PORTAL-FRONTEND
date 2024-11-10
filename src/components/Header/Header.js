@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import styled from "styled-components";
 import { Container, Dropdown } from "react-bootstrap";
 import { useScrollPosition } from "@n8tb1t/use-scroll-position";
@@ -11,8 +11,8 @@ import NestedMenu from "../NestedMenu";
 import { device } from "../../utils";
 import Logo from "../Logo";
 import {
-  getMenuItemsByUserType,
-  menuItems,
+  menuItemsCandidate,
+  menuItemsEmployer,
   SignUpOptionsItems,
 } from "./menuItems";
 
@@ -58,6 +58,9 @@ const Header = () => {
   const [showScrolling, setShowScrolling] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
   const userDetails = JSON.parse(gContext?.user);
+
+  const menuItems =
+    userDetails?.login_type === "CND" ? menuItemsCandidate : menuItemsEmployer;
 
   const size = useWindowSize();
 
@@ -114,7 +117,7 @@ const Header = () => {
               <div className="collapse navbar-collapse">
                 <div className="navbar-nav-wrapper">
                   <ul className="navbar-nav main-menu d-none d-lg-flex">
-                    {getMenuItemsByUserType(userDetails?.login_type).map(
+                    {menuItems.map(
                       (
                         { label, isExternal = false, name, items, ...rest },
                         index

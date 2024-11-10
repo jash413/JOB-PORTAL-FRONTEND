@@ -24,6 +24,8 @@ const ModalSignIn = (props) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
+  const companyRegistered = gContext.companyRegistered;
+  const [userDetail, setUserDetail] = useState(null);
 
   const handleClose = () => {
     gContext.toggleSignInModal();
@@ -135,6 +137,21 @@ const ModalSignIn = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (userDetail && verificationStep === null) {
+      console.log("Company Registered:", companyRegistered);
+      console.log("User Type:", userDetail?.login_type);
+
+      if (!companyRegistered && userDetail?.login_type === "EMP") {
+        navigate("/profile");
+      } else {
+        navigate("/");
+      }
+
+      gContext.toggleSignInModal();
+    }
+  }, [userDetail, verificationStep, companyRegistered]);
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -166,10 +183,15 @@ const ModalSignIn = (props) => {
           const successMessage =
             response?.data || response?.message || "User login successful!";
           toast.success(successMessage);
-          navigate("/dashboard-main");
+          await fetchUserProfile();
+          // const userDetail = gContext.user;
+          // console.log("Company Registered:", companyRegistered);
+          // console.log("User Type:", userDetail?.login_type);
+          setUserDetail(gContext.user);
+
           gContext.toggleSignInModal();
         }
-        fetchUserProfile();
+        // fetchUserProfile();
       } catch (error) {
         const errorMessage =
           error?.data?.error ||
