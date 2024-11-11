@@ -346,7 +346,7 @@ const Header = () => {
                   </div>
                   <div className="">
                     <ul className="navbar-nav main-menu d-none d-lg-flex">
-                      {getMenuItemsByUserType(userType).map(
+                      {SignUpOptionsItems.map(
                         ({ label, name, items, ...rest }, index) => {
                           const hasSubItems = Array.isArray(items);
 
