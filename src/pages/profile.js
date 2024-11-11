@@ -26,7 +26,7 @@ import { useFormik } from "formik";
 import { changePasswordValidationSchema } from "../utils/validations/validations";
 import ModalWorkExprerience from "../components/ModalWorkExprerience/ModalWorkExprerience";
 import ModalEducationDetails from "../components/ModalEducationDetails";
-import ModalProfile from "../components/ModalProfile/ModalProfile";
+import { ModalProfile, EmpProfileModal } from "../components/ModalProfile";
 import { GrScorecard } from "react-icons/gr";
 import { MdEdit, MdInfo } from "react-icons/md";
 import EmployeProfile from "../components/EmployeProfile";
@@ -962,6 +962,10 @@ const CandidateProfile = () => {
                 </div>
               </div>
             </div>
+            <EmpProfileModal
+              fetchDetails={fetchCandidateDetails}
+              fetchUserProfile={fetchUserProfile}
+            />
           </>
         )}
       </PageWrapper>
