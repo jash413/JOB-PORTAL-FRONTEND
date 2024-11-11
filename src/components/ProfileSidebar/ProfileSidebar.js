@@ -20,11 +20,20 @@ const Sidebar = (props) => {
           <div className="bg-white shadow-9 rounded-4">
             <div className="px-5 text-center border-bottom border-mercury">
               <div className="d-flex justify-content-end align-items-end">
-                {userType === "CND" && (
+                {userType === "CND" ? (
                   <span
                     className="p-2"
                     onClick={() => {
                       gContext.toggleProfileModal();
+                    }}
+                  >
+                    <MdEdit />
+                  </span>
+                ) : (
+                  <span
+                    className="p-2"
+                    onClick={() => {
+                      gContext.toggleEmpProfileModal();
                     }}
                   >
                     <MdEdit />

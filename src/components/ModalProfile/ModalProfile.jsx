@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { profileValidationSchema } from "../../utils/validations/validations";
+import { empProfileValidationSchema } from "../../utils/validations/validations";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ, SERVER } from "../../libs/constants";
 import { FaCamera, FaUpload } from "react-icons/fa";
@@ -282,7 +282,7 @@ const ModalProfile = (props) => {
                 <h5 className="mb-6">Profile Information</h5>
                 <Formik
                   initialValues={initialValues}
-                  validationSchema={profileValidationSchema}
+                  validationSchema={empProfileValidationSchema}
                   onSubmit={handleSubmit}
                 >
                   {({ setFieldValue, isSubmitting, values }) => (

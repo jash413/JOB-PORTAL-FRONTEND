@@ -84,7 +84,7 @@ export const educationDetailsValidationSchema = Yup.object().shape({
   //   .max(10, "Unique code should not exceed 10 digits"),
 });
 
-export const profileValidationSchema = Yup.object().shape({
+export const empProfileValidationSchema = Yup.object().shape({
   can_name: Yup.string().required("Name is required"),
   can_email: Yup.string().email("Invalid email").required("Email is required"),
   can_mobn: Yup.string()
@@ -96,6 +96,14 @@ export const profileValidationSchema = Yup.object().shape({
   // reg_date: Yup.date().required("Registration date is required"),
   // profileImage: Yup.mixed().required("Profile image is required"),
   // resume: Yup.mixed().required("Resume is required"),
+});
+
+export const canProfileValidationSchema = Yup.object().shape({
+  login_name: Yup.string().required("Name is required"),
+  login_email: Yup.string().email("Invalid email").required("Email is required"),
+  login_mobile: Yup.string()
+    .matches(/^\d+$/, "Mobile number must be digits only")
+    .required("Mobile number is required"),
 });
 
 export const EmployerValidationSchema = Yup.object({

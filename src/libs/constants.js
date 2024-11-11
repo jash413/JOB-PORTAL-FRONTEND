@@ -26,4 +26,5 @@ export const REQ = {
   DELETE_EXPERIENCE: (exp_id) => SERVER + `/api/v1/experience/${exp_id}`,
   CREATE_EMPLOYER: SERVER + "/api/v1/employers",
   GET_EMPLOYERS: SERVER + "/api/v1/employers/:id",
+  UPDATE_EMP_PROFILE: SERVER + "/api/v1/auth/edit-profile",
 };
