@@ -17,12 +17,15 @@ const Sidebar = () => {
             </Link>
           </div>
           <div className="my-15 px-11">
-            <Link
-              to="/#"
+            <button
+              type="button"
               className="btn btn-primary btn-xl w-100 text-uppercase"
+              onClick={() => {
+                gContext.toggleJobPostModalModal();
+              }}
             >
               <span className="mr-5 d-inline-block">+</span>Post a new job
-            </Link>
+            </button>
           </div>
           <ul className="list-unstyled dashboard-layout-sidebar">
             <li className="">

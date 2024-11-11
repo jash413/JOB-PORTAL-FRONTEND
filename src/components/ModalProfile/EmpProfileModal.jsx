@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { canProfileValidationSchema } from "../../utils/validations/validations";
+import { empProfileValidationSchema } from "../../utils/validations/validations";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
@@ -19,14 +19,14 @@ const ModalProfile = (props) => {
     const gContext = useContext(GlobalContext);
     const userDetails = JSON.parse(gContext?.user);
 
-    const [empInitialValues, setEmpInitialValues] = useState({
+    const [initialValues, setInitialValues] = useState({
         login_name: userDetails?.login_name || "",
         login_email: userDetails?.login_email || "",
         login_mobile: userDetails?.login_mobile || ""
     });
 
     useEffect(() => {
-        setEmpInitialValues({
+        setInitialValues({
             login_name: userDetails?.login_name || "",
             login_email: userDetails?.login_email || "",
             login_mobile: userDetails?.login_mobile || ""
@@ -83,9 +83,9 @@ const ModalProfile = (props) => {
                             <div className="bg-white-2 h-100 px-11 pt-11 pb-12">
                                 <h5 className="mb-6">Profile Information</h5>
                                 <Formik
-                                    initialValues={empInitialValues}
+                                    initialValues={initialValues}
                                     enableReinitialize={true}
-                                    validationSchema={canProfileValidationSchema}
+                                    validationSchema={empProfileValidationSchema}
                                     onSubmit={handleCanProfileSubmit}
                                 >
                                     {({ isSubmitting }) => (

@@ -3,6 +3,7 @@ import React from "react";
 import PageWrapper from "../components/PageWrapper";
 import { Select } from "../components/Core";
 import withAuth from "../hooks/withAuth";
+import ModalAddJobPost from "../components/ModalAddJobPost";
 
 const defaultTypes = [
   { value: "b2b", label: "B2B" },
@@ -182,6 +183,7 @@ const DashboardSettings = () => {
             </div>
           </div>
         </div>
+        <ModalAddJobPost />
       </PageWrapper>
     </>
   );
