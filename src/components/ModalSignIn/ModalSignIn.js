@@ -113,6 +113,7 @@ const ModalSignIn = (props) => {
         await sendEmailVerify();
       } else {
         setVerificationStep(null);
+        gContext.toggleSignInModal();
       }
     } catch (error) {
       toast.error("Error verifying OTP. Please try again.");
@@ -183,15 +184,27 @@ const ModalSignIn = (props) => {
           const successMessage =
             response?.data || response?.message || "User login successful!";
           toast.success(successMessage);
-          await fetchUserProfile();
-          // const userDetail = gContext.user;
-          // console.log("Company Registered:", companyRegistered);
-          // console.log("User Type:", userDetail?.login_type);
-          setUserDetail(gContext.user);
 
+          if (
+            response?.user?.login_type === "EMP" &&
+            response?.user?.phone_ver_status === 1 &&
+            response?.user?.email_ver_status === 1 &&
+            response?.user?.user_approval_status === 1
+          ) {
+            navigate("/dashboard-main");
+          } else if (
+            response?.user?.login_type === "EMP" &&
+            (response?.user?.phone_ver_status === 0 ||
+              response?.user?.email_ver_status === 0 ||
+              response?.user?.user_approval_status === 0)
+          ) {
+            navigate("/profile");
+          } else if (response?.user?.login_type === "CND") {
+            navigate("/profile");
+          }
           gContext.toggleSignInModal();
         }
-        // fetchUserProfile();
+        fetchUserProfile();
       } catch (error) {
         const errorMessage =
           error?.data?.error ||

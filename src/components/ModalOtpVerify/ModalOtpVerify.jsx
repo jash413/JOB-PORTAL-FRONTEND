@@ -17,10 +17,10 @@ const ModalOtpVerify = (props) => {
   const gContext = useContext(GlobalContext);
   const [otp, setOtp] = useState("");
   const [otpSending, setOtpSending] = useState(false);
-  const [phoneNumber] = useState(
-    gContext.user ? JSON.parse(gContext.user)?.login_mobile : ""
-  );
   const [resendTimer, setResendTimer] = useState(0);
+
+  const userDetails = JSON.parse(gContext.user);
+  const phoneNumber = userDetails?.login_mobile;
 
   const handleClose = () => {
     gContext.toggleOptVerifyModal();

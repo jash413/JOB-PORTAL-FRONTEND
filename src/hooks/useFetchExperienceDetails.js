@@ -36,7 +36,12 @@ export const useFetchExperienceDetails = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error fetching experience details:");
+      if (
+        error?.data?.error !==
+        "Access forbidden: You do not have permission to access this resource."
+      ) {
+        toast.error("Error fetching experience details:");
+      }
     }
   };
 

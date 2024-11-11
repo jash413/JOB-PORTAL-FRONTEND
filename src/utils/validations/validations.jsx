@@ -109,7 +109,7 @@ export const EmployerValidationSchema = Yup.object({
     .required("Mobile number is required")
     .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
   cmp_webs: Yup.string()
-    .url("Enter a valid URL")
+    // .url("Enter a valid URL")
     .required("Website URL is required"),
   emp_loca: Yup.string().required("Location is required"),
   emp_addr: Yup.string().required("Address is required"),
