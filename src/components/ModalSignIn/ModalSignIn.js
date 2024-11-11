@@ -413,6 +413,11 @@ const ModalSignIn = (props) => {
                         <a
                           href="/#"
                           className="font-size-3 text-dodger line-height-reset"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            gContext.toggleSignInModal();
+                            gContext.toggleForgetPasswordModal();
+                          }}
                         >
                           Forget Password
                         </a>

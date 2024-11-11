@@ -11,8 +11,8 @@ import NestedMenu from "../NestedMenu";
 import { device } from "../../utils";
 import Logo from "../Logo";
 import {
-  menuItemsCandidate,
-  menuItemsEmployer,
+  getMenuItemsByUserType,
+  menuItems,
   SignUpOptionsItems,
 } from "./menuItems";
 
@@ -59,8 +59,7 @@ const Header = () => {
   const [showReveal, setShowReveal] = useState(false);
   const userDetails = JSON.parse(gContext?.user);
 
-  const menuItems =
-    userDetails?.login_type === "CND" ? menuItemsCandidate : menuItemsEmployer;
+  const userType = userDetails?.login_type;
 
   const size = useWindowSize();
 
@@ -117,7 +116,7 @@ const Header = () => {
               <div className="collapse navbar-collapse">
                 <div className="navbar-nav-wrapper">
                   <ul className="navbar-nav main-menu d-none d-lg-flex">
-                    {menuItems.map(
+                    {getMenuItemsByUserType(userType).map(
                       (
                         { label, isExternal = false, name, items, ...rest },
                         index
@@ -347,7 +346,7 @@ const Header = () => {
                   </div>
                   <div className="">
                     <ul className="navbar-nav main-menu d-none d-lg-flex">
-                      {SignUpOptionsItems.map(
+                      {getMenuItemsByUserType(userType).map(
                         ({ label, name, items, ...rest }, index) => {
                           const hasSubItems = Array.isArray(items);
 
@@ -441,7 +440,7 @@ const Header = () => {
         onHideOffcanvas={gContext.toggleOffCanvas}
       >
         <NestedMenu menuItems={SignUpOptionsItems} />
-        <NestedMenu menuItems={menuItems} />
+        <NestedMenu menuItems={getMenuItemsByUserType(userType)} />
       </Offcanvas>
     </>
   );
