@@ -90,6 +90,7 @@ const ModalWorkExprerience = (props) => {
     }
     gContext.fetchExperienceDetails();
   };
+
   return (
     <ModalStyled
       {...props}

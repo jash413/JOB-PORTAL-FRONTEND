@@ -9,9 +9,6 @@ const withAuth = (WrappedComponent) => {
     const gContext = useContext(GlobalContext);
     const [loading, setLoading] = useState(true);
     const userDetails = JSON.parse(gContext?.user);
-    const companyRegistered = gContext?.companyRegistered;
-    const isAuthenticated = gContext?.authenticated;
-
     const userType = userDetails?.login_type; // "CND" or "EMP"
 
     useEffect(() => {
@@ -22,24 +19,65 @@ const withAuth = (WrappedComponent) => {
       if (!isAuthenticated) {
         navigate("/");
         toast.warn("You need to log in to access this page.");
-      }
-      // else if (!isAuthVerified && currentPath !== "/profile") {
-      //   navigate("/profile");
-      //   toast.warn(
-      //     "You need to complete verification steps to access this page."
-      //   );
-      // }
-      else if (!companyRegistered && currentPath !== "/profile") {
+      } else if (!isAuthVerified && currentPath !== "/profile") {
         navigate("/profile");
-        toast.warn("Please complete your company profile to proceed.");
+        if (userDetails?.user_approval_status === 0) {
+          toast.warn(
+            "Your account is pending approval. You will be notified once it is approved."
+          );
+        } else if (
+          userDetails?.email_ver_status === 0 ||
+          userDetails?.phone_ver_status === 0
+        ) {
+          toast.warn(
+            "You need to complete verification steps to access this page."
+          );
+        }
       } else {
-        setLoading(false);
+        const allowedPathsForCND = [
+          "/job-pages",
+          "/profile",
+          "/company-profile",
+          "/essential",
+          "/search-grid",
+          "/job-details",
+        ];
+        const allowedPathsForEMP = [
+          "/profile",
+          "/dashboard-main",
+          "/dashboard-jobs",
+          "/dashboard-applicants",
+          "/essential",
+        ];
+        if (userType === "EMP" && currentPath === "/") {
+          navigate("/profile");
+        } else if (
+          userType === "CND" &&
+          !allowedPathsForCND.some((path) => currentPath.includes(path))
+        ) {
+          navigate("/");
+          toast.warn("You do not have access to this page.");
+        } else if (
+          userType === "EMP" &&
+          !allowedPathsForEMP.some((path) => currentPath.includes(path))
+        ) {
+          navigate("/");
+          toast.warn("You do not have access to this page.");
+        } else {
+          setLoading(false);
+        }
       }
-    }, [isAuthenticated, companyRegistered]);
+    }, [gContext, userType]);
 
     if (loading) {
       return (
-        <div className="flex items-center justify-center min-h-screen min-w-screen">
+        <div
+          className="d-flex align-items-center justify-content-center text-center"
+          style={{
+            height: "70vh",
+            width: "100vw",
+          }}
+        >
           <Oval
             height={50}
             width={50}

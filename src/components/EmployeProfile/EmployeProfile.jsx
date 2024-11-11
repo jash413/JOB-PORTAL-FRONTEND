@@ -110,11 +110,13 @@ const EmployeProfile = () => {
     <div className="container my-5">
       <div className="d-flex justify-content-between align-items-center">
         <h4 className="mb-4">Company Profile</h4>
-        {!editMode && empRegistered && (
-          <span className="ml-5" onClick={() => setEditMode(true)}>
-            <MdEdit fill="black" size={20} />
-          </span>
-        )}
+        {
+          !editMode && empRegistered && (
+            <span className="ml-5" onClick={() => setEditMode(true)}>
+              <MdEdit fill="black" size={20} />
+            </span>
+          )
+        }
         {/* {editMode && (
           <span
             title="Remove employer details"
@@ -124,7 +126,7 @@ const EmployeProfile = () => {
             <FaTrashCan size={20} />
           </span>
         )} */}
-      </div>
+      </div >
       <Formik
         initialValues={initialValues}
         enableReinitialize={true}
@@ -306,7 +308,7 @@ const EmployeProfile = () => {
           </Form>
         )}
       </Formik>
-    </div>
+    </div >
   );
 };
 

@@ -3,6 +3,7 @@ import React from "react";
 import { Select } from "../../components/Core";
 import imgH from "../../assets/image/l1/png/hero-image-man.png";
 import imgP from "../../assets/image/patterns/hero-pattern.png";
+import withoutAuth from "../../hooks/withoutAuth";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -98,4 +99,4 @@ const Hero = () => {
   );
 };
 
-export default Hero;
+export default withoutAuth(Hero);

@@ -30,7 +30,7 @@ import ModalProfile from "../components/ModalProfile/ModalProfile";
 import { GrScorecard } from "react-icons/gr";
 import { MdEdit, MdInfo } from "react-icons/md";
 import EmployeProfile from "../components/EmployeProfile";
-import calculateDuration from "../utils/calculateDuration";
+import { calculateDuration } from "../utils";
 
 const CandidateProfile = () => {
   const gContext = useContext(GlobalContext);
@@ -403,7 +403,6 @@ const CandidateProfile = () => {
                             </div>
                             {/* <!-- Skills End --> */}
                             {/* <!-- Card Section Start --> */}
-
                             <div className="border-top p-5 pt-7 pb-5">
                               <div className="w-100 d-flex justify-content-between align-items-center">
                                 <h4 className="font-size-6 mb-7 mt-5 text-black-2 font-weight-semibold">
