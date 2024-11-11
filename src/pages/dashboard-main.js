@@ -12,6 +12,7 @@ import imgP3 from "../assets/image/table-one-profile-image-3.png";
 import imgP4 from "../assets/image/table-one-profile-image-4.png";
 import imgP5 from "../assets/image/table-one-profile-image-5.png";
 import withAuth from "../hooks/withAuth";
+import ModalAddJobPost from "../components/ModalAddJobPost";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -844,6 +845,7 @@ const DashboardMain = () => {
             </div>
           </div>
         </div>
+        <ModalAddJobPost />
       </PageWrapper>
     </>
   );

@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import PageWrapper from "../components/PageWrapper";
 import { Select } from "../components/Core";
 import withAuth from "../hooks/withAuth";
+import ModalAddJobPost from "../components/ModalAddJobPost";
 
 const defaultJobs = [
   { value: "pd", label: "Product Designer" },
@@ -300,6 +301,7 @@ const DashboardJobs = () => {
             </div>
           </div>
         </div>
+        <ModalAddJobPost />
       </PageWrapper>
     </>
   );

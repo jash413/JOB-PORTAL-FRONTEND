@@ -44,6 +44,7 @@
     "react-scroll": "^1.8.4",
     "react-select": "^5.2.1",
     "react-slick": "^0.28.1",
+    "react-tag-input-component": "^2.0.2",
     "react-tilt": "^0.1.4",
     "react-toastify": "^10.0.6",
     "sass": "^1.29.0",

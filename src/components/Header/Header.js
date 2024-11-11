@@ -10,11 +10,7 @@ import Offcanvas from "../Offcanvas";
 import NestedMenu from "../NestedMenu";
 import { device } from "../../utils";
 import Logo from "../Logo";
-import {
-  getMenuItemsByUserType,
-  menuItems,
-  SignUpOptionsItems,
-} from "./menuItems";
+import { getMenuItemsByUserType, SignUpOptionsItems } from "./menuItems";
 
 import imgP from "../../assets/image/header-profile.png";
 
@@ -58,7 +54,6 @@ const Header = () => {
   const [showScrolling, setShowScrolling] = useState(false);
   const [showReveal, setShowReveal] = useState(false);
   const userDetails = JSON.parse(gContext?.user);
-
   const userType = userDetails?.login_type;
 
   const size = useWindowSize();
@@ -116,7 +111,7 @@ const Header = () => {
               <div className="collapse navbar-collapse">
                 <div className="navbar-nav-wrapper">
                   <ul className="navbar-nav main-menu d-none d-lg-flex">
-                    {getMenuItemsByUserType(userType).map(
+                    {getMenuItemsByUserType(userType)?.map(
                       (
                         { label, isExternal = false, name, items, ...rest },
                         index
@@ -439,7 +434,9 @@ const Header = () => {
         show={gContext.visibleOffCanvas}
         onHideOffcanvas={gContext.toggleOffCanvas}
       >
+        {/* {!gContext.authenticated && ( */}
         <NestedMenu menuItems={SignUpOptionsItems} />
+        {/* // )} */}
         <NestedMenu menuItems={getMenuItemsByUserType(userType)} />
       </Offcanvas>
     </>

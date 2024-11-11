@@ -24,6 +24,7 @@ const GlobalProvider = ({ children }) => {
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
   const [empProfileModal, setEmpProfileModal] = useState(false);
+  const [jobPostModal, setJobPostModal] = useState(false);
   const [token, setToken] = useState(
     typeof window !== "undefined" ? localStorage.getItem("authToken") : null
   );
@@ -135,6 +136,10 @@ const GlobalProvider = ({ children }) => {
     setEmpProfileModal(!empProfileModal);
   };
 
+  const toggleJobPostModalModal = () => {
+    setJobPostModal(!jobPostModal);
+  };
+
   const toggleSignUpModal = () => {
     setSignUpModalVisible((prevState) => ({
       ...prevState,
@@ -208,6 +213,8 @@ const GlobalProvider = ({ children }) => {
         toggleChangePasswordModal,
         signUpModalVisible,
         toggleSignUpModal,
+        jobPostModal,
+        toggleJobPostModalModal,
         visibleOffCanvas,
         toggleOffCanvas,
         closeOffCanvas,
