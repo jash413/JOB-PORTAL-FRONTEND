@@ -8,6 +8,7 @@ import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
 import { TagsInput } from "react-tag-input-component";
+import { jobFormValidationSchema } from "../../utils/validations/validations";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -16,32 +17,23 @@ const ModalStyled = styled(Modal)`
 `;
 
 const ModalAddJobPost = (props) => {
-    // const { fetchDetails, fetchUserProfile } = props;
+    const { fetchJobs } = props;
     const gContext = useContext(GlobalContext);
+    const isEdit = gContext?.jobPostModal?.data;
 
     const [jobCategories, setJobCategories] = useState([]);
-    const [jobFormInitialValues, setJobFormInitialValues] = useState({
-        job_title: "",
-        job_description: "",
-        job_cate: "",
-        job_location: "",
-        salary_range: "",
-        required_skills: "",
+    const [initialValues, setInitialValues] = useState({
+        job_title: isEdit?.job_title || "",
+        job_description: isEdit?.job_description || "",
+        job_cate: isEdit?.job_cate || "",
+        job_location: isEdit?.job_location || "",
+        salary_range: isEdit?.salary_range || "",
+        required_skills: isEdit?.required_skills?.split(",") || [],
     });
 
     const handleClose = () => {
         gContext.toggleJobPostModalModal();
     };
-
-    // Validation schema for the new job form fields
-    const jobFormValidationSchema = Yup.object().shape({
-        job_title: Yup.string().required("Job title is required"),
-        job_description: Yup.string().required("Job description is required"),
-        job_cate: Yup.string().required("Job category is required"),
-        job_location: Yup.string().required("Job location is required"),
-        salary_range: Yup.string().required("Salary range is required"),
-        required_skills: Yup.array().min(1, "At least one skill is required"),
-    });
 
     const handleJobFormSubmit = async (values, actions) => {
         const payload = {
@@ -49,12 +41,20 @@ const ModalAddJobPost = (props) => {
             required_skills: values.required_skills.join(","),
         };
         try {
-            const response = await axiosInterceptors.post(
-                REQ?.CREATE_JOBPOST,
-                payload
-            );
-            // console.log("Job post created successfully:", response);
-            toast.success("Job post created successfully.");
+            if (isEdit) {
+                await axiosInterceptors.put(
+                    REQ?.UPDATE_JOBPOST.replace(":id", isEdit?.job_id),
+                    payload
+                );
+                toast.success("Job post updated successfully.");
+            } else {
+                await axiosInterceptors.post(
+                    REQ?.CREATE_JOBPOST,
+                    payload
+                );
+                toast.success("Job post created successfully.");
+            }
+            fetchJobs();
             handleClose();
         } catch (error) {
             console.error("API error:", error);
@@ -64,7 +64,7 @@ const ModalAddJobPost = (props) => {
     };
 
     useEffect(() => {
-        if (gContext.jobPostModal) {
+        if (gContext.jobPostModal.visible) {
             axiosInterceptors
                 .post(REQ.JOB_CATEGORIES, {
                     page: 1,
@@ -79,12 +79,23 @@ const ModalAddJobPost = (props) => {
         }
     }, [gContext.jobPostModal]);
 
+    useEffect(() => {
+        setInitialValues({
+            job_title: isEdit?.job_title || "",
+            job_description: isEdit?.job_description || "",
+            job_cate: isEdit?.job_cate || "",
+            job_location: isEdit?.job_location || "",
+            salary_range: isEdit?.salary_range || "",
+            required_skills: isEdit?.required_skills?.split(",") || [],
+        });
+    }, [isEdit]);
+
     return (
         <ModalStyled
             {...props}
             size="lg"
             centered
-            show={gContext.jobPostModal}
+            show={gContext.jobPostModal.visible}
             onHide={gContext.toggleJobPostModalModal}
         >
             <Modal.Body className="p-0">
@@ -101,12 +112,12 @@ const ModalAddJobPost = (props) => {
                             <div className="bg-white-2 h-100 px-11 pt-11 pb-12">
                                 <h5 className="mb-6">Job Information</h5>
                                 <Formik
-                                    initialValues={jobFormInitialValues}
-                                    enableReinitialize={true}
+                                    initialValues={initialValues}
                                     validationSchema={jobFormValidationSchema}
                                     onSubmit={handleJobFormSubmit}
+                                    enableReinitialize={true}
                                 >
-                                    {({ isSubmitting, setFieldValue }) => (
+                                    {({ isSubmitting, setFieldValue, dirty }) => (
                                         <Form>
                                             <div className="form-group">
                                                 <label>Job Title</label>
@@ -192,7 +203,7 @@ const ModalAddJobPost = (props) => {
                                             <div className="form-group">
                                                 <label>Required Skills</label>
                                                 <TagsInput
-                                                    value={jobFormInitialValues.required_skills}
+                                                    value={initialValues.required_skills}
                                                     onChange={(newSkills) => setFieldValue("required_skills", newSkills)}
                                                     name="required_skills"
                                                     placeHolder="Enter skills and press enter"
@@ -217,7 +228,7 @@ const ModalAddJobPost = (props) => {
                                                     className="btn btn-primary"
                                                     disabled={isSubmitting}
                                                 >
-                                                    Submit
+                                                    {isEdit ? "Update" : "Submit"}
                                                 </button>
                                             </div>
                                         </Form>

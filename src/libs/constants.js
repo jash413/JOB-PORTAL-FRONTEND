@@ -28,5 +28,6 @@ export const REQ = {
   GET_EMPLOYERS: SERVER + "/api/v1/employers/:id",
   UPDATE_EMP_PROFILE: SERVER + "/api/v1/auth/edit-profile",
   CREATE_JOBPOST: SERVER + "/api/v1/job-posts",
+  UPDATE_JOBPOST: SERVER + "/api/v1/job-posts/:id",
   GET_JOBPOST_RECORDS: SERVER + "/api/v1/job-posts/get-job-posts",
 };

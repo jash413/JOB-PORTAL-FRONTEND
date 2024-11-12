@@ -20,7 +20,6 @@ const EmployeProfile = () => {
   const [editMode, setEditMode] = useState(false);
   const [cmpCode, setCmpCode] = useState(null);
   const { setCompanyRegistered } = gContext;
-  console.log(gContext.companyRegistered, "employer");
 
   const togglePassword = () => {
     setShowPass(!showPass);
@@ -161,7 +160,7 @@ const EmployeProfile = () => {
   return (
     <>
       <Tab.Container id="left-tabs-example" defaultActiveKey="one">
-        <div className="bg-white rounded-4 shadow-9">
+        <div className="bg-white rounded-4 w-100">
           {/* <!-- Tab Section Start --> */}
           <Nav
             className="nav border-bottom border-mercury pl-12"
@@ -185,10 +184,10 @@ const EmployeProfile = () => {
             </li>
           </Nav>
           {/* <!-- Tab Content --> */}
-          <Tab.Content>
+          <Tab.Content className="w-100">
             <Tab.Pane eventKey="one">
               {/* <!-- Excerpt Start --> */}
-              <div className="container my-5">
+              <div className="pr-xl-11 p-5 pl-xs-12 pt-9 pb-11">
                 <div className="d-flex justify-content-between align-items-center">
                   <h4 className="mb-4">Company Profile</h4>
                   {!editMode && empRegistered && (

@@ -643,7 +643,7 @@ const CandidateProfile = () => {
                     <div className="pl-lg-5 d-flex justify-content-start align-items-center">
                       {/* <!-- Top Start --> */}
                       <div className="bg-white shadow-9 rounded-4 w-100">
-                        <div className="px-5 border-bottom border-mercury w-100">
+                        <div className="py-5 border-bottom border-mercury w-100">
                           <div className="d-flex justify-content-center align-items-center">
                             <EmployeProfile />
                           </div>
