@@ -34,7 +34,7 @@ const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState(
     typeof window !== "undefined" ? localStorage.getItem("user") : null
   );
-
+  const [rememberMe, setRememberMe] = useState(false);
   const [header, setHeader] = useState({
     theme: "light",
     bgClass: "default",
@@ -250,6 +250,8 @@ const GlobalProvider = ({ children }) => {
         fetchExperienceDetails,
         companyRegistered,
         setCompanyRegistered,
+        rememberMe,
+        setRememberMe,
       }}
     >
       {children}
