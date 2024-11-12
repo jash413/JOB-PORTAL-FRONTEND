@@ -122,3 +122,12 @@ export const EmployerValidationSchema = Yup.object({
   emp_loca: Yup.string().required("Location is required"),
   emp_addr: Yup.string().required("Address is required"),
 });
+
+export const jobFormValidationSchema = Yup.object().shape({
+  job_title: Yup.string().required("Job title is required"),
+  job_description: Yup.string().required("Job description is required"),
+  job_cate: Yup.string().required("Job category is required"),
+  job_location: Yup.string().required("Job location is required"),
+  salary_range: Yup.string().required("Salary range is required"),
+  required_skills: Yup.array().min(1, "At least one skill is required"),
+});

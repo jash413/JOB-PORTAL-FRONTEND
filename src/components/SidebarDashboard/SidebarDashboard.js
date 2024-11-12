@@ -21,7 +21,10 @@ const Sidebar = () => {
               type="button"
               className="btn btn-primary btn-xl w-100 text-uppercase"
               onClick={() => {
-                gContext.toggleJobPostModalModal();
+                gContext.setJobPostModal({
+                  visible: true,
+                  data: null,
+                });
               }}
             >
               <span className="mr-5 d-inline-block">+</span>Post a new job
