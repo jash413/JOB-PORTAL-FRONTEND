@@ -7,7 +7,8 @@ export const useFetchExperienceDetails = () => {
   const [experienceData, setExperienceData] = useState([]);
 
   const fetchExperienceDetails = async () => {
-    const token = localStorage.getItem("authToken");
+    let token =
+      sessionStorage.getItem("authToken") || localStorage.getItem("authToken");
 
     if (!token) {
       toast.error("Please log in again.");

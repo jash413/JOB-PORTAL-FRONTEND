@@ -36,8 +36,13 @@ const ModalSignIn = (props) => {
     setShowPass(!showPass);
   };
 
+  const handleRememberMeChange = () => {
+    gContext.setRememberMe(!gContext.rememberMe); // Toggle the Remember Me checkbox
+  };
+
   const sendPhoneOtp = async () => {
-    const token = localStorage.getItem("authToken");
+    const token =
+      sessionStorage.getItem("authToken") || localStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -121,7 +126,8 @@ const ModalSignIn = (props) => {
   };
 
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       toast.error("Please log in again.");
       setVerificationStep(null);
@@ -167,7 +173,13 @@ const ModalSignIn = (props) => {
         });
         const { email_ver_status, phone_ver_status } = response.user;
         const token = response.token;
-        localStorage.setItem("authToken", token);
+        if (gContext?.rememberMe) {
+          localStorage.setItem("authToken", token);
+          localStorage.setItem("user", JSON.stringify(response?.user)); // Storing user data
+        } else {
+          sessionStorage.setItem("authToken", token);
+          sessionStorage.setItem("user", JSON.stringify(response?.user)); // For session storage (not persistent)
+        }
         gContext.setUser(JSON.stringify(response?.user));
         gContext.setToken(token);
         if (phone_ver_status === 0) {
@@ -404,6 +416,8 @@ const ModalSignIn = (props) => {
                             className="d-none"
                             type="checkbox"
                             id="terms-check"
+                            checked={gContext?.rememberMe}
+                            onChange={handleRememberMeChange}
                           />
                           <span className="checkbox mr-5"></span>
                           <span className="font-size-3 mb-0 line-height-reset mb-1 d-block">

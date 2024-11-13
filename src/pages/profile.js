@@ -53,7 +53,9 @@ const CandidateProfile = () => {
   };
 
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem("authToken");
+    let token =
+      sessionStorage.getItem("authToken") || localStorage.getItem("authToken");
+
     if (!token) {
       toast.error("Please log in again.");
       return;
@@ -130,7 +132,9 @@ const CandidateProfile = () => {
     },
     validationSchema: changePasswordValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      const token = localStorage.getItem("authToken");
+      let token =
+        sessionStorage.getItem("authToken") ||
+        localStorage.getItem("authToken");
       if (!token) {
         toast.error("Authentication required. Please log in.");
         setSubmitting(false);
