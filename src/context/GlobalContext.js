@@ -166,6 +166,8 @@ const GlobalProvider = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("user");
     setToken(null);
     setUser(null);
     navigate("/");

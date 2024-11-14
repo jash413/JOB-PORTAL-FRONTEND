@@ -37,26 +37,30 @@ const Footer = () => {
               >
                 {/* <!-- cta-btns start --> */}
                 <div className="btns d-flex justify-content-xl-end justify-content-center align-items-xl-center flex-wrap h-100  mx-n4">
-                  <a
-                    className="btn btn-outline-gallery btn-xl mx-4 mt-6 text-uppercase"
-                    href="/#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      gContext.toggleSignInModal();
-                    }}
-                  >
-                    Log in
-                  </a>
-                  <a
-                    className="btn btn-green btn-h-60 btn-xl mx-4 mt-6 text-uppercase"
-                    href="/#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      gContext.toggleSignUpModal();
-                    }}
-                  >
-                    Register
-                  </a>
+                  {!gContext.token && (
+                    <>
+                      <a
+                        className="btn btn-outline-gallery btn-xl mx-4 mt-6 text-uppercase"
+                        href="/#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          gContext.toggleSignInModal();
+                        }}
+                      >
+                        Log in
+                      </a>
+                      <a
+                        className="btn btn-green btn-h-60 btn-xl mx-4 mt-6 text-uppercase"
+                        href="/#"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          gContext.toggleSignUpModal();
+                        }}
+                      >
+                        Register
+                      </a>
+                    </>
+                  )}
                 </div>
                 {/* <!-- cta-btns end --> */}
               </div>
