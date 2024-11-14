@@ -30,4 +30,8 @@ export const REQ = {
   CREATE_JOBPOST: SERVER + "/api/v1/job-posts",
   UPDATE_JOBPOST: SERVER + "/api/v1/job-posts/:id",
   GET_JOBPOST_RECORDS: SERVER + "/api/v1/job-posts/get-job-posts",
+  GET_APPLICATIONS_EMPLOYER:
+    SERVER + "/api/v1/job-applications/for-each-employer",
+  UPDATE_APPLICATION_STATUS: (applicationId) =>
+    SERVER + `/api/v1/job-applications/application/${applicationId}/status`,
 };
