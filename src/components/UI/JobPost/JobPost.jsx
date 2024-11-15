@@ -140,7 +140,7 @@ const JobPost = () => {
             <div className="mt-25 mt-lg-31">
                 <div className="container">
                     <div className="mb-5">
-                        <div className="row mb-11 align-items-start">
+                        <div className="row mb-5 align-items-start">
                             <div className="col-lg-12 mb-lg-0 mb-4">
                                 <h3 className="font-size-6 mb-0">
                                     Posted Jobs ({jobs.length})
@@ -375,19 +375,19 @@ const JobPost = () => {
                         <div className="d-flex justify-content-between align-items-center mt-4">
                             <button
                                 className="btn btn-light d-flex align-items-center justify-content-center"
-                                disabled={!pagination.hasPreviousPage}
-                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                disabled={!pagination?.hasPreviousPage}
+                                onClick={() => handlePageChange(pagination?.currentPage - 1)}
                             >
                                 <span className="mr-3">
                                     <FaChevronLeft />
                                 </span>
                                 Previous
                             </button>
-                            <span>{`Page ${pagination.currentPage} of ${pagination.totalPages}`}</span>
+                            <span>{`Page ${pagination?.currentPage} of ${pagination?.totalPages}`}</span>
                             <button
                                 className="btn btn-light d-flex align-items-center justify-content-center"
-                                disabled={!pagination.hasNextPage}
-                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                disabled={!pagination?.hasNextPage}
+                                onClick={() => handlePageChange(pagination?.currentPage + 1)}
                             >
                                 Next
                                 <span className="ml-3">

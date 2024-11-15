@@ -1,15 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
-import ProfileSidebar from "../ProfileSidebar";
 
-import imgF1 from "../../assets/image/l2/png/featured-job-logo-1.png";
-import imgF2 from "../../assets/image/l1/png/feature-brand-1.png";
-import imgF3 from "../../assets/image/svg/harvard.svg";
-import imgF4 from "../../assets/image/svg/mit.svg";
 import imgL from "../../assets/image/svg/icon-loaction-pin-black.svg";
+import imgP from "../../assets/image/l3/png/pro-img.png";
+import { GrScorecard } from "react-icons/gr";
+import { REQ } from "../../libs/constants";
+import axiosInterceptors from "../../libs/integration/axiosInterceptors";
+import { toast } from "react-toastify";
+import { calculateDuration } from "../../utils";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -24,11 +25,29 @@ const ModalStyled = styled(Modal)`
   }
 `;
 
-const ModalSignIn = (props) => {
+const ModalApplication = (props) => {
   const gContext = useContext(GlobalContext);
 
   const handleClose = () => {
     gContext.toggleApplicationModal();
+  };
+
+  const applicationId = gContext.applicationModalVisible.data?.id;
+  const applicantDetails = gContext.applicationModalVisible.data?.candidate;
+
+  const updateApplicationStatus = async (applicationId, status) => {
+    try {
+      await axiosInterceptors.put(
+        REQ.UPDATE_APPLICATION_STATUS(applicationId),
+        { status }
+      );
+      toast.success(`Application ${status} successfully.`);
+      gContext.toggleApplicationModal();
+      // fetchJobs();
+    } catch (error) {
+      console.error(`Error updating application status to ${status}:`, error);
+      toast.error(`Failed to update application status to ${status}.`);
+    }
   };
 
   return (
@@ -36,7 +55,7 @@ const ModalSignIn = (props) => {
       {...props}
       size="lg"
       centered
-      show={gContext.applicationModalVisible}
+      show={gContext.applicationModalVisible.visible}
       onHide={gContext.toggleApplicationModal}
     >
       <Modal.Body className="p-0">
@@ -52,94 +71,148 @@ const ModalSignIn = (props) => {
             <div className="row no-gutters">
               {/* <!-- Left Sidebar Start --> */}
               <div className="col-12 col-xl-3 col-lg-4 col-md-5 mb-13 mb-lg-0 border-right border-mercury">
-                <ProfileSidebar />
+                <div className="pl-lg-5">
+                  {/* <!-- Top Start --> */}
+                  <div className="bg-white shadow-9 rounded-4">
+                    <div className="px-5 text-center border-bottom border-mercury">
+                      <div className="py-11">
+                        <Link to="/#" className="mb-4">
+                          <img className="circle-54" src={imgP} alt="" />
+                        </Link>
+                        <h4 className="mb-0">
+                          <p className="text-black-2 font-size-6 font-weight-semibold">
+                            {applicantDetails?.can_name}
+                          </p>
+                        </h4>
+                        <p className="mb-8">
+                          <p className="text-gray font-size-4">
+                            Product Designer
+                          </p>
+                        </p>
+                        <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
+                          <Link
+                            to="/#"
+                            className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                          >
+                            <i className="fab fa-linkedin-in"></i>
+                          </Link>
+                          <Link
+                            to="/#"
+                            className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                          >
+                            <i className="fab fa-facebook-f"></i>
+                          </Link>
+                          <Link
+                            to="/#"
+                            className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                          >
+                            <i className="fab fa-twitter"></i>
+                          </Link>
+                          <Link
+                            to="/#"
+                            className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                          >
+                            <i className="fab fa-dribbble"></i>
+                          </Link>
+                          <Link
+                            to="/#"
+                            className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
+                          >
+                            <i className="fab fa-behance"></i>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <!-- Top End --> */}
+                    {/* <!-- Bottom Start --> */}
+                    <div className="px-9 pt-lg-5 pt-9 pt-xl-9 pb-5">
+                      <h5 className="text-black-2 mb-8 font-size-5">
+                        Contact Info
+                      </h5>
+                      {/* <!-- Single List --> */}
+                      <div className="mb-7">
+                        <p className="font-size-4 mb-0">Location</p>
+                        <h5 className="font-size-4 font-weight-semibold mb-0 text-black-2 text-break">
+                          New York , USA
+                        </h5>
+                      </div>
+                      {/* <!-- Single List --> */}
+                      {/* <!-- Single List --> */}
+                      <div className="mb-7">
+                        <p className="font-size-4 mb-0">E-mail</p>
+                        <div className="d-flex align-items-start justify-content-between w-100">
+                          <h5 className="font-size-4 font-weight-semibold mb-0">
+                            <p className="text-black-2 text-break">
+                              {applicantDetails?.can_email}
+                            </p>
+                          </h5>
+                        </div>
+                      </div>
+                      {/* <!-- Single List --> */}
+                      {/* <!-- Single List --> */}
+                      <div className="mb-7">
+                        <p className="font-size-4 mb-0">Phone</p>
+                        <div className="d-flex align-items-center justify-content-between w-100">
+                          <h5 className="font-size-4 font-weight-semibold mb-0">
+                            <span className="text-black-2 text-break">
+                              {applicantDetails?.can_mobn}
+                            </span>
+                          </h5>
+                        </div>
+                      </div>
+                      {/* <!-- Single List --> */}
+                      {/* <!-- Single List --> */}
+                      <div className="mb-7">
+                        <p className="font-size-4 mb-0">Website Linked</p>
+                        <h5 className="font-size-4 font-weight-semibold mb-0">
+                          <Link to="/#" className="text-break">
+                            www.nameac.com
+                          </Link>
+                        </h5>
+                      </div>
+                      {/* <!-- Single List --> */}
+                    </div>
+                    {/* <!-- Bottom End --> */}
+                  </div>
+                </div>
               </div>
               {/* <!-- Left Sidebar End --> */}
               {/* <!-- Middle Content --> */}
               <div className="col-12 col-xl-6 col-lg-8 col-md-7 order-2 order-lg-1 border-right border-mercury">
                 <div className="bg-white rounded-4 overflow-auto h-1173">
                   {/* <!-- Excerpt Start --> */}
-                  <div className="pr-xl-0 pr-xxl-14 p-5 px-xs-12 pt-7 pb-5">
-                    <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
-                      About
-                    </h4>
-                    <p className="font-size-4 mb-8">
-                      A talented professional with an academic background in IT
-                      and proven commercial development experience as C++
-                      developer since 1999. Has a sound knowledge of the
-                      software development life cycle. Was involved in more than
-                      140 software development outsourcing projects.
-                    </p>
-                    <p className="font-size-4 mb-8">
-                      Programming Languages: C/C++, .NET C++, Python, Bash,
-                      Shell, PERL, Regular expressions, Python, Active-script.
-                    </p>
-                  </div>
+                  {applicantDetails && applicantDetails?.can_about !== "" && (
+                    <div className="pr-xl-0 pr-xxl-14 p-5 px-xs-12 pt-7 pb-5">
+                      <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
+                        About
+                      </h4>
+                      <p className="font-size-4 mb-8">
+                        {applicantDetails?.can_about}
+                      </p>
+                    </div>
+                  )}
                   {/* <!-- Excerpt End --> */}
                   {/* <!-- Skills --> */}
-                  <div className="border-top border-mercury pr-xl-0 pr-xxl-14 p-5 pl-xs-12 pt-7 pb-5">
-                    <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
-                      Skills
-                    </h4>
-                    <ul className="list-unstyled d-flex align-items-center flex-wrap">
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Agile
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Wireframing
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Prototyping
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Information
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Waterfall Model
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          New Layout
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/#"
-                          className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center"
-                        >
-                          Browsing
-                        </Link>
-                      </li>
-                    </ul>
-                  </div>
+                  {applicantDetails && applicantDetails?.can_skill !== "" && (
+                    <div className="border-top border-mercury pr-xl-0 pr-xxl-14 p-5 pl-xs-12 pt-7 pb-5">
+                      <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
+                        Skills
+                      </h4>
+                      {applicantDetails?.can_skill.split(",").length > 0 && (
+                        <ul className="list-unstyled d-flex align-items-center flex-wrap">
+                          {applicantDetails?.can_skill
+                            ?.split(",")
+                            ?.map((skills) => (
+                              <li>
+                                <p className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center">
+                                  {skills}
+                                </p>
+                              </li>
+                            ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
                   {/* <!-- Skills End --> */}
                   {/* <!-- Card Section Start --> */}
                   <div className="border-top border-mercury p-5 pl-xs-12 pt-7 pb-5">
@@ -147,102 +220,58 @@ const ModalSignIn = (props) => {
                       Work Exprerience
                     </h4>
                     {/* <!-- Single Card --> */}
-                    <div className="w-100">
-                      <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                        <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                          <img src={imgF1} alt="" />
-                        </div>
-                        <div className="w-100 mt-n2">
-                          <h3 className="mb-0">
-                            <Link
-                              to="/#"
-                              className="font-size-5 font-weight-semibold text-black-2"
-                            >
-                              Lead Product Designer
-                            </Link>
-                          </h3>
-                          <Link
-                            to="/#"
-                            className="font-size-4 text-default-color line-height-2"
-                          >
-                            Airabnb
-                          </Link>
-                          <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              Jun 2017 - April 2020- 3 years
-                            </Link>
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              <span
-                                className="mr-4"
-                                css={`
-                                  margin-top: -2px;
-                                `}
-                              >
-                                <img src={imgL} alt="" />
-                              </span>
-                              New York, USA
-                            </Link>
+                    {applicantDetails &&
+                    applicantDetails?.candidate_exp?.length > 0 ? (
+                      applicantDetails?.candidate_exp?.map((exp, index) => {
+                        const startDate = new Date(exp.job_stdt);
+                        const endDate = new Date(exp.job_endt);
+                        const duration = `${startDate.toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )} - ${endDate.toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })}`;
+                        const totalDuration = calculateDuration(
+                          exp.job_stdt,
+                          exp.job_endt
+                        );
+                        return (
+                          <div className="w-100 mb-9" key={index}>
+                            <div className="d-flex align-items-center px-5 py-2 flex-wrap flex-sm-nowrap border rounded">
+                              <div className="w-100 mt-n2">
+                                <h3 className="mb-0 d-flex align-items-center justify-content-md-between flex-wrap mt-5">
+                                  <p className="font-size-6 text-black-2">
+                                    {exp?.exp_desg}
+                                  </p>
+                                </h3>
+                                <p className="font-size-4 text-default-color line-height-2">
+                                  {exp?.emp_name}
+                                </p>
+                                <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                                  <p className="font-size-3 text-gray mr-5">
+                                    {`${duration} - ${totalDuration}`}
+                                  </p>
+                                  {/* <p className="font-size-3 text-gray">
+                                    <span className="mr-4">
+                                      <img src={imgL} alt="Location Icon" />
+                                    </span>
+                                    {exp?.location}
+                                  </p> */}
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- Single Card End --> */}
-                    {/* <!-- Single Card --> */}
-                    <div className="w-100">
-                      <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                        <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                          <img src={imgF2} alt="" />
-                        </div>
-                        <div className="w-100 mt-n2">
-                          <h3 className="mb-0">
-                            <Link
-                              to="/#"
-                              className="font-size-5 font-weight-semibold text-black-2"
-                            >
-                              Senior UI/UX Designer
-                            </Link>
-                          </h3>
-                          <Link
-                            to="/#"
-                            className="font-size-4 text-default-color line-height-2"
-                          >
-                            Google Inc
-                          </Link>
-                          <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              Jun 2017 - April 2020- 3 years
-                            </Link>
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              <span
-                                className="mr-4"
-                                css={`
-                                  margin-top: -2px;
-                                `}
-                              >
-                                <img src={imgL} alt="" />
-                              </span>
-                              New York, USA
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                        );
+                      })
+                    ) : (
+                      <p className="font-size-4 text-gray">
+                        No experience data available.
+                      </p>
+                    )}
                     {/* <!-- Single Card End --> */}
                   </div>
                   {/* <!-- Card Section End --> */}
@@ -252,151 +281,50 @@ const ModalSignIn = (props) => {
                       Education
                     </h4>
                     {/* <!-- Single Card --> */}
-                    <div className="w-100">
-                      <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                        <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                          <img src={imgF3} alt="" />
-                        </div>
-                        <div className="w-100 mt-n2">
-                          <h3 className="mb-0">
-                            <Link
-                              to="/#"
-                              className="font-size-5 font-weight-semibold text-black-2"
-                            >
-                              Masters in Art Design
-                            </Link>
-                          </h3>
-                          <Link
-                            to="/#"
-                            className="font-size-4 text-default-color line-height-2"
-                          >
-                            Harvard University
-                          </Link>
-                          <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              Jun 2017 - April 2020- 3 years
-                            </Link>
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              <span
-                                className="mr-4"
-                                css={`
-                                  margin-top: -2px;
-                                `}
-                              >
-                                <img src={imgL} alt="" />
-                              </span>
-                              Brylin, USA
-                            </Link>
+                    {applicantDetails &&
+                    applicantDetails?.candidate_edu?.length > 0 ? (
+                      applicantDetails?.candidate_edu?.map((edu, i) => (
+                        <div key={i} className="w-100 mb-9">
+                          <div className="d-flex align-items-center px-5 py-2 flex-wrap flex-sm-nowrap border rounded">
+                            {/* <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
+                                    <img src={imgB3} alt="" />
+                                  </div> */}
+                            <div className="w-100 mt-n2">
+                              <h3 className="mb-0 d-flex align-items-center justify-content-md-between flex-wrap mt-5">
+                                <p className="font-size-6 text-black-2">
+                                  {edu?.can_edu} in {edu?.can_stre}
+                                </p>
+                              </h3>
+                              <p className="font-size-4 text-default-color line-height-2">
+                                {edu?.can_scho}
+                              </p>
+                              <div className="d-flex align-items-center justify-content-md-between flex-wrap">
+                                <p className="font-size-3 text-gray mr-5">
+                                  {edu?.can_pasy}
+                                </p>
+                                <p className="font-size-3 text-gray">
+                                  <span
+                                    className="mr-4"
+                                    css={`
+                                      margin-top: -2px;
+                                    `}
+                                  >
+                                    <GrScorecard />
+                                  </span>
+                                  {edu?.can_cgpa} CGPA / {edu?.can_perc} %
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    {/* <!-- Single Card End --> */}
-                    {/* <!-- Single Card --> */}
-                    <div className="w-100">
-                      <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                        <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                          <img className="circle-72" src={imgF4} alt="" />
-                        </div>
-                        <div className="w-100 mt-n2">
-                          <h3 className="mb-0">
-                            <Link
-                              to="/#"
-                              className="font-size-5 font-weight-semibold text-black-2"
-                            >
-                              Bachelor in Software Engineering{" "}
-                            </Link>
-                          </h3>
-                          <Link
-                            to="/#"
-                            className="font-size-4 text-default-color line-height-2"
-                          >
-                            Manipal Institute of Technology
-                          </Link>
-                          <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              Fed 2012 - April 2016 - 4 years
-                            </Link>
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              <span
-                                className="mr-4"
-                                css={`
-                                  margin-top: -2px;
-                                `}
-                              >
-                                <img src={imgL} alt="" />
-                              </span>
-                              New York, USA
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* <!-- Single Card End --> */}
-                    {/* <!-- Single Card --> */}
-                    <div className="w-100">
-                      <div className="d-flex align-items-center pr-11 mb-9 flex-wrap flex-sm-nowrap">
-                        <div className="square-72 d-block mr-8 mb-7 mb-sm-0">
-                          <img className="circle-72" src={imgF4} alt="" />
-                        </div>
-                        <div className="w-100 mt-n2">
-                          <h3 className="mb-0">
-                            <Link
-                              to="/#"
-                              className="font-size-5 font-weight-semibold text-black-2"
-                            >
-                              Bachelor in Software Engineering{" "}
-                            </Link>
-                          </h3>
-                          <Link
-                            to="/#"
-                            className="font-size-4 text-default-color line-height-2"
-                          >
-                            Manipal Institute of Technology
-                          </Link>
-                          <div className="d-flex align-items-center justify-content-md-between flex-wrap">
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              Fed 2012 - April 2016 - 4 years
-                            </Link>
-                            <Link
-                              to="/#"
-                              href=""
-                              className="font-size-3 text-gray"
-                            >
-                              <span
-                                className="mr-4"
-                                css={`
-                                  margin-top: -2px;
-                                `}
-                              >
-                                <img src={imgL} alt="" />
-                              </span>
-                              New York, USA
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    ) : (
+                      <>
+                        <p className="font-size-4">
+                          No education details found.
+                        </p>
+                      </>
+                    )}
                     {/* <!-- Single Card End --> */}
                   </div>
                   {/* <!-- Card Section End --> */}
@@ -407,9 +335,19 @@ const ModalSignIn = (props) => {
               <div className="col-12 col-xl-3 order-3 order-lg-2 bg-default-2">
                 <div className="text-center mb-13 mb-lg-0 mt-12">
                   <button className="btn btn-primary btn-xl mb-7 d-block mx-auto text-uppercase">
-                    Contact
+                    <Link
+                      className="w-100 text-white"
+                      to={`mailto:${applicantDetails?.can_email}`}
+                    >
+                      Contact
+                    </Link>
                   </button>
-                  <button className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase">
+                  <button
+                    onClick={() =>
+                      updateApplicationStatus(applicationId, "rejected")
+                    }
+                    className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase"
+                  >
                     Reject
                   </button>
                 </div>
@@ -423,4 +361,4 @@ const ModalSignIn = (props) => {
   );
 };
 
-export default ModalSignIn;
+export default ModalApplication;

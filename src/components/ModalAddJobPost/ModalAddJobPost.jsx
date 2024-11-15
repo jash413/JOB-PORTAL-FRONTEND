@@ -54,12 +54,12 @@ const ModalAddJobPost = (props) => {
                 );
                 toast.success("Job post created successfully.");
             }
-            fetchJobs();
-            handleClose();
+            gContext.toggleJobPostModalModal();
         } catch (error) {
             console.error("API error:", error);
         } finally {
             actions.setSubmitting(false);
+            fetchJobs();
         }
     };
 
@@ -89,6 +89,7 @@ const ModalAddJobPost = (props) => {
             required_skills: isEdit?.required_skills?.split(",") || [],
         });
     }, [isEdit]);
+    console.log(gContext.jobPostModal, "jjjjj")
 
     return (
         <ModalStyled

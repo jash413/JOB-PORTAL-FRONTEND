@@ -46,6 +46,8 @@ const CandidateProfile = () => {
 
   const [mappedExperienceData, setMappedExperienceData] = useState([]);
   const [selectedExperience, setSelectedExperience] = useState(null);
+  const [canBio, setCanBio] = useState(null);
+  const [canSkills, setCanSkills] = useState(null);
 
   const handleEditClick = (exp) => {
     setSelectedExperience(exp);
@@ -179,6 +181,12 @@ const CandidateProfile = () => {
 
       if (response?.can_code) {
         setCandidateRegistered(true);
+      }
+      if (response?.can_about) {
+        setCanBio(response?.can_about);
+      }
+      if (response?.can_skill) {
+        setCanSkills(response?.can_skill);
       }
     } catch (error) {
       console.error("Error fetching candidate details:", error);
@@ -314,10 +322,36 @@ const CandidateProfile = () => {
                           <Tab.Pane eventKey="one">
                             {/* <!-- Excerpt Start --> */}
 
+                            {/* <!-- Excerpt Start --> */}
+                            {canBio && canBio !== "" && (
+                              <div className="pr-xl-0 pr-xxl-14 p-5 px-xs-12 pt-7 pb-5">
+                                <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
+                                  About
+                                </h4>
+                                <p className="font-size-4 mb-8">{canBio}</p>
+                              </div>
+                            )}
                             {/* <!-- Excerpt End --> */}
                             {/* <!-- Skills --> */}
+                            {canSkills && canSkills !== "" && (
+                              <div className="border-top border-mercury pr-xl-0 pr-xxl-14 p-5 pl-xs-12 pt-7 pb-5">
+                                <h4 className="font-size-6 font-weight-semibold mb-7 mt-5 text-black-2">
+                                  Skills
+                                </h4>
+                                {canSkills.split(",").length > 0 && (
+                                  <ul className="list-unstyled d-flex align-items-center flex-wrap">
+                                    {canSkills.split(",").map((skills) => (
+                                      <li>
+                                        <p className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center">
+                                          {skills}
+                                        </p>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            )}
 
-                            {/* <!-- Skills End --> */}
                             {/* <!-- Card Section Start --> */}
                             <div className="border-top p-5 pt-7 pb-5">
                               <div className="w-100 d-flex justify-content-between align-items-center">
