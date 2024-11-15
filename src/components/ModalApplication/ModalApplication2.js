@@ -23,7 +23,7 @@ const ModalApplication = (props) => {
         {...props}
         size="lg"
         centered
-        show={gContext.applicationModalVisible}
+        show={gContext.applicationModalVisible.visible}
         onHide={gContext.toggleApplicationModal}
         className="mb-5"
       >

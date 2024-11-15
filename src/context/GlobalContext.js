@@ -6,7 +6,10 @@ const GlobalContext = React.createContext();
 const GlobalProvider = ({ children }) => {
   const [themeDark, setThemeDark] = useState(false);
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
-  const [applicationModalVisible, setApplicationModalVisible] = useState(false);
+  const [applicationModalVisible, setApplicationModalVisible] = useState({
+    visible: false,
+    data: null,
+  });
   const [signInModalVisible, setSignInModalVisible] = useState(false);
   const [forgetPasswordModalVisible, setForgetPasswordModalVisible] = useState(
     false
@@ -108,7 +111,11 @@ const GlobalProvider = ({ children }) => {
   };
 
   const toggleApplicationModal = () => {
-    setApplicationModalVisible(!applicationModalVisible);
+    setApplicationModalVisible((prevState) => ({
+      ...prevState,
+      visible: !prevState.visible,
+      data: null,
+    }));
   };
 
   const toggleSignInModal = () => {
@@ -213,6 +220,7 @@ const GlobalProvider = ({ children }) => {
         videoModalVisible,
         toggleVideoModal,
         applicationModalVisible,
+        setApplicationModalVisible,
         toggleApplicationModal,
         signInModalVisible,
         toggleSignInModal,

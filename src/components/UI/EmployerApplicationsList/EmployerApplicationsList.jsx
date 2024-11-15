@@ -138,7 +138,7 @@ const EmployerApplicationsList = () => {
             <div className="mt-25 mt-lg-31">
                 <div className="container">
                     <div className="mb-5">
-                        <div className="row mb-11 align-items-start">
+                        <div className="row mb-5 align-items-start">
                             <div className="col-lg-12 mb-lg-0 mb-4">
                                 <h3 className="font-size-6 mb-0">
                                     Applications ({jobApplications?.length || "0"})
@@ -262,8 +262,8 @@ const EmployerApplicationsList = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {jobApplications.length > 0 ? (
-                                                jobApplications.map((job, id) => (
+                                            {jobApplications && jobApplications?.length > 0 ? (
+                                                jobApplications?.map((job, id) => (
                                                     <tr className="border border-color-2" key={id}>
                                                         <th scope="row" className="pl-6 border-0 py-7 min-width-px-235">
                                                             <h3 className="font-size-4 mb-0 font-weight-semibold text-black-2">
@@ -292,7 +292,10 @@ const EmployerApplicationsList = () => {
                                                             <h3
                                                                 onClick={(e) => {
                                                                     e.preventDefault();
-                                                                    gContext.toggleApplicationModal();
+                                                                    gContext.setApplicationModalVisible({
+                                                                        visible: true,
+                                                                        data: job,
+                                                                    });
                                                                 }}
                                                                 className="font-size-3 font-weight-bold text-black-2 text-uppercase">
                                                                 View Application
@@ -337,19 +340,19 @@ const EmployerApplicationsList = () => {
                         <div className="d-flex justify-content-between align-items-center mt-4">
                             <button
                                 className="btn btn-light d-flex align-items-center justify-content-center"
-                                disabled={!pagination.hasPreviousPage}
-                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                disabled={!pagination?.hasPreviousPage}
+                                onClick={() => handlePageChange(pagination?.currentPage - 1)}
                             >
                                 <span className="mr-3">
                                     <FaChevronLeft />
                                 </span>
                                 Previous
                             </button>
-                            <span>{`Page ${pagination.currentPage} of ${pagination.totalPages}`}</span>
+                            <span>{`Page ${pagination?.currentPage} of ${pagination?.totalPages}`}</span>
                             <button
                                 className="btn btn-light d-flex align-items-center justify-content-center"
-                                disabled={!pagination.hasNextPage}
-                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                disabled={!pagination?.hasNextPage}
+                                onClick={() => handlePageChange(pagination?.currentPage + 1)}
                             >
                                 Next
                                 <span className="ml-3">

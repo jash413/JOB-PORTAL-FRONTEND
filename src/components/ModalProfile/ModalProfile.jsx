@@ -10,6 +10,7 @@ import { FaCamera, FaUpload } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
 import { VscChromeClose } from "react-icons/vsc";
 import { toast } from "react-toastify";
+import { TagsInput } from "react-tag-input-component";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -123,6 +124,8 @@ const ModalProfile = (props) => {
     can_email: userDetails?.login_email || "",
     can_mobn: userDetails?.login_mobile || "",
     can_job_cate: "",
+    can_skill: [],
+    can_about: "",
     profileImage: null,
     resume: null,
   });
@@ -164,6 +167,8 @@ const ModalProfile = (props) => {
     formData.append("can_email", values.can_email);
     formData.append("can_mobn", values.can_mobn);
     formData.append("can_job_cate", values.can_job_cate);
+    formData.append("can_skill", values.can_skill.join(","));
+    formData.append("can_about", values.can_about);
 
     const currentDate = new Date().toISOString().split("T")[0];
     formData.append("reg_date", currentDate);
@@ -244,6 +249,8 @@ const ModalProfile = (props) => {
             can_email: response?.can_email || "",
             can_mobn: response?.can_mobn || "",
             can_job_cate: response?.can_job_cate || "",
+            can_skill: response?.can_skill?.split(",") || [],
+            can_about: response?.can_about || "",
             profileImage: null,
             resume: null,
           });
@@ -284,6 +291,7 @@ const ModalProfile = (props) => {
                   initialValues={initialValues}
                   validationSchema={canProfileValidationSchema}
                   onSubmit={handleSubmit}
+                  enableReinitialize={true}
                 >
                   {({ setFieldValue, isSubmitting, values }) => (
                     <Form>
@@ -368,6 +376,37 @@ const ModalProfile = (props) => {
                         </Field>
                         <ErrorMessage
                           name="can_job_cate"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>Skills</label>
+                        <TagsInput
+                          value={initialValues?.can_skill}
+                          onChange={(newSkills) => setFieldValue("can_skill", newSkills)}
+                          name="can_skill"
+                          placeHolder="Enter skills and press enter"
+                        />
+                        <ErrorMessage
+                          name="can_skill"
+                          component="div"
+                          className="text-danger"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>About</label>
+                        <Field
+                          as="textarea"
+                          name="can_about"
+                          placeholder="Write something about yourself...."
+                          className="form-control"
+                          style={{ resize: "none" }}
+                        />
+                        <ErrorMessage
+                          name="can_about"
                           component="div"
                           className="text-danger"
                         />
