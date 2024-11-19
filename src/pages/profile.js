@@ -85,6 +85,12 @@ const CandidateProfile = () => {
   useEffect(() => {
     fetchUserProfile();
     gContext.fetchExperienceDetails();
+  }, [gContext.user]);
+
+  useEffect(() => {
+    if (gContext.token) {
+      gContext.fetchExperienceDetails();
+    }
   }, []);
 
   useEffect(() => {
