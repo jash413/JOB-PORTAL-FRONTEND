@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
 import { GoogleLogin } from "@react-oauth/google";
+import { navigate } from "gatsby";
+import axios from "axios";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -46,9 +48,52 @@ const ModalSignUp = (props) => {
     }
   };
 
-  // Handle Google login success and failure
-  const handleGoogleSuccess = (response) => {
-    toast.success("Logged in with Google successfully!");
+  const handleGoogleSuccess = async (response) => {
+    const googleToken = response.credential;
+
+    if (!googleToken) {
+      toast.error("Failed to retrieve Google token");
+      return;
+    }
+
+    try {
+      localStorage.setItem("authToken", googleToken);
+
+      const res = await axios.post(REQ.GET_GOOGLE_USER, {
+        token: googleToken,
+        login_type: gContext.signUpModalVisible.type,
+      });
+      const user = await res?.data?.user;
+      const token = await res?.data?.token;
+      console.log(user, "user");
+
+      if (user) {
+        gContext.setUser(JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("authToken", token);
+        toast.success("Signed up with Google successfully!");
+        gContext.setUser(JSON.stringify(user));
+        if (
+          user.login_type === "EMP" &&
+          user.phone_ver_status === 1 &&
+          user.email_ver_status === 1 &&
+          user.user_approval_status === 1
+        ) {
+          navigate("/dashboard-main");
+        } else {
+          navigate("/profile");
+        }
+
+        // gContext.setUser(user);
+        gContext.toggleSignUpModal();
+      } else {
+        console.error("Invalid backend response structure:", res.data);
+        toast.error("Google sign-up failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error during Google sign-up:", error);
+      toast.error("An error occurred during Google sign-up!");
+    }
   };
 
   const handleGoogleFailure = (error) => {
@@ -103,40 +148,13 @@ const ModalSignUp = (props) => {
             </div>
             <div className="col-lg-7 col-md-6">
               <div className="bg-white-2 h-100 px-11 pt-11 pb-7">
-                <div className="row">
-                  <div className="col-4 col-xs-12">
-                    <a
-                      href="/#"
-                      className="font-size-4 font-weight-semibold position-relative text-white bg-allports h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                    >
-                      <i className="fab fa-linkedin pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                      <span className="d-none d-xs-block">
-                        Import from LinkedIn
-                      </span>
-                    </a>
-                  </div>
-                  <div className="col-4 col-xs-12">
-                    <a
-                      href="/#"
-                      className="font-size-4 font-weight-semibold position-relative text-white bg-poppy h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                    >
-                      <i className="fab fa-google pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                      <span className="d-none d-xs-block">
-                        Import from Google
-                      </span>
-                    </a>
-                  </div>
-                  <div className="col-4 col-xs-12">
-                    <a
-                      href="/#"
-                      className="font-size-4 font-weight-semibold position-relative text-white bg-marino h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                    >
-                      <i className="fab fa-facebook-square pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                      <span className="d-none d-xs-block">
-                        Import from Facebook
-                      </span>
-                    </a>
-                  </div>
+                <div className="row w-full">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleFailure}
+                    logo="path-to-your-logo"
+                    isSignedIn={true}
+                  />
                 </div>
                 <div className="or-devider">
                   <span className="font-size-3 line-height-reset">Or</span>
@@ -278,12 +296,6 @@ const ModalSignUp = (props) => {
                         >
                           Sign Up
                         </button>
-                        <GoogleLogin
-                          onSuccess={handleGoogleSuccess}
-                          onError={handleGoogleFailure}
-                          logo="path-to-your-logo"
-                          isSignedIn={true}
-                        />
                       </div>
 
                       <p className="font-size-4 text-center heading-default-color">

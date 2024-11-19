@@ -11,6 +11,7 @@ import { REQ } from "../../libs/constants";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { toast } from "react-toastify";
 import { calculateDuration } from "../../utils";
+import { useLocation } from "react-router-dom";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -27,13 +28,16 @@ const ModalStyled = styled(Modal)`
 
 const ModalApplication = (props) => {
   const gContext = useContext(GlobalContext);
+  const { pathname } = useLocation();
 
   const handleClose = () => {
     gContext.toggleApplicationModal();
   };
 
   const applicationId = gContext.applicationModalVisible.data?.id;
-  const applicantDetails = gContext.applicationModalVisible.data?.candidate;
+  const applicantDetails =
+    gContext.applicationModalVisible.data?.candidate ||
+    gContext.applicationModalVisible.data?.Candidate;
 
   const updateApplicationStatus = async (applicationId, status) => {
     try {
@@ -332,26 +336,28 @@ const ModalApplication = (props) => {
               </div>
               {/* <!-- Middle Content --> */}
               {/* <!-- Right Sidebar Start --> */}
-              <div className="col-12 col-xl-3 order-3 order-lg-2 bg-default-2">
-                <div className="text-center mb-13 mb-lg-0 mt-12">
-                  <button className="btn btn-primary btn-xl mb-7 d-block mx-auto text-uppercase">
-                    <Link
-                      className="w-100 text-white"
-                      to={`mailto:${applicantDetails?.can_email}`}
+              {pathname === "/dashboard-applicants" && (
+                <div className="col-12 col-xl-3 order-3 order-lg-2 bg-default-2">
+                  <div className="text-center mb-13 mb-lg-0 mt-12">
+                    <button className="btn btn-primary btn-xl mb-7 d-block mx-auto text-uppercase">
+                      <Link
+                        className="w-100 text-white"
+                        to={`mailto:${applicantDetails?.can_email}`}
+                      >
+                        Contact
+                      </Link>
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateApplicationStatus(applicationId, "rejected")
+                      }
+                      className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase"
                     >
-                      Contact
-                    </Link>
-                  </button>
-                  <button
-                    onClick={() =>
-                      updateApplicationStatus(applicationId, "rejected")
-                    }
-                    className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase"
-                  >
-                    Reject
-                  </button>
+                      Reject
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
               {/* <!-- Right Sidebar End --> */}
             </div>
           </div>
