@@ -34,4 +34,5 @@ export const REQ = {
     SERVER + "/api/v1/job-applications/for-each-employer",
   UPDATE_APPLICATION_STATUS: (applicationId) =>
     SERVER + `/api/v1/job-applications/application/${applicationId}/status`,
+  GET_GOOGLE_USER: SERVER + "/api/v1/auth/google",
 };

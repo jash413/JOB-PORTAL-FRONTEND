@@ -34,9 +34,16 @@ const GlobalProvider = ({ children }) => {
   const [token, setToken] = useState(
     typeof window !== "undefined" ? localStorage.getItem("authToken") : null
   );
+  // const [user, setUser] = useState(
+  //   typeof window !== "undefined" ? localStorage.getItem("user") : null
+  // );
+
   const [user, setUser] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("user") : null
+    typeof window !== "undefined" && localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null
   );
+
   const [rememberMe, setRememberMe] = useState(false);
   const [header, setHeader] = useState({
     theme: "light",
@@ -206,10 +213,15 @@ const GlobalProvider = ({ children }) => {
     localStorage.setItem("authToken", token);
   }, [token]);
 
+  // useEffect(() => {
+  //   localStorage.setItem("user", user);
+  // }, [user]);
   useEffect(() => {
-    localStorage.setItem("user", user);
+    if (user !== null) {
+      localStorage.setItem("user", user);
+    }
   }, [user]);
-
+  console.log("userGlobal", user);
   return (
     <GlobalContext.Provider
       value={{

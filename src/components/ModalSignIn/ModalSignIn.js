@@ -9,6 +9,8 @@ import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { loginUserValidationSchema } from "../../utils/validations/validations";
 import OtpInput from "react-otp-input";
 import { navigate } from "gatsby";
+import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -26,7 +28,7 @@ const ModalSignIn = (props) => {
   const [resendTimer, setResendTimer] = useState(0);
   const companyRegistered = gContext.companyRegistered;
   const [userDetail, setUserDetail] = useState(null);
-  const [isRemember, setIsRemember] = useState(false);
+  // const [isRemember, setIsRemember] = useState(false);
 
   const handleClose = () => {
     gContext.toggleSignInModal();
@@ -38,7 +40,7 @@ const ModalSignIn = (props) => {
   };
 
   const handleRememberMeChange = () => {
-    setIsRemember(!isRemember);
+    // setIsRemember(!isRemember);
     gContext.setRememberMe(!gContext.rememberMe);
   };
 
@@ -146,6 +148,59 @@ const ModalSignIn = (props) => {
     }
   };
 
+  // const handleGoogleSuccess = async (response) => {
+  //   const googleToken = response.credential;
+  //   if (navigationTriggered) return;
+  //   setNavigationTriggered(true);
+  //   if (!googleToken) {
+  //     toast.error("Failed to retrieve Google token");
+  //     return;
+  //   }
+
+  //   try {
+  //     localStorage.setItem("authToken", googleToken);
+
+  //     const res = await axios.post(REQ.GET_GOOGLE_USER, {
+  //       token: googleToken,
+  //       login_type: gContext.signUpModalVisible.type,
+  //     });
+  //     const user = await res?.data?.user;
+  //     const token = await res?.data?.token;
+  //     console.log(user, "user");
+
+  //     if (user) {
+  //       gContext.setUser(JSON.stringify(user));
+  //       localStorage.setItem("user", JSON.stringify(user));
+  //       localStorage.setItem("authToken", token);
+  //       toast.success("Signed up with Google successfully!");
+  //       gContext.setUser(JSON.stringify(user));
+  //       if (
+  //         user.login_type === "EMP" &&
+  //         user.phone_ver_status === 1 &&
+  //         user.email_ver_status === 1 &&
+  //         user.user_approval_status === 1
+  //       ) {
+  //         navigate("/dashboard-main");
+  //       } else {
+  //         navigate("/profile");
+  //       }
+
+  //       // gContext.setUser(user);
+  //       gContext.toggleSignUpModal();
+  //     } else {
+  //       console.error("Invalid backend response structure:", res.data);
+  //       toast.error("Google sign-up failed. Please check your credentials.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during Google sign-up:", error);
+  //     toast.error("An error occurred during Google sign-up!");
+  //   }
+  // };
+
+  // const handleGoogleFailure = (error) => {
+  //   toast.error("Google login failed!");
+  // };
+
   useEffect(() => {
     if (userDetail && verificationStep === null) {
       console.log("Company Registered:", companyRegistered);
@@ -161,7 +216,7 @@ const ModalSignIn = (props) => {
     }
   }, [userDetail, verificationStep, companyRegistered]);
 
-  console.log(isRemember, "isRemember");
+  // console.log(isRemember, "isRemember");
 
   const formik = useFormik({
     initialValues: {
@@ -170,7 +225,7 @@ const ModalSignIn = (props) => {
     },
     validationSchema: loginUserValidationSchema,
     onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
-      console.log(isRemember, "signIn");
+      // console.log(isRemember, "signIn");
       try {
         const response = await axiosInterceptors.post(REQ.LOGIN_USER, {
           login_email: values.email,
@@ -239,6 +294,60 @@ const ModalSignIn = (props) => {
       return () => clearTimeout(timerId);
     }
   }, [resendTimer]);
+  const handleGoogleSuccess = async (response) => {
+    const googleToken = response.credential;
+
+    if (!googleToken) {
+      toast.error("Failed to retrieve Google token");
+      return;
+    }
+
+    try {
+      localStorage.setItem("authToken", googleToken);
+
+      const res = await axios.post(REQ.GET_GOOGLE_USER, {
+        token: googleToken,
+        login_type: gContext.signUpModalVisible.type,
+      });
+
+      const user = res?.data?.user;
+      const token = res?.data?.token;
+
+      if (user) {
+        gContext.setUser(JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("authToken", token);
+        toast.success("Signed in with Google successfully!");
+
+        if (user.phone_ver_status === 0) {
+          setVerificationStep("phone");
+          setPhoneNumber(user.login_mobile);
+          await sendPhoneOtp();
+        } else if (user.email_ver_status === 0) {
+          setVerificationStep("email");
+          setEmail(user.login_email);
+          await sendEmailVerify();
+        } else {
+          gContext.toggleSignInModal();
+          if (user.login_type === "EMP" && user.user_approval_status === 1) {
+            navigate("/dashboard-main");
+          } else {
+            navigate("/profile");
+          }
+        }
+      } else {
+        console.error("Invalid backend response structure:", res.data);
+        toast.error("Google sign-in failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      toast.error("An error occurred during Google sign-in!");
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    toast.error("Google login failed!");
+  };
 
   return (
     <ModalStyled
@@ -342,15 +451,18 @@ const ModalSignIn = (props) => {
                   <>
                     <div className="row">
                       <div className="col-4 col-xs-12">
-                        <a
-                          href="/#"
-                          className="font-size-4 font-weight-semibold position-relative text-white bg-poppy h-px-48 flex-all-center w-100 px-6 rounded-5 mb-4"
-                        >
-                          <i className="fab fa-google pos-xs-abs-cl font-size-7 ml-xs-4"></i>{" "}
-                          <span className="d-none d-xs-block">
-                            Log in with Google
-                          </span>
-                        </a>
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={handleGoogleFailure}
+                          isSignedIn={true}
+                          useOneTap
+                          className="w-100 h-100 position-absolute top-0 start-0"
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                          }}
+                        />
                       </div>
                     </div>
                     <div className="or-devider">
@@ -418,7 +530,7 @@ const ModalSignIn = (props) => {
                             className="d-none"
                             type="checkbox"
                             id="terms-check"
-                            checked={gContext?.rememberMe}
+                            // checked={gContext?.rememberMe}
                             onChange={handleRememberMeChange}
                           />
                           <span className="checkbox mr-5"></span>
