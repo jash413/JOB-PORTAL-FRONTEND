@@ -135,7 +135,7 @@ const EmployerApplicationsList = () => {
 
     return (
         <>
-            <div className="mt-25 mt-lg-31">
+            <div className="">
                 <div className="container">
                     <div className="mb-5">
                         <div className="row mb-5 align-items-start">

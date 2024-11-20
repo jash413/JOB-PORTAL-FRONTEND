@@ -48,6 +48,8 @@ const withAuth = (WrappedComponent) => {
           "/dashboard-jobs",
           "/dashboard-applicants",
           "/dashboard-candidates",
+          "/dashboard-not-allowed-candidates",
+          "/dashboard-request-access",
           "/essential",
         ];
         if (userType === "EMP" && currentPath === "/") {

@@ -23,7 +23,7 @@ const DashboardApplicants = () => {
           reveal: false,
         }}
       >
-        <div className="dashboard-main-container">
+        <div className="dashboard-main-container mt-25 mt-lg-31">
           <EmployerApplicationsList />
         </div>
         <ModalAddJobPost />
