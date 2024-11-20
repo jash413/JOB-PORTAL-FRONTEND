@@ -27,13 +27,16 @@ const ModalStyled = styled(Modal)`
 
 const ModalApplication = (props) => {
   const gContext = useContext(GlobalContext);
+  const pathName = typeof window !== "undefined" ? window.location.href : "";
 
   const handleClose = () => {
     gContext.toggleApplicationModal();
   };
 
   const applicationId = gContext.applicationModalVisible.data?.id;
-  const applicantDetails = gContext.applicationModalVisible.data?.candidate;
+  const applicantDetails =
+    gContext.applicationModalVisible.data?.candidate ||
+    gContext.applicationModalVisible.data?.Candidate;
 
   const updateApplicationStatus = async (applicationId, status) => {
     try {
@@ -202,8 +205,8 @@ const ModalApplication = (props) => {
                         <ul className="list-unstyled d-flex align-items-center flex-wrap">
                           {applicantDetails?.can_skill
                             ?.split(",")
-                            ?.map((skills) => (
-                              <li>
+                            ?.map((skills, id) => (
+                              <li key={id}>
                                 <p className="bg-polar text-black-2  mr-6 px-7 mt-2 mb-2 font-size-3 rounded-3 min-height-32 d-flex align-items-center">
                                   {skills}
                                 </p>
@@ -332,26 +335,28 @@ const ModalApplication = (props) => {
               </div>
               {/* <!-- Middle Content --> */}
               {/* <!-- Right Sidebar Start --> */}
-              <div className="col-12 col-xl-3 order-3 order-lg-2 bg-default-2">
-                <div className="text-center mb-13 mb-lg-0 mt-12">
-                  <button className="btn btn-primary btn-xl mb-7 d-block mx-auto text-uppercase">
-                    <Link
-                      className="w-100 text-white"
-                      to={`mailto:${applicantDetails?.can_email}`}
+              {pathName.includes("/dashboard-applicants") && (
+                <div className="col-12 col-xl-3 order-3 order-lg-2 bg-default-2">
+                  <div className="text-center mb-13 mb-lg-0 mt-12">
+                    <button className="btn btn-primary btn-xl mb-7 d-block mx-auto text-uppercase">
+                      <Link
+                        className="w-100 text-white"
+                        to={`mailto:${applicantDetails?.can_email}`}
+                      >
+                        Contact
+                      </Link>
+                    </button>
+                    <button
+                      onClick={() =>
+                        updateApplicationStatus(applicationId, "rejected")
+                      }
+                      className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase"
                     >
-                      Contact
-                    </Link>
-                  </button>
-                  <button
-                    onClick={() =>
-                      updateApplicationStatus(applicationId, "rejected")
-                    }
-                    className="btn btn-outline-gray btn-xl mb-7 d-block mx-auto text-uppercase"
-                  >
-                    Reject
-                  </button>
+                      Reject
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
               {/* <!-- Right Sidebar End --> */}
             </div>
           </div>

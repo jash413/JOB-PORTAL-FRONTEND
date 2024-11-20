@@ -89,7 +89,6 @@ const ModalAddJobPost = (props) => {
             required_skills: isEdit?.required_skills?.split(",") || [],
         });
     }, [isEdit]);
-    console.log(gContext.jobPostModal, "jjjjj")
 
     return (
         <ModalStyled

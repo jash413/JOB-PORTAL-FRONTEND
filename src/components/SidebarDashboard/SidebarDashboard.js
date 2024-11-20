@@ -3,6 +3,7 @@ import { Link } from "gatsby";
 import { Collapse } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
 import imgL from "../../assets/image/logo-main-black.png";
+import { FaUserClock, FaUserLock } from "react-icons/fa";
 
 const Sidebar = () => {
   const gContext = useContext(GlobalContext);
@@ -73,15 +74,26 @@ const Sidebar = () => {
                 </span>
               </Link>
             </li>
-            {/* <li className="">
+            <li className="">
               <Link
-                to="/dashboard-settings"
+                to="/dashboard-not-allowed-candidates"
                 activeClassName="active"
                 className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center"
               >
-                <i className="fas fa-cog mr-7"></i>Settings
+                <FaUserLock size={20} className="sidebar-icons mr-7" />
+                Not accesible cads
               </Link>
-            </li> */}
+            </li>
+            <li className="">
+              <Link
+                to="/dashboard-request-access"
+                activeClassName="active"
+                className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center"
+              >
+                <FaUserClock size={20} className="sidebar-icons mr-7" />
+                Request access
+              </Link>
+            </li>
           </ul>
         </div>
       </Collapse>

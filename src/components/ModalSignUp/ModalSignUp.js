@@ -51,6 +51,58 @@ const ModalSignUp = (props) => {
     }
   };
 
+  const handleGoogleSuccess = async (response) => {
+    const googleToken = response.credential;
+
+    if (!googleToken) {
+      toast.error("Failed to retrieve Google token");
+      return;
+    }
+
+    try {
+      localStorage.setItem("authToken", googleToken);
+
+      const res = await axios.post(REQ.GET_GOOGLE_USER, {
+        token: googleToken,
+        login_type: gContext.signUpModalVisible.type,
+      });
+      const user = await res?.data?.user;
+      const token = await res?.data?.token;
+      console.log(user, "user");
+
+      if (user) {
+        gContext.setUser(JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("authToken", token);
+        toast.success("Signed up with Google successfully!");
+        gContext.setUser(JSON.stringify(user));
+        if (
+          user.login_type === "EMP" &&
+          user.phone_ver_status === 1 &&
+          user.email_ver_status === 1 &&
+          user.user_approval_status === 1
+        ) {
+          navigate("/dashboard-main");
+        } else {
+          navigate("/profile");
+        }
+
+        // gContext.setUser(user);
+        gContext.toggleSignUpModal();
+      } else {
+        console.error("Invalid backend response structure:", res.data);
+        toast.error("Google sign-up failed. Please check your credentials.");
+      }
+    } catch (error) {
+      console.error("Error during Google sign-up:", error);
+      toast.error("An error occurred during Google sign-up!");
+    }
+  };
+
+  const handleGoogleFailure = (error) => {
+    toast.error("Google login failed!");
+  };
+
   return (
     <ModalStyled
       {...props}
@@ -99,9 +151,17 @@ const ModalSignUp = (props) => {
             </div>
             <div className="col-lg-7 col-md-6">
               <div className="bg-white-2 h-100 px-11 pt-11 pb-7">
-                {/* <div className="or-devider">
+                <div className="row w-full">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleFailure}
+                    logo="path-to-your-logo"
+                    isSignedIn={true}
+                  />
+                </div>
+                <div className="or-devider">
                   <span className="font-size-3 line-height-reset">Or</span>
-                </div> */}
+                </div>{" "}
                 <Formik
                   initialValues={{
                     login_name: "",

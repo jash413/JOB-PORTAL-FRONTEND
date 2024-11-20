@@ -35,4 +35,8 @@ export const REQ = {
   UPDATE_APPLICATION_STATUS: (applicationId) =>
     SERVER + `/api/v1/job-applications/application/${applicationId}/status`,
   GET_GOOGLE_USER: SERVER + "/api/v1/auth/google",
+  GET_NOT_ACCESSIBLE_CANDIDATES:
+    SERVER + "/api/v1/employers/get-not-accessible-candidates",
+  SEND_REQUEST_ACCESS: SERVER + "/api/v1/employers/request-access",
+  GET_ACCESS_REQUEST_LIST: SERVER + "/api/v1/employers/get-access-requests",
 };
