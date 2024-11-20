@@ -21,9 +21,13 @@ const ModalSignUp = (props) => {
   const gContext = useContext(GlobalContext);
   const [showPassFirst, setShowPassFirst] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [navigationTriggered, setNavigationTriggered] = useState(false);
   const companyRegistered = gContext?.companyRegistered;
   const userDetail = gContext?.user;
+  const [verificationStep, setVerificationStep] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
 
   const handleClose = () => {
     gContext.toggleSignUpModal();
@@ -51,6 +55,110 @@ const ModalSignUp = (props) => {
     }
   };
 
+  const sendPhoneOtp = async () => {
+    const token =
+      sessionStorage.getItem("authToken") || localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Please log in again.");
+      setVerificationStep(null);
+      return;
+    }
+    try {
+      const response = await axiosInterceptors.post(
+        REQ.SEND_OTP,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response?.message ?? "OTP sent successfully!");
+      setResendTimer(30);
+    } catch (error) {
+      toast.error("Error sending OTP. Please try again.");
+    }
+  };
+
+  const sendEmailVerify = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Please log in again.");
+      setVerificationStep(null);
+      return;
+    }
+    try {
+      const response = await axiosInterceptors.post(
+        REQ.SEND_EMAIL_VERIFY,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(
+        response?.message ?? "Verification email sent successfully!"
+      );
+    } catch (error) {
+      toast.error("Error sending OTP. Please try again.");
+    }
+  };
+
+  const handleOTPverification = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Please log in again.");
+      setVerificationStep(null);
+      return;
+    }
+    try {
+      const response = await axiosInterceptors.post(
+        REQ.VERIFY_OTP,
+        {
+          otp,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("OTP verified successfully");
+      const { email_ver_status } = response.user;
+      gContext.setUser(JSON.stringify(response?.user));
+      if (email_ver_status === 0) {
+        setVerificationStep("email");
+        setEmail(response?.user?.login_email);
+        await sendEmailVerify();
+      } else {
+        setVerificationStep(null);
+        gContext.toggleSignInModal();
+      }
+    } catch (error) {
+      toast.error("Error verifying OTP. Please try again.");
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    if (!token) {
+      toast.error("Please log in again.");
+      setVerificationStep(null);
+      return;
+    }
+    try {
+      const response = await axiosInterceptors.get(REQ.PROFILE_DETAILS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      gContext.setUser(JSON.stringify(response));
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+      toast.error("Failed to fetch user profile. Please try again.");
+    }
+  };
+
   const handleGoogleSuccess = async (response) => {
     const googleToken = response.credential;
 
@@ -66,36 +174,49 @@ const ModalSignUp = (props) => {
         token: googleToken,
         login_type: gContext.signUpModalVisible.type,
       });
-      const user = await res?.data?.user;
-      const token = await res?.data?.token;
-      console.log(user, "user");
+
+      const user = res?.data?.user;
+      const token = res?.data?.token;
 
       if (user) {
         gContext.setUser(JSON.stringify(user));
+        gContext.setToken(token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("authToken", token);
-        toast.success("Signed up with Google successfully!");
-        gContext.setUser(JSON.stringify(user));
-        if (
-          user.login_type === "EMP" &&
-          user.phone_ver_status === 1 &&
-          user.email_ver_status === 1 &&
-          user.user_approval_status === 1
-        ) {
-          navigate("/dashboard-main");
+        toast.success("Signed in with Google successfully!");
+        gContext.toggleSignUpModal();
+        if (user.phone_ver_status === 0) {
+          setVerificationStep("phone");
+          setPhoneNumber(user.login_mobile);
+          await sendPhoneOtp();
+        } else if (user.email_ver_status === 0) {
+          setVerificationStep("email");
+          setEmail(user.login_email);
+          await sendEmailVerify();
         } else {
-          navigate("/profile");
+          gContext.toggleSignUpModal();
+
+          if (
+            user.login_type === "EMP" &&
+            user.phone_ver_status === 1 &&
+            user.email_ver_status === 1 &&
+            user.user_approval_status === 1
+          ) {
+            navigate("/dashboard-main");
+          } else {
+            navigate("/profile");
+          }
         }
 
-        // gContext.setUser(user);
-        gContext.toggleSignUpModal();
+        // Fetch and update user profile
+        fetchUserProfile();
       } else {
         console.error("Invalid backend response structure:", res.data);
-        toast.error("Google sign-up failed. Please check your credentials.");
+        toast.error("Google sign-in failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error during Google sign-up:", error);
-      toast.error("An error occurred during Google sign-up!");
+      console.error("Error during Google sign-in:", error);
+      toast.error("An error occurred during Google sign-in!");
     }
   };
 
@@ -151,17 +272,21 @@ const ModalSignUp = (props) => {
             </div>
             <div className="col-lg-7 col-md-6">
               <div className="bg-white-2 h-100 px-11 pt-11 pb-7">
-                <div className="row w-full">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleFailure}
-                    logo="path-to-your-logo"
-                    isSignedIn={true}
-                  />
-                </div>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleFailure}
+                  isSignedIn={true}
+                  useOneTap
+                  className="w-100 h-100 position-absolute top-0 start-0"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                />
                 <div className="or-devider">
                   <span className="font-size-3 line-height-reset">Or</span>
-                </div>{" "}
+                </div>
                 <Formik
                   initialValues={{
                     login_name: "",
