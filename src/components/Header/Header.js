@@ -327,7 +327,7 @@ const Header = () => {
             {!gContext?.authenticated && (
               <div>
                 <div className="collapse navbar-collapse flex-grow-0">
-                  <div className="header-btns ml-auto pr-2 ml-lg-6 d-none d-lg-flex">
+                  {/* <div className="header-btns ml-auto pr-2 ml-lg-6 d-none d-lg-flex">
                     <a
                       className="btn btn-green text-uppercase text-white font-size-3 heading-default-color focus-reset"
                       href="/#"
@@ -338,7 +338,7 @@ const Header = () => {
                     >
                       Log In
                     </a>
-                  </div>
+                  </div> */}
                   <div className="">
                     <ul className="navbar-nav main-menu d-none d-lg-flex">
                       {SignUpOptionsItems.map(
@@ -370,10 +370,19 @@ const Header = () => {
                                       >
                                         <span
                                           onClick={() => {
-                                            gContext.setSignUpModalVisible({
-                                              visible: true,
-                                              type: subItem.value,
-                                            });
+                                            if (subItem.itemOf === "signup") {
+                                              gContext.setSignUpModalVisible({
+                                                visible: true,
+                                                type: subItem.value,
+                                              });
+                                            } else if (
+                                              subItem.itemOf === "login"
+                                            ) {
+                                              gContext.setSignInModalVisible({
+                                                visible: true,
+                                                type: subItem.value,
+                                              });
+                                            }
                                           }}
                                           className="dropdown-item"
                                         >
@@ -399,7 +408,7 @@ const Header = () => {
             )}
 
             <div className="d-flex d-lg-none align-items-center gap-3">
-              {!gContext?.authenticated && (
+              {/* {!gContext?.authenticated && (
                 <span
                   onClick={(e) => {
                     e.preventDefault();
@@ -409,7 +418,7 @@ const Header = () => {
                 >
                   Log in
                 </span>
-              )}
+              )} */}
               <ToggleButton
                 className={`navbar-toggler btn-close-off-canvas ml-3 ${
                   gContext.visibleOffCanvas ? "collapsed" : ""

@@ -16,6 +16,7 @@ import { Oval } from "react-loader-spinner";
 import { Link } from "gatsby";
 import dummyProfile from "../assets/image/dummy-profile.png";
 import styled from "styled-components";
+import HorizontalSlider from "../components/HorizontalSlider";
 
 const Card = styled.div`
   max-width: 300px;
@@ -29,7 +30,7 @@ const DashboardNotAllowedCandidates = () => {
   const [requesting, setRequesting] = useState({ show: false, id: null });
   const [filters, setFilters] = useState({
     page: 1,
-    limit: 5,
+    limit: 6,
   });
   const [pagination, setPagination] = useState({
     totalItems: 0,
@@ -80,8 +81,10 @@ const DashboardNotAllowedCandidates = () => {
   };
 
   useEffect(() => {
-    fetchNotAccesibleCandidates();
-  }, []);
+    if (filters) {
+      fetchNotAccesibleCandidates();
+    }
+  }, [filters]);
 
   return (
     <>
@@ -95,7 +98,7 @@ const DashboardNotAllowedCandidates = () => {
       >
         <div className="dashboard-main-container mt-25 mt-lg-31">
           <div className="container">
-            <h3 className="font-size-6 mb-11">Not Accessible Candidates</h3>
+            <h3 className="font-size-6 mb-11">Available Candidates</h3>
             {loading ? (
               <div
                 className="d-flex align-items-center justify-content-center text-center w-100"
@@ -138,17 +141,20 @@ const DashboardNotAllowedCandidates = () => {
                             />
                             <h5 className="card-title">{candidate.can_name}</h5>
                           </div>
-                          <ul className="list-unstyled d-flex flex-wrap mb-3">
+                          <HorizontalSlider>
                             {candidate.can_skill
                               .split(",")
                               .map((skill, index) => (
-                                <li key={index}>
-                                  <span className="badge bg-primary text-white mr-2 mb-2">
+                                <div
+                                  key={index}
+                                  className="d-inline-block mr-2"
+                                >
+                                  <span className="badge bg-primary pt-2 text-white">
                                     {skill}
                                   </span>
-                                </li>
+                                </div>
                               ))}
-                          </ul>
+                          </HorizontalSlider>
                           <p
                             className="mb-1 text-muted"
                             style={{

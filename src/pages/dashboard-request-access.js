@@ -92,19 +92,10 @@ const DashboardRequestAccess = () => {
   };
 
   useEffect(() => {
-    fetchAccessRequestList();
-  }, [filters]);
-
-  const getSortIcon = (column) => {
-    if (filters.sortBy === column) {
-      return filters.sortOrder === "ASC" ? (
-        <FaArrowUpLong />
-      ) : (
-        <FaArrowDownLong />
-      );
+    if (filters) {
+      fetchAccessRequestList();
     }
-    return <FaSort />;
-  };
+  }, [filters]);
 
   return (
     <>
@@ -122,7 +113,7 @@ const DashboardRequestAccess = () => {
               <div className="row mb-5 align-items-start">
                 <div className="col-lg-12 mb-lg-0 mb-4">
                   <h3 className="font-size-6 mb-0">
-                    Request Access ({requestAccess.length})
+                    Requested Candidates ({requestAccess.length})
                   </h3>
                 </div>
                 <div
@@ -204,6 +195,14 @@ const DashboardRequestAccess = () => {
                                 {request?.Candidate?.can_name}
                               </h5>
                             </div>
+                            <p
+                              title={
+                                request?.Candidate?.job_category?.cate_desc
+                              }
+                              className="mb-3 font-size-3 text-truncate"
+                            >
+                              {request?.Candidate?.job_category?.cate_desc}
+                            </p>
                             {request.status === "approved" ? (
                               <button
                                 type="button"
