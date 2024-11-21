@@ -39,4 +39,7 @@ export const REQ = {
     SERVER + "/api/v1/employers/get-not-accessible-candidates",
   SEND_REQUEST_ACCESS: SERVER + "/api/v1/employers/request-access",
   GET_ACCESS_REQUEST_LIST: SERVER + "/api/v1/employers/get-access-requests",
+  GET_JOBS_LIST_CANDIDATE:
+    SERVER + "/api/v1/job-posts/get-job-posts-accessible-to-candidate",
+  JOB_APPLIED: SERVER + "/api/v1/job-applications/apply",
 };

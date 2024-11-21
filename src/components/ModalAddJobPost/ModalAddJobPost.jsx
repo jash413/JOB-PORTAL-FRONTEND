@@ -27,7 +27,7 @@ const ModalAddJobPost = (props) => {
         job_description: isEdit?.job_description || "",
         job_cate: isEdit?.job_cate || "",
         job_location: isEdit?.job_location || "",
-        salary_range: isEdit?.salary_range || "",
+        salary: String(isEdit?.salary) || "",
         required_skills: isEdit?.required_skills?.split(",") || [],
     });
 
@@ -39,6 +39,7 @@ const ModalAddJobPost = (props) => {
         const payload = {
             ...values,
             required_skills: values.required_skills.join(","),
+            salary: Number(values.salary),
         };
         try {
             if (isEdit) {
@@ -85,7 +86,7 @@ const ModalAddJobPost = (props) => {
             job_description: isEdit?.job_description || "",
             job_cate: isEdit?.job_cate || "",
             job_location: isEdit?.job_location || "",
-            salary_range: isEdit?.salary_range || "",
+            salary: String(isEdit?.salary) || "",
             required_skills: isEdit?.required_skills?.split(",") || [],
         });
     }, [isEdit]);
@@ -190,11 +191,12 @@ const ModalAddJobPost = (props) => {
                                                 <label>Salary Range</label>
                                                 <Field
                                                     type="text"
-                                                    name="salary_range"
+                                                    name="salary"
+                                                    title="Only numbers are allowed"
                                                     className="form-control"
                                                 />
                                                 <ErrorMessage
-                                                    name="salary_range"
+                                                    name="salary"
                                                     component="div"
                                                     className="text-danger"
                                                 />

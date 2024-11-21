@@ -130,6 +130,7 @@ export const jobFormValidationSchema = Yup.object().shape({
   job_description: Yup.string().required("Job description is required"),
   job_cate: Yup.string().required("Job category is required"),
   job_location: Yup.string().required("Job location is required"),
-  salary_range: Yup.string().required("Salary range is required"),
+  salary: Yup.string().matches(/^\d+$/, "Salary must only contain numbers without spaces")
+    .required("Salary range is required"),
   required_skills: Yup.array().min(1, "At least one skill is required"),
 });
