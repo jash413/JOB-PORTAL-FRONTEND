@@ -181,7 +181,13 @@ const ModalApplication = (props) => {
               </div>
               {/* <!-- Left Sidebar End --> */}
               {/* <!-- Middle Content --> */}
-              <div className="col-12 col-xl-6 col-lg-8 col-md-7 order-2 order-lg-1 border-right border-mercury">
+              <div
+                className={`col-12 order-2 order-lg-1 border-right border-mercury ${
+                  pathName.includes("/dashboard-applicants")
+                    ? "col-xl-6 col-lg-8 col-md-7"
+                    : "col-xl-9 col-lg-8 col-md-7"
+                }`}
+              >
                 <div className="bg-white rounded-4 overflow-auto h-1173">
                   {/* <!-- Excerpt Start --> */}
                   {applicantDetails && applicantDetails?.can_about !== "" && (

@@ -255,7 +255,7 @@ const ModalSignIn = (props) => {
 
       const res = await axios.post(REQ.GET_GOOGLE_USER, {
         token: googleToken,
-        login_type: gContext.signUpModalVisible.type,
+        login_type: gContext.signInModalVisible.type,
       });
 
       const user = res?.data?.user;
@@ -312,7 +312,7 @@ const ModalSignIn = (props) => {
       {...props}
       size="lg"
       centered
-      show={gContext.signInModalVisible}
+      show={gContext.signInModalVisible.visible}
       onHide={gContext.toggleSignInModal}
     >
       <Modal.Body className="p-0">

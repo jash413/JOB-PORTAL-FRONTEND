@@ -87,6 +87,7 @@ const MenuItem = ({
   items,
   depthStep = 20,
   depth = 0,
+  itemOf,
   ...rest
 }) => {
   const [open, setOpen] = useState(false);
@@ -131,10 +132,17 @@ const MenuItem = ({
             <a
               type="button"
               onClick={() => {
-                gContext.setSignUpModalVisible({
-                  visible: true,
-                  type: value,
-                });
+                if (itemOf === "login") {
+                  gContext.setSignInModalVisible({
+                    visible: true,
+                    type: value,
+                  });
+                } else if (itemOf === "signup") {
+                  gContext.setSignUpModalVisible({
+                    visible: true,
+                    type: value,
+                  });
+                }
                 if (gContext.visibleOffCanvas) {
                   gContext.toggleOffCanvas();
                 }

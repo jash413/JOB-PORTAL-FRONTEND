@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "gatsby";
 import { Collapse } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
@@ -7,6 +7,13 @@ import { FaUserClock, FaUserLock } from "react-icons/fa";
 
 const Sidebar = () => {
   const gContext = useContext(GlobalContext);
+  const [isCandidatesDropdownOpen, setIsCandidatesDropdownOpen] = useState(
+    false
+  );
+
+  const toggleDropdown = () => {
+    setIsCandidatesDropdownOpen(!isCandidatesDropdownOpen);
+  };
 
   return (
     <>
@@ -62,38 +69,45 @@ const Sidebar = () => {
                 </span>
               </Link>
             </li>
-            <li className="">
-              <Link
-                to="/dashboard-candidates"
-                activeClassName="active"
-                className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center"
-              >
-                <i className="fas fa-user mr-7"></i>Candidates{" "}
-                <span className="ml-auto px-1 h-1 bg-dodger text-white font-size-3 rounded-5 max-height-px-18 flex-all-center">
-                  10
-                </span>
-              </Link>
-            </li>
-            <li className="">
-              <Link
-                to="/dashboard-not-allowed-candidates"
-                activeClassName="active"
-                className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center"
-              >
-                <FaUserLock size={20} className="sidebar-icons mr-7" />
-                Not accesible cads
-              </Link>
-            </li>
-            <li className="">
-              <Link
-                to="/dashboard-request-access"
-                activeClassName="active"
-                className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center"
-              >
-                <FaUserClock size={20} className="sidebar-icons mr-7" />
-                Request access
-              </Link>
-            </li>
+            <div
+              className="px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center cursor-pointer d-flex justify-content-between"
+              onClick={toggleDropdown}
+            >
+              <div>
+                <i className="fas fa-user mr-7"></i>
+                Candidates
+              </div>
+              <i
+                className={`ml-5 fas ${
+                  isCandidatesDropdownOpen ? "fa-chevron-up" : "fa-chevron-down"
+                }`}
+              ></i>
+            </div>
+            {/* Dropdown Menu */}
+            {isCandidatesDropdownOpen && (
+              <ul className="list-unstyled">
+                <li className="pl-10">
+                  <Link
+                    to="/dashboard-not-allowed-candidates"
+                    activeClassName="active"
+                    className="px-10 py-1 my-3 font-size-4 font-weight-semibold flex-y-center"
+                  >
+                    {/* <FaUserLock size={20} className="sidebar-icons mr-7" /> */}
+                    Available Candidates
+                  </Link>
+                </li>
+                <li className="pl-10">
+                  <Link
+                    to="/dashboard-request-access"
+                    activeClassName="active"
+                    className="px-10 py-1 my-3 font-size-4 font-weight-semibold flex-y-center"
+                  >
+                    {/* <FaUserClock size={20} className="sidebar-icons mr-7" /> */}
+                    Requested Candidates
+                  </Link>
+                </li>
+              </ul>
+            )}
           </ul>
         </div>
       </Collapse>

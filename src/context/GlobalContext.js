@@ -10,7 +10,10 @@ const GlobalProvider = ({ children }) => {
     visible: false,
     data: null,
   });
-  const [signInModalVisible, setSignInModalVisible] = useState(false);
+  const [signInModalVisible, setSignInModalVisible] = useState({
+    visible: false,
+    type: "CND",
+  });
   const [forgetPasswordModalVisible, setForgetPasswordModalVisible] = useState(
     false
   );
@@ -34,10 +37,15 @@ const GlobalProvider = ({ children }) => {
   const [token, setToken] = useState(
     typeof window !== "undefined" ? localStorage.getItem("authToken") : null
   );
-
   const [user, setUser] = useState(
     typeof window !== "undefined" ? localStorage.getItem("user") : null
   );
+
+  // const [user, setUser] = useState(
+  //   typeof window !== "undefined" && localStorage.getItem("user")
+  //     ? JSON.parse(localStorage.getItem("user"))
+  //     : null
+  // );
 
   const [rememberMe, setRememberMe] = useState(false);
   const [header, setHeader] = useState({
@@ -121,7 +129,11 @@ const GlobalProvider = ({ children }) => {
   };
 
   const toggleSignInModal = () => {
-    setSignInModalVisible(!signInModalVisible);
+    setSignInModalVisible((prevState) => ({
+      ...prevState,
+      visible: !prevState.visible,
+      type: "CND",
+    }));
   };
 
   const toggleForgetPasswordModal = () => {
@@ -209,18 +221,15 @@ const GlobalProvider = ({ children }) => {
     localStorage.setItem("authToken", token);
   }, [token]);
 
-  // useEffect(() => {
-  //   localStorage.setItem("user", user);
-  // }, [user]);
-  useEffect(() => {
-    if (user !== null) {
-      localStorage.setItem("user", user);
-    }
-  }, [user]);
   useEffect(() => {
     localStorage.setItem("user", user);
   }, [user]);
-  console.log("userGlobal", user);
+  // useEffect(() => {
+  //   if (user !== null) {
+  //     localStorage.setItem("user", user);
+  //   }
+  // }, [user]);
+  // console.log("userGlobal", user);
   return (
     <GlobalContext.Provider
       value={{
@@ -240,6 +249,7 @@ const GlobalProvider = ({ children }) => {
         changePasswordModalVisible,
         toggleChangePasswordModal,
         signUpModalVisible,
+        setSignInModalVisible,
         toggleSignUpModal,
         jobPostModal,
         setJobPostModal,

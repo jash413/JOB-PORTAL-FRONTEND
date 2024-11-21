@@ -45,11 +45,39 @@ export const menuItems = [
 
 export const SignUpOptionsItems = [
   {
+    name: "Log in",
+    label: "Log in",
+    items: [
+      {
+        name: "for-employers",
+        value: "EMP",
+        label: "For employers",
+        itemOf: "login",
+      },
+      {
+        name: "for-candidates",
+        value: "CND",
+        label: "For candidates",
+        itemOf: "login",
+      },
+    ],
+  },
+  {
     name: "Sign Up",
     label: "Sign Up",
     items: [
-      { name: "for-employers", value: "EMP", label: "For employers" },
-      { name: "for-candidates", value: "CND", label: "For candidates" },
+      {
+        name: "for-employers",
+        value: "EMP",
+        label: "For employers",
+        itemOf: "signup",
+      },
+      {
+        name: "for-candidates",
+        value: "CND",
+        label: "For candidates",
+        itemOf: "signup",
+      },
     ],
   },
 ];
