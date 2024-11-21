@@ -218,7 +218,7 @@ const Footer = () => {
                           Help desk
                         </Link>
                       </li>
-                      <li className="mb-6">
+                      {/* <li className="mb-6">
                         <Link
                           to="/#"
                           className="heading-default-color font-size-4 font-weight-normal"
@@ -226,7 +226,7 @@ const Footer = () => {
                         >
                           Support
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                     {/* <!-- widget social menu end --> */}
                   </div>

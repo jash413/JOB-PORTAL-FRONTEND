@@ -36,11 +36,11 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "https://uxtheme.net/product-support/",
-    label: "Support",
-    isExternal: true,
-  },
+  // {
+  //   name: "https://uxtheme.net/product-support/",
+  //   label: "Support",
+  //   isExternal: true,
+  // },
 ];
 
 export const SignUpOptionsItems = [

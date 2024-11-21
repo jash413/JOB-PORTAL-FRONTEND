@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "gatsby";
 import PageWrapper from "../components/PageWrapper";
 import Sidebar from "../components/Sidebar";
 import { Select } from "../components/Core";
 
 import imgB1 from "../assets/image/l1/png/feature-brand-1.png";
-import imgB2 from "../assets/image/l1/png/feature-brand-2.png";
-import imgB3 from "../assets/image/l1/png/feature-brand-3.png";
-import imgB4 from "../assets/image/l1/png/feature-brand-4.png";
-import imgB5 from "../assets/image/l1/png/feature-brand-5.png";
-import imgB6 from "../assets/image/l1/png/feature-brand-6.png";
 import withAuth from "../hooks/withAuth";
+import { REQ } from "../libs/constants";
+import { Oval } from "react-loader-spinner";
+import axiosInterceptors from "../libs/integration/axiosInterceptors";
+import { MdClear } from "react-icons/md";
+import { toast } from "react-toastify";
+import GlobalContext from "../context/GlobalContext";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -21,6 +22,96 @@ const defaultCountries = [
 ];
 
 const SearchGrid = () => {
+  const gContext = useContext(GlobalContext);
+  const userDetails = JSON.parse(gContext?.user);
+  const candidateId = userDetails?.login_id;
+
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [location, setLocation] = useState("");
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
+    search: "",
+    job_location: "",
+    job_cate: "",
+  });
+  const [pagination, setPagination] = useState({
+    totalItems: 0,
+    currentPage: 0,
+    totalPages: 0,
+    pageSize: 6,
+  });
+
+  const fetchJobs = async (isLoadMore = false) => {
+    setLoading(true);
+    try {
+      const response = await axiosInterceptors.post(
+        REQ.GET_JOBS_LIST_CANDIDATE,
+        filters
+      );
+      setJobs((prevJobs) =>
+        isLoadMore ? [...prevJobs, ...response?.records] : response?.records
+      );
+      setPagination(response?.pagination);
+    } catch (error) {
+      console.error("Error fetching job posts", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleLocationChange = (selectedOption) => {
+    setLocation(selectedOption.value);
+  };
+
+  const handleLoadMore = () => {
+    if (pagination.currentPage < pagination.totalPages) {
+      setFilters((prev) => ({ ...prev, page: prev.page + 1 }));
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, [filters]);
+
+  const handleLocationSearchCombine = () => {
+    setFilters((prev) => ({
+      ...prev,
+      search,
+      job_location: location,
+    }));
+  };
+
+  const handleLocationSearchCombineClear = () => {
+    setFilters((prev) => ({
+      ...prev,
+      search: "",
+      job_location: "",
+    }));
+    setSearch("");
+    setLocation("");
+  };
+
+  const handleJobApply = async (jobId) => {
+    axiosInterceptors
+      .post(REQ.JOB_APPLIED, {
+        job_id: jobId,
+        candidateId,
+      })
+      .then((response) => {
+        toast.success("Job applied successfully.");
+      })
+      .catch((error) => {
+        console.error("Error fetching job categories:", error);
+      });
+  };
+
   return (
     <>
       <PageWrapper>
@@ -28,7 +119,7 @@ const SearchGrid = () => {
           <div className="container">
             <div className="row">
               <div className="col-12 col-md-4 col-xs-8">
-                <Sidebar />
+                <Sidebar setFilters={setFilters} />
               </div>
               <div className="col-12 col-md-8 col-xs-12 ">
                 {/* <!-- form --> */}
@@ -43,16 +134,21 @@ const SearchGrid = () => {
                           className="form-control focus-reset pl-13"
                           type="text"
                           id="keyword"
-                          placeholder="UI Designer"
+                          placeholder="Search..."
+                          value={search}
+                          onChange={handleSearchChange}
                         />
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
                           <i className="icon icon-zoom-2 text-primary font-weight-bold"></i>
                         </span>
                       </div>
                       {/* <!-- .select-city starts --> */}
-                      <div className="form-group position-relative w-lg-55 w-xl-60 w-xxl-55">
+                      <div className="form-group position-relative w-lg-50 w-xl-55 w-xxl-50">
                         <Select
                           options={defaultCountries}
+                          onChange={handleLocationChange}
+                          // value={location}
+                          defaultValue={[]}
                           className="pl-8 h-100 arrow-3 font-size-4 d-flex align-items-center w-100"
                           border={false}
                         />
@@ -62,494 +158,142 @@ const SearchGrid = () => {
                         </span>
                       </div>
                       {/* <!-- ./select-city ends --> */}
+                      {(filters.search || filters.job_location) && (
+                        <div
+                          onClick={() => handleLocationSearchCombineClear()}
+                          className="py-4 my-4 d-flex align-items-center justify-content-center"
+                        >
+                          <MdClear />
+                        </div>
+                      )}
                     </div>
                     <div className="button-block">
-                      <button className="btn btn-primary line-height-reset h-100 btn-submit w-100 text-uppercase">
+                      <button
+                        type="button"
+                        onClick={() => handleLocationSearchCombine()}
+                        className="btn btn-primary line-height-reset h-100 btn-submit w-100 text-uppercase"
+                      >
                         Search
                       </button>
                     </div>
                   </div>
                 </form>
-                <div className="pt-12 ml-lg-0 ml-md-15">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <h5 className="font-size-4 font-weight-normal text-default-color">
-                      <span className="heading-default-color">120</span>
-                      results for{" "}
-                      <span className="heading-default-color">UI Designer</span>
-                    </h5>
-                    <div className="d-flex align-items-center result-view-type">
-                      <Link
-                        to="/search-list"
-                        className="heading-default-color pl-5 font-size-6 hover-text-hitgray"
-                      >
-                        <i className="fa fa-list-ul"></i>
-                      </Link>
-                      <Link
-                        to="/search-grid"
-                        className="heading-default-color pl-5 font-size-6 hover-text-hitgray active"
-                      >
-                        <i className="fa fa-th-large"></i>
-                      </Link>
-                    </div>
+                {loading ? (
+                  <div
+                    className="d-flex align-items-center justify-content-center text-center w-100"
+                    style={
+                      {
+                        // height: "30vh",
+                      }
+                    }
+                  >
+                    <Oval
+                      height={50}
+                      width={50}
+                      color="#4fa94d"
+                      visible={true}
+                      ariaLabel="oval-loading"
+                      secondaryColor="#4fa94d"
+                      strokeWidth={2}
+                      strokeWidthSecondary={2}
+                    />
                   </div>
-                  <div className="pt-6">
-                    <div className="row justify-content-center">
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB1} alt="" />
-                            </Link>
+                ) : (
+                  <div className="pt-12 ml-lg-0 ml-md-15">
+                    <div className="d-flex align-items-center justify-content-between">
+                      <h5 className="font-size-4 font-weight-normal text-default-color">
+                        <span className="heading-default-color">
+                          Total jobs ({pagination.totalItems})
+                        </span>
+                        {/* results for{" "}
+                      <span className="heading-default-color">UI Designer</span> */}
+                      </h5>
+                    </div>
+                    <div className="pt-6">
+                      <div className="row justify-content-center">
+                        {jobs && jobs.length > 0 ? (
+                          jobs.map((job, id) => (
+                            <div key={id} className="col-12 col-lg-6">
+                              {/* <!-- Start Feature One --> */}
+                              <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
+                                <div className="d-block mb-7">
+                                  <span>
+                                    <img src={imgB1} alt="" />
+                                  </span>
+                                </div>
+                                <span className="font-size-3 d-block mb-0 text-gray">
+                                  {job?.employer?.cmp_name}
+                                </span>
+                                <h2 className="mt-n4">
+                                  <span className="font-size-7 text-black-2 font-weight-bold mb-4">
+                                    {job?.job_title}
+                                  </span>
+                                </h2>
+                                <ul className="list-unstyled mb-1 card-tag-list">
+                                  <li>
+                                    <Link className="bg-regent-opacity-15 text-denim font-size-3 rounded-3">
+                                      <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
+                                      Berlyn
+                                    </Link>
+                                  </li>
+                                  <li>
+                                    <Link className="bg-regent-opacity-15 text-orange font-size-3 rounded-3">
+                                      <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
+                                      Full-time
+                                    </Link>
+                                  </li>
+                                  <li>
+                                    <Link className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3">
+                                      <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
+                                      {job?.salary}
+                                    </Link>
+                                  </li>
+                                </ul>
+                                <p className="mb-7 font-size-4 text-gray job-description">
+                                  {job?.job_description}
+                                </p>
+                                <div className="card-btn-group">
+                                  <span
+                                    onClick={() => handleJobApply(job.job_id)}
+                                    className="btn btn-green text-uppercase btn-medium rounded-3"
+                                  >
+                                    Apply Now
+                                  </span>
+                                  {/* <Link
+                                    to="/#"
+                                    className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
+                                  >
+                                    <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
+                                    Save it
+                                  </Link> */}
+                                </div>
+                              </div>
+                              {/* <!-- End Feature One --> */}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-12 col-lg-6">
+                            <div className="d-flex align-items-center justify-content-center text-center w-100">
+                              <h5 className="font-size-4 font-weight-normal text-default-color">
+                                No results found
+                              </h5>
+                            </div>
                           </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            Google INC
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              Product Designer
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
-                      </div>
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB2} alt="" />
-                            </Link>
-                          </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            AirBnb
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              UI/UX Designer
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
-                      </div>
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB3} alt="" />
-                            </Link>
-                          </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            Shopify
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              iOS Developer
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
-                      </div>
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB4} alt="" />
-                            </Link>
-                          </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            Uber
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              Creative Director{" "}
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
-                      </div>
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB5} alt="" />
-                            </Link>
-                          </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            Facebook
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              Marketing Manager{" "}
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
-                      </div>
-                      <div className="col-12 col-lg-6">
-                        {/* <!-- Start Feature One --> */}
-                        <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                          <div className="d-block mb-7">
-                            <Link to="/#">
-                              <img src={imgB6} alt="" />
-                            </Link>
-                          </div>
-                          <Link
-                            to="/#"
-                            className="font-size-3 d-block mb-0 text-gray"
-                          >
-                            Oculus
-                          </Link>
-                          <h2 className="mt-n4">
-                            <Link
-                              to="/#"
-                              className="font-size-7 text-black-2 font-weight-bold mb-4"
-                            >
-                              Software Engineer
-                            </Link>
-                          </h2>
-                          <ul className="list-unstyled mb-1 card-tag-list">
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-denim font-size-3 rounded-3"
-                              >
-                                <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                Berlyn
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-orange font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                Full-time
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                to="/#"
-                                className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3"
-                              >
-                                <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                80K-90K
-                              </Link>
-                            </li>
-                          </ul>
-                          <p className="mb-7 font-size-4 text-gray">
-                            We are looking for Enrollment Advisors who are
-                            looking to take 30-35 appointments per week. All
-                            leads are pre-scheduled.
-                          </p>
-                          <div className="card-btn-group">
-                            <Link
-                              to="/#"
-                              className="btn btn-green text-uppercase btn-medium rounded-3"
-                            >
-                              Apply Now
-                            </Link>
-                            <Link
-                              to="/#"
-                              className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                            >
-                              <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                              Save it
-                            </Link>
-                          </div>
-                        </div>
-                        {/* <!-- End Feature One --> */}
+                        )}
                       </div>
                     </div>
+                    {pagination.currentPage < pagination.totalPages && (
+                      <div className="text-center pt-5 pt-lg-13">
+                        <button
+                          className="btn btn-primary text-uppercase font-size-3"
+                          onClick={handleLoadMore}
+                        >
+                          Load More
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <div className="text-center pt-5 pt-lg-13">
-                    <Link
-                      to="/#"
-                      className="text-green font-weight-bold text-uppercase font-size-3 d-flex align-items-center justify-content-center"
-                    >
-                      Load More{" "}
-                      <i className="fas fa-sort-down ml-3 mt-n2 font-size-4"></i>
-                    </Link>
-                  </div>
-                </div>
+                )}
                 {/* <!-- form end --> */}
               </div>
             </div>

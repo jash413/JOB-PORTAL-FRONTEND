@@ -14,7 +14,6 @@ import axiosInterceptors from "../../../libs/integration/axiosInterceptors";
 
 const JobPost = () => {
     const gContext = useContext(GlobalContext);
-
     const [jobs, setJobs] = useState([]);
     const [jobCategories, setJobCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -123,6 +122,8 @@ const JobPost = () => {
     useEffect(() => {
         fetchJobs();
     }, [filters]);
+
+
 
     const getSortIcon = (column) => {
         if (filters.sortBy === column) {

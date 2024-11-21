@@ -156,21 +156,23 @@ const DashboardNotAllowedCandidates = () => {
                               ))}
                           </HorizontalSlider>
                           <p
-                            className="mb-1 text-muted"
+                            className="mb-1 text-muted text-truncate"
                             style={{
                               filter: !candidate?.can_appr
                                 ? "blur(3px)"
                                 : "none",
+                              userSelect: !candidate?.can_appr && "none",
                             }}
                           >
                             Name: {candidate.can_email}
                           </p>
                           <p
-                            className="mb-3 text-muted"
+                            className="mb-3 text-muted text-truncate"
                             style={{
                               filter: !candidate?.can_appr
                                 ? "blur(3px)"
                                 : "none",
+                              userSelect: !candidate?.can_appr && "none",
                             }}
                           >
                             Email: {candidate.can_mobn}

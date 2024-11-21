@@ -5853,3 +5853,11 @@ readers do not read off random characters that represent icons */
 .sidebar-icons.active {
   color: #00b074;
 }
+
+.job-description {
+  display: -webkit-box; 
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}

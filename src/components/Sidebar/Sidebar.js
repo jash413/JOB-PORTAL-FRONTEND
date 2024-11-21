@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Range, getTrackBackground } from "react-range";
+import axiosInterceptors from "../../libs/integration/axiosInterceptors";
+import { REQ } from "../../libs/constants";
+import { Select } from "../Core";
+import GlobalContext from "../../context/GlobalContext";
 
 const STEP = 1;
 const MIN = 50;
@@ -48,32 +52,56 @@ const Check = ({ children }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ setFilters }) => {
   const [rangeValues, setRangeValues] = useState([70, 150]);
+  const [jobCategories, setJobCategories] = useState([]);
+
+  useEffect(() => {
+    axiosInterceptors
+      .post(REQ.JOB_CATEGORIES, {
+        page: 1,
+        limit: 50,
+      })
+      .then((response) => {
+        setJobCategories(
+          response?.records.map((category) => {
+            return { value: category.cate_code, label: category.cate_desc };
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching job categories:", error);
+      });
+  }, []);
+
+  const handleCategoryChange = (selected) => {
+    setFilters((prev) => ({
+      ...prev,
+      job_cate: selected?.value,
+    }));
+  };
+
   return (
     <>
       {/* <!-- Sidebar Start --> */}
       <div className="widgets mb-11">
-        <h4 className="font-size-6 font-weight-semibold mb-6">Job Type</h4>
-        <ul className="list-unstyled filter-check-list">
-          <li className="mb-2">
-            <Check>Full Time</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Part Time</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Contract</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Internship</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Temporary</Check>
-          </li>
-        </ul>
+        <h4 className="font-size-6 font-weight-semibold mb-6">Job Category</h4>
+        <div
+          className="w-70 ml-0 ml-lg-5"
+          style={{
+            minWidth: "300px",
+          }}
+        >
+          <Select
+            isClearable
+            options={jobCategories}
+            placeholder="Select Job Category"
+            className="form-select w-100"
+            onChange={handleCategoryChange}
+          />
+        </div>
       </div>
-      <div className="widgets mb-11 ">
+      <div className="widgets mb-11">
         <div className="d-flex align-items-center pr-15 pr-xs-0 pr-md-0 pr-xl-22">
           <h4 className="font-size-6 font-weight-semibold mb-6 w-75">
             Salary Range
