@@ -18,7 +18,7 @@ const EmployerApplicationsList = () => {
     const [jobCategories, setJobCategories] = useState([]);
     const [status] = useState([
         { value: "pending", label: "Pending" },
-        // { value: "accepted", label: "Accepted" },
+        { value: "accepted", label: "Accepted" },
         { value: "rejected", label: "Rejected" }
     ]);
     const [loading, setLoading] = useState(true);

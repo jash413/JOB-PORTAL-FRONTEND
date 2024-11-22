@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 
 import { Select } from "../../components/Core";
 import imgH from "../../assets/image/l1/png/hero-image-man.png";
 import imgP from "../../assets/image/patterns/hero-pattern.png";
 import withoutAuth from "../../hooks/withoutAuth";
+import GlobalContext from "../../context/GlobalContext";
+import { navigate } from "gatsby";
 
 const defaultCountries = [
   { value: "sp", label: "Singapore" },
@@ -14,6 +16,28 @@ const defaultCountries = [
 ];
 
 const Hero = () => {
+  const gContext = useContext(GlobalContext);
+  const [jobTitle, setJobTitle] = useState("");
+  const [location, setLocation] = useState("");
+
+  const handleSearch = () => {
+    if (gContext.authVerified) {
+      gContext.setSearchQuery({
+        search: jobTitle,
+        location: location,
+        bring: true,
+      });
+      navigate("/search-jobs");
+    } else {
+      gContext.toggleSignInModal();
+      gContext.setSearchQuery({
+        search: jobTitle,
+        location: location,
+        bring: true,
+      });
+    }
+  };
+
   return (
     <>
       {/* <!-- Hero Area --> */}
@@ -45,6 +69,8 @@ const Hero = () => {
                           type="text"
                           id="keyword"
                           placeholder="Job title"
+                          value={jobTitle}
+                          onChange={(e) => setJobTitle(e.target.value)}
                         />
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
                           <i className="icon icon-zoom-2 text-primary font-weight-bold"></i>
@@ -54,8 +80,11 @@ const Hero = () => {
                       <div className="form-group position-relative">
                         <Select
                           options={defaultCountries}
+                          defaultValue={[]}
+                          placeholder="Select Location"
                           className="pl-8 h-100 arrow-3 font-size-4 d-flex align-items-center w-100"
                           border={false}
+                          onChange={(selected) => setLocation(selected.value)}
                         />
 
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
@@ -66,7 +95,11 @@ const Hero = () => {
                     </div>
                     {/* <!-- .Hero Button --> */}
                     <div className="button-block">
-                      <button className="btn btn-primary line-height-reset h-100 btn-submit w-100 text-uppercase">
+                      <button
+                        type="button"
+                        onClick={handleSearch}
+                        className="btn btn-primary line-height-reset h-100 btn-submit w-100 text-uppercase"
+                      >
                         Search
                       </button>
                     </div>

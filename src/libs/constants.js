@@ -42,4 +42,5 @@ export const REQ = {
   GET_JOBS_LIST_CANDIDATE:
     SERVER + "/api/v1/job-posts/get-job-posts-accessible-to-candidate",
   JOB_APPLIED: SERVER + "/api/v1/job-applications/apply",
+  GET_EMPLOYER_DASHBOARD_STATS: SERVER + "/api/v1/employers/dashboard-data",
 };

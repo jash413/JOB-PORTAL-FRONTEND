@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import LazyLoad from "react-lazyload";
 import PageWrapper from "../components/PageWrapper";
@@ -7,8 +7,34 @@ import withAuth from "../hooks/withAuth";
 import ModalAddJobPost from "../components/ModalAddJobPost";
 import JobPost from "../components/UI/JobPost";
 import EmployerApplicationsList from "../components/UI/EmployerApplicationsList";
+import axiosInterceptors from "../libs/integration/axiosInterceptors";
+import { REQ } from "../libs/constants";
 
 const DashboardMain = () => {
+  const [dashboardData, setDashboardData] = useState({
+    totalJobs: 0,
+    totalApplicants: 0,
+    appliedRate: 0,
+  });
+
+  useEffect(() => {
+    axiosInterceptors
+      .get(REQ.GET_EMPLOYER_DASHBOARD_STATS)
+      .then((response) => {
+        setDashboardData(response);
+      })
+      .catch((error) => {
+        console.error("Error fetching job categories:", error);
+      });
+  }, []);
+
+  const getDuration = (value) => {
+    if (value < 10) return 1;
+    if (value < 100) return 2;
+    if (value < 1000) return 4;
+    return 6;
+  };
+
   return (
     <>
       <PageWrapper
@@ -33,7 +59,10 @@ const DashboardMain = () => {
                     <h5 className="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
                       <LazyLoad>
                         <span className="counter">
-                          <CountUp duration={6} end={5} />
+                          <CountUp
+                            duration={getDuration(dashboardData.totalJobs)}
+                            end={dashboardData.totalJobs}
+                          />
                         </span>
                       </LazyLoad>
                     </h5>
@@ -55,7 +84,12 @@ const DashboardMain = () => {
                     <h5 className="font-size-8 font-weight-semibold text-black-2 line-height-reset font-weight-bold mb-1">
                       <LazyLoad>
                         <span className="counter">
-                          <CountUp duration={4} end={256} />
+                          <CountUp
+                            duration={getDuration(
+                              dashboardData.totalApplicants
+                            )}
+                            end={dashboardData.totalApplicants}
+                          />
                         </span>
                       </LazyLoad>
                     </h5>
@@ -78,10 +112,10 @@ const DashboardMain = () => {
                       <LazyLoad>
                         <span className="counter">
                           <CountUp
-                            duration={4}
+                            duration={getDuration(dashboardData.appliedRate)}
                             decimal="."
                             decimals={1}
-                            end={18.6}
+                            end={dashboardData.appliedRate}
                           />
                         </span>
                         %
