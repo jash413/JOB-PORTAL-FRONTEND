@@ -134,21 +134,30 @@ const Sidebar = (props) => {
                       {userDetails?.login_mobile}
                     </span>
                   </h5>
-                  <span
-                    onClick={() => {
-                      if (userDetails?.phone_ver_status === 0) {
-                        return gContext.toggleOptVerifyModal();
-                      } else {
-                        return null;
-                      }
-                    }}
-                  >
-                    {userDetails?.phone_ver_status === 1 ? (
-                      <VscVerified color="green" title="Phone no. verified" />
-                    ) : (
-                      <VscUnverified color="red" title="Phone no. unverified" />
-                    )}
-                  </span>
+                  {userDetails?.login_mobile ? (
+                    <span
+                      onClick={() => {
+                        if (userDetails?.phone_ver_status === 0) {
+                          return gContext.toggleOptVerifyModal();
+                        } else {
+                          return null;
+                        }
+                      }}
+                    >
+                      {userDetails?.phone_ver_status === 1 ? (
+                        <VscVerified color="green" title="Phone no. verified" />
+                      ) : (
+                        <VscUnverified
+                          color="red"
+                          title="Phone no. unverified"
+                        />
+                      )}
+                    </span>
+                  ) : (
+                    <p className="font-size-3 text-start">
+                      Please add phone number
+                    </p>
+                  )}
                 </div>
               </div>
               {/* <!-- Single List --> */}

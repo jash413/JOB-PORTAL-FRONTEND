@@ -215,6 +215,14 @@ const ModalSignIn = (props) => {
               response?.user?.user_approval_status === 0)
           ) {
             navigate("/profile");
+          } else if (
+            response?.user?.login_type === "CND" &&
+            response?.user?.phone_ver_status === 1 &&
+            response?.user?.email_ver_status === 1 &&
+            response?.user?.user_approval_status === 1 &&
+            gContext?.searchQuery?.bring
+          ) {
+            navigate("/search-jobs");
           } else if (response?.user?.login_type === "CND") {
             navigate("/profile");
           }
@@ -269,9 +277,12 @@ const ModalSignIn = (props) => {
         toast.success("Signed in with Google successfully!");
 
         if (user.phone_ver_status === 0) {
-          setVerificationStep("phone");
-          setPhoneNumber(user.login_mobile);
-          await sendPhoneOtp();
+          if (user.login_mobile) {
+            setVerificationStep("phone");
+            setPhoneNumber(user.login_mobile);
+            await sendPhoneOtp();
+          }
+          gContext.toggleSignInModal();
         } else if (user.email_ver_status === 0) {
           setVerificationStep("email");
           setEmail(user.login_email);
@@ -334,6 +345,13 @@ const ModalSignIn = (props) => {
                     </h3>
                     <p className="mb-0 font-size-4 text-white">
                       Log in to continue your account and explore new jobs.
+                    </p>
+                    <p className="mt-3 font-size-4 text-white">
+                      Log in as{" "}
+                      {gContext.signInModalVisible.type === "EMP"
+                        ? "employer"
+                        : "candidate"}
+                      .
                     </p>
                   </div>
                   <div className="border-top border-default-color-2 mt-auto">

@@ -6,6 +6,11 @@ const GlobalContext = React.createContext();
 const GlobalProvider = ({ children }) => {
   const [themeDark, setThemeDark] = useState(false);
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
+  const [searchQuery, setSearchQuery] = useState({
+    search: "",
+    location: "",
+    bring: false,
+  });
   const [applicationModalVisible, setApplicationModalVisible] = useState({
     visible: false,
     data: null,
@@ -275,6 +280,8 @@ const GlobalProvider = ({ children }) => {
         setToken,
         user,
         setUser,
+        searchQuery,
+        setSearchQuery,
         authenticated,
         authVerified,
         experienceData,

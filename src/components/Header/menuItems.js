@@ -7,7 +7,7 @@ export const menuItems = [
         name: "job-pages",
         label: "Job Pages",
         items: [
-          { name: "search-grid", label: "Search Jobs" },
+          { name: "search-jobs", label: "Search Jobs" },
           { name: "job-details", label: "Job Details" },
         ],
       },
@@ -15,25 +15,24 @@ export const menuItems = [
         name: "dashboard-main",
         label: "Dashboard",
       },
-      {
-        name: "profile",
-        label: "Candidate Profile",
-      },
-      {
-        name: "company-profile",
-        label: "Company Profile",
-      },
-
-      {
-        name: "essential",
-        label: "Essential",
-        items: [
-          { name: "faq", label: "FAQ" },
-          { name: "404", label: "404" },
-          { name: "pricing", label: "Pricing" },
-          { name: "contact", label: "Contact" },
-        ],
-      },
+      // {
+      //   name: "profile",
+      //   label: "Candidate Profile",
+      // },
+      // {
+      //   name: "company-profile",
+      //   label: "Company Profile",
+      // },
+      // {
+      //   name: "essential",
+      //   label: "Essential",
+      //   items: [
+      //     { name: "faq", label: "FAQ" },
+      //     { name: "404", label: "404" },
+      //     { name: "pricing", label: "Pricing" },
+      //     { name: "contact", label: "Contact" },
+      //   ],
+      // },
     ],
   },
   // {

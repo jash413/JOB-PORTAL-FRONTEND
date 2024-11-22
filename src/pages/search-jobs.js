@@ -28,28 +28,44 @@ const SearchGrid = () => {
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [location, setLocation] = useState("");
+  const [search, setSearch] = useState(gContext?.searchQuery?.search ?? "");
+  const [location, setLocation] = useState(
+    gContext?.searchQuery?.location ?? ""
+  );
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
     search: "",
     job_location: "",
-    job_cate: "",
+    job_cate: null,
   });
   const [pagination, setPagination] = useState({
     totalItems: 0,
-    currentPage: 0,
     totalPages: 0,
-    pageSize: 6,
+    currentPage: 1,
+    nextPage: null,
+    prevPage: null,
+    hasNextPage: false,
+    hasPreviousPage: false,
   });
 
   const fetchJobs = async (isLoadMore = false) => {
     setLoading(true);
+
+    const updatedFilters = {
+      ...filters,
+      search: filters?.search?.trim() === "" ? undefined : filters?.search,
+      job_location:
+        filters?.job_location?.trim() === ""
+          ? undefined
+          : filters?.job_location,
+      job_cate: filters?.job_cate ?? undefined,
+    };
+
     try {
       const response = await axiosInterceptors.post(
         REQ.GET_JOBS_LIST_CANDIDATE,
-        filters
+        updatedFilters
       );
       setJobs((prevJobs) =>
         isLoadMore ? [...prevJobs, ...response?.records] : response?.records
@@ -79,6 +95,21 @@ const SearchGrid = () => {
   useEffect(() => {
     fetchJobs();
   }, [filters]);
+
+  useEffect(() => {
+    if (gContext?.searchQuery?.bring) {
+      gContext.setSearchQuery({
+        search: "",
+        location: "",
+        bring: false,
+      });
+      setFilters((prev) => ({
+        ...prev,
+        search: gContext?.searchQuery?.search,
+        job_cate: gContext?.searchQuery?.location,
+      }));
+    }
+  }, [gContext?.searchQuery?.bring]);
 
   const handleLocationSearchCombine = () => {
     setFilters((prev) => ({
@@ -111,6 +142,18 @@ const SearchGrid = () => {
         console.error("Error fetching job categories:", error);
       });
   };
+
+  function formatSalary(amount) {
+    if (amount < 1000) {
+      return amount.toString();
+    } else if (amount < 1000000) {
+      return (amount / 1000).toFixed(1) + "K";
+    } else if (amount < 1000000000) {
+      return (amount / 1000000).toFixed(1) + "M";
+    } else {
+      return (amount / 1000000000).toFixed(1) + "B";
+    }
+  }
 
   return (
     <>
@@ -148,6 +191,11 @@ const SearchGrid = () => {
                           options={defaultCountries}
                           onChange={handleLocationChange}
                           // value={location}
+                          value={
+                            defaultCountries.find(
+                              (option) => option.value === location
+                            ) || null
+                          }
                           defaultValue={[]}
                           className="pl-8 h-100 arrow-3 font-size-4 d-flex align-items-center w-100"
                           border={false}
@@ -230,7 +278,7 @@ const SearchGrid = () => {
                                   </span>
                                 </h2>
                                 <ul className="list-unstyled mb-1 card-tag-list">
-                                  <li>
+                                  {/* <li>
                                     <Link className="bg-regent-opacity-15 text-denim font-size-3 rounded-3">
                                       <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
                                       Berlyn
@@ -241,11 +289,13 @@ const SearchGrid = () => {
                                       <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
                                       Full-time
                                     </Link>
-                                  </li>
+                                  </li> */}
                                   <li>
                                     <Link className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3">
                                       <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
-                                      {job?.salary}
+                                      {job?.salary
+                                        ? formatSalary(job?.salary)
+                                        : "00"}
                                     </Link>
                                   </li>
                                 </ul>

@@ -37,15 +37,11 @@ const CheckStyled = styled.span`
   }
 `;
 
-const Check = ({ children }) => {
-  const [active, setActive] = useState(false);
-
+const Check = ({ children, isActive, onClick }) => {
   return (
     <CheckStyled
-      className={`toggle-item ${active ? "active" : ""}`}
-      onClick={() => {
-        setActive(!active);
-      }}
+      className={`toggle-item ${isActive ? "active" : ""}`}
+      onClick={onClick}
     >
       {children}
     </CheckStyled>
@@ -55,6 +51,7 @@ const Check = ({ children }) => {
 const Sidebar = ({ setFilters }) => {
   const [rangeValues, setRangeValues] = useState([70, 150]);
   const [jobCategories, setJobCategories] = useState([]);
+  const [postedTime, setPostedTime] = useState(undefined);
 
   useEffect(() => {
     axiosInterceptors
@@ -78,6 +75,50 @@ const Sidebar = ({ setFilters }) => {
     setFilters((prev) => ({
       ...prev,
       job_cate: selected?.value,
+    }));
+  };
+
+  const handleSalaryChange = (values) => {
+    setRangeValues(values);
+    setFilters((prev) => ({
+      ...prev,
+      salary_from: values[0] || undefined,
+      salary_to: values[1] || undefined,
+    }));
+  };
+
+  const handlePostedTimeChange = (time) => {
+    const currentDate = new Date();
+    let startDate, endDate;
+
+    switch (time) {
+      case "Last day":
+        startDate = new Date();
+        startDate.setDate(currentDate.getDate() - 1);
+        endDate = currentDate;
+        break;
+      case "Last 3 days":
+        startDate = new Date();
+        startDate.setDate(currentDate.getDate() - 3);
+        endDate = currentDate;
+        break;
+      case "Last week":
+        startDate = new Date();
+        startDate.setDate(currentDate.getDate() - 7);
+        endDate = currentDate;
+        break;
+      case "Anytime":
+      default:
+        startDate = undefined;
+        endDate = undefined;
+        break;
+    }
+
+    setPostedTime((prev) => (prev === time ? undefined : time));
+    setFilters((prev) => ({
+      ...prev,
+      posted_at_from: startDate ? startDate.toISOString() : undefined,
+      posted_at_to: endDate ? endDate.toISOString() : undefined,
     }));
   };
 
@@ -143,9 +184,7 @@ const Sidebar = ({ setFilters }) => {
               step={STEP}
               min={MIN}
               max={MAX}
-              onChange={(values) => {
-                setRangeValues(values);
-              }}
+              onChange={handleSalaryChange}
               renderTrack={({ props, children }) => (
                 <div
                   role="button"
@@ -204,7 +243,7 @@ const Sidebar = ({ setFilters }) => {
           </>
         </div>
       </div>
-      <div className="widgets mb-11">
+      {/* <div className="widgets mb-11">
         <h4 className="font-size-6 font-weight-semibold mb-6">
           Experience Level{" "}
         </h4>
@@ -222,22 +261,20 @@ const Sidebar = ({ setFilters }) => {
             <Check>Junior</Check>
           </li>
         </ul>
-      </div>
+      </div> */}
       <div className="widgets mb-11">
         <h4 className="font-size-6 font-weight-semibold mb-6">Posted Time</h4>
         <ul className="list-unstyled filter-check-list">
-          <li className="mb-2">
-            <Check>Anytime</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Last day</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Last 3 days</Check>
-          </li>
-          <li className="mb-2">
-            <Check>Last week</Check>
-          </li>
+          {["Anytime", "Last day", "Last 3 days", "Last week"].map((time) => (
+            <li className="mb-2" key={time}>
+              <Check
+                isActive={postedTime === time}
+                onClick={() => handlePostedTimeChange(time)}
+              >
+                {time}
+              </Check>
+            </li>
+          ))}
         </ul>
       </div>
       {/* <!-- Sidebar End --> */}

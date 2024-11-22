@@ -39,7 +39,7 @@ const withAuth = (WrappedComponent) => {
           "/profile",
           "/company-profile",
           "/essential",
-          "/search-grid",
+          "/search-jobs",
           "/job-details",
         ];
         const allowedPathsForEMP = [

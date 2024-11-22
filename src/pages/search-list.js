@@ -86,7 +86,7 @@ const SearchGrid = () => {
                         <i className="fa fa-list-ul"></i>
                       </Link>
                       <Link
-                        to="/search-grid"
+                        to="/search-jobs"
                         className="heading-default-color pl-5 font-size-6 hover-text-hitgray"
                       >
                         <i className="fa fa-th-large"></i>
