@@ -16,10 +16,10 @@ const IndexPage = () => {
         }}
       >
         <Hero />
-        <Brands />
-        <Categories />
+        {/* <Brands /> */}
+        {/* <Categories /> */}
         <Content1 />
-        <FeaturedJobs />
+        {/* <FeaturedJobs /> */}
         <Content2 />
       </PageWrapper>
     </>

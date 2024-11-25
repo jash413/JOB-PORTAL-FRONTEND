@@ -135,7 +135,7 @@ const Footer = () => {
                     <ul className="widget-links pl-0 list-unstyled list-hover-primary">
                       <li className="mb-6">
                         <Link
-                          to="/#"
+                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
                           href=""
                         >
@@ -144,7 +144,7 @@ const Footer = () => {
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/#"
+                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
                           href=""
                         >
@@ -153,7 +153,7 @@ const Footer = () => {
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/#"
+                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
                           href=""
                         >
@@ -162,7 +162,7 @@ const Footer = () => {
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/#"
+                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
                           href=""
                         >
@@ -171,151 +171,6 @@ const Footer = () => {
                       </li>
                     </ul>
                     {/* <!-- widget social menu end --> */}
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-3 col-xs-6">
-                  <div className="footer-widget widget3 mb-sm-0 mb-13">
-                    {/* <!-- footer widget title start --> */}
-                    <p className="widget-title font-size-4 text-gray mb-md-8 mb-7">
-                      Product
-                    </p>
-                    {/* <!-- footer widget title end --> */}
-                    {/* <!-- widget social menu start --> */}
-                    <ul className="widget-links pl-0 list-unstyled list-hover-primary">
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Features{" "}
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Pricing
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          News
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Help desk
-                        </Link>
-                      </li>
-                      {/* <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Support
-                        </Link>
-                      </li> */}
-                    </ul>
-                    {/* <!-- widget social menu end --> */}
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-3 col-xs-6">
-                  <div className="footer-widget widget4 mb-sm-0 mb-13">
-                    {/* <!-- footer widget title start --> */}
-                    <p className="widget-title font-size-4 text-gray mb-md-8 mb-7">
-                      Services
-                    </p>
-                    {/* <!-- footer widget title end --> */}
-                    {/* <!-- widget social menu start --> */}
-                    <ul className="widget-links pl-0 list-unstyled list-hover-primary">
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Digital Marketing
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          SEO for Business
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Avasta Dash
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          UI Design
-                        </Link>
-                      </li>
-                    </ul>
-                    {/* <!-- widget social menu end --> */}
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-3 col-xs-6">
-                  <div className="footer-widget widget4">
-                    {/* <!-- footer widget title start --> */}
-                    <p className="widget-title font-size-4 text-gray mb-md-8 mb-7">
-                      Legal
-                    </p>
-                    {/* <!-- footer widget title end --> */}
-                    <ul className="widget-links pl-0 list-unstyled list-hover-primary">
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Privacy Policy
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Terms &amp; Conditions
-                        </Link>
-                      </li>
-                      <li className="mb-6">
-                        <Link
-                          to="/#"
-                          className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
-                        >
-                          Return Policy
-                        </Link>
-                      </li>
-                    </ul>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "gatsby";
+import { Link, navigate } from "gatsby";
 import PageWrapper from "../components/PageWrapper";
 import Sidebar from "../components/Sidebar";
 import { Select } from "../components/Core";
@@ -105,8 +105,14 @@ const SearchGrid = () => {
       });
       setFilters((prev) => ({
         ...prev,
-        search: gContext?.searchQuery?.search,
-        job_cate: gContext?.searchQuery?.location,
+        search:
+          gContext?.searchQuery?.search?.trim() === ""
+            ? undefined
+            : gContext?.searchQuery?.search,
+        job_cate:
+          gContext?.searchQuery?.location?.trim() === ""
+            ? undefined
+            : gContext?.searchQuery?.location,
       }));
     }
   }, [gContext?.searchQuery?.bring]);
@@ -258,17 +264,16 @@ const SearchGrid = () => {
                       </h5>
                     </div>
                     <div className="pt-6">
-                      <div className="row justify-content-center">
+                      <div className="row justify-content-start">
                         {jobs && jobs.length > 0 ? (
                           jobs.map((job, id) => (
-                            <div key={id} className="col-12 col-lg-6">
+                            <Link
+                              to={`/job-details/${job.job_id}`}
+                              key={id}
+                              className="col-12 col-lg-6"
+                            >
                               {/* <!-- Start Feature One --> */}
                               <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                                <div className="d-block mb-7">
-                                  <span>
-                                    <img src={imgB1} alt="" />
-                                  </span>
-                                </div>
                                 <span className="font-size-3 d-block mb-0 text-gray">
                                   {job?.employer?.cmp_name}
                                 </span>
@@ -278,30 +283,20 @@ const SearchGrid = () => {
                                   </span>
                                 </h2>
                                 <ul className="list-unstyled mb-1 card-tag-list">
-                                  {/* <li>
-                                    <Link className="bg-regent-opacity-15 text-denim font-size-3 rounded-3">
-                                      <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
-                                      Berlyn
-                                    </Link>
-                                  </li>
-                                  <li>
-                                    <Link className="bg-regent-opacity-15 text-orange font-size-3 rounded-3">
-                                      <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
-                                      Full-time
-                                    </Link>
-                                  </li> */}
                                   <li>
                                     <Link className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3">
-                                      <i className="fa fa-dollar-sign mr-2 font-weight-bold"></i>{" "}
                                       {job?.salary
                                         ? formatSalary(job?.salary)
                                         : "00"}
                                     </Link>
                                   </li>
                                 </ul>
-                                <p className="mb-7 font-size-4 text-gray job-description">
-                                  {job?.job_description}
-                                </p>
+                                <p
+                                  className="mb-7 font-size-4 text-gray job-description"
+                                  dangerouslySetInnerHTML={{
+                                    __html: job?.job_description,
+                                  }}
+                                ></p>
                                 <div className="card-btn-group">
                                   <span
                                     onClick={() => handleJobApply(job.job_id)}
@@ -309,17 +304,10 @@ const SearchGrid = () => {
                                   >
                                     Apply Now
                                   </span>
-                                  {/* <Link
-                                    to="/#"
-                                    className="btn btn-outline-mercury text-black-2 text-uppercase btn-medium rounded-3"
-                                  >
-                                    <i className="icon icon-bookmark-2 font-weight-bold mr-4 font-size-4"></i>{" "}
-                                    Save it
-                                  </Link> */}
                                 </div>
                               </div>
                               {/* <!-- End Feature One --> */}
-                            </div>
+                            </Link>
                           ))
                         ) : (
                           <div className="col-12 col-lg-6">

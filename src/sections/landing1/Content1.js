@@ -10,7 +10,7 @@ const Content = () => {
   return (
     <>
       {/* <!-- Content Area -->  */}
-      <section className="pt-7 pt-lg-16 pb-2 pb-lg-32">
+      <section className="pt-7 pt-lg-16 pb-2 pb-lg-16">
         <div className="container">
           <div className="row pb-lg-6 justify-content-center">
             <div

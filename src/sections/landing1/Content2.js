@@ -1,16 +1,35 @@
-import React from "react";
-import { Link } from "gatsby";
+import React, { useContext } from "react";
+import { Link, navigate } from "gatsby";
 
 import imgC from "../../assets/image/l1/jpg/content-1-img2.jpg";
 import imgM1 from "../../assets/image/l1/png/media-img-1.png";
 import imgM2 from "../../assets/image/l1/png/media-img-2.png";
 import imgM3 from "../../assets/image/l1/png/media-img-3.png";
+import GlobalContext from "../../context/GlobalContext";
+import { toast } from "react-toastify";
+import { Button } from "../../components/Core";
 
 const Content = () => {
+  const gContext = useContext(GlobalContext);
+  const userDetails = JSON.parse(gContext?.user);
+
+  const handlePostJob = () => {
+    if (gContext.authVerified) {
+      if (userDetails?.login_type === "CND") {
+        toast.info("Login as employer to post job");
+      } else {
+        navigate("/dashboard-main");
+        gContext.toggleJobPostModalModal();
+      }
+    } else {
+      gContext.toggleSignInModal();
+    }
+  };
+
   return (
     <>
       {/* <!-- Content Area -->  */}
-      <section className="py-13 py-lg-30">
+      <section className="py-13 py-lg-18">
         <div className="container">
           <div className="row justify-content-center">
             <div
@@ -112,12 +131,12 @@ const Content = () => {
                   additional clickthroughs from DevOps.
                 </p>
                 {/* <!-- content-2 section title end --> */}
-                <Link
-                  to="/#"
+                <Button
+                  onClick={() => handlePostJob()}
                   className="btn btn-green btn-h-60 text-white w-180 rounded-5 text-uppercase"
                 >
                   Post a Job
-                </Link>
+                </Button>
               </div>
               {/* <!-- content-2 end --> */}
             </div>

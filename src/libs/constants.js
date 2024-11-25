@@ -24,6 +24,8 @@ export const REQ = {
   CAND_EDU_DETAILS_LIST: SERVER + "/api/v1/education/get-edu-details",
   UPDATE_EXPERIENCE: (exp_id) => SERVER + `/api/v1/experience/${exp_id}`,
   DELETE_EXPERIENCE: (exp_id) => SERVER + `/api/v1/experience/${exp_id}`,
+  GET_JOB_DETAILS: (job_id) => SERVER + `/api/v1/job-posts/${job_id}`,
+  UPDATE_JOB_DETAILS: (job_id) => SERVER + `/api/v1/job-posts/${job_id}`,
   CREATE_EMPLOYER: SERVER + "/api/v1/employers",
   GET_EMPLOYERS: SERVER + "/api/v1/employers/:id",
   UPDATE_EMP_PROFILE: SERVER + "/api/v1/auth/edit-profile",
