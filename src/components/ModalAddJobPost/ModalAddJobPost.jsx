@@ -9,6 +9,8 @@ import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
 import { TagsInput } from "react-tag-input-component";
 import { jobFormValidationSchema } from "../../utils/validations/validations";
+import { MdInfoOutline } from "react-icons/md";
+import { Editor } from '@tinymce/tinymce-react';
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -27,7 +29,7 @@ const ModalAddJobPost = (props) => {
         job_description: isEdit?.job_description || "",
         job_cate: isEdit?.job_cate || "",
         job_location: isEdit?.job_location || "",
-        salary: String(isEdit?.salary) || "",
+        salary: (isEdit?.salary) || "",
         required_skills: isEdit?.required_skills?.split(",") || [],
     });
 
@@ -39,7 +41,7 @@ const ModalAddJobPost = (props) => {
         const payload = {
             ...values,
             required_skills: values.required_skills.join(","),
-            salary: Number(values.salary),
+            salary: (values.salary),
         };
         try {
             if (isEdit) {
@@ -86,7 +88,7 @@ const ModalAddJobPost = (props) => {
             job_description: isEdit?.job_description || "",
             job_cate: isEdit?.job_cate || "",
             job_location: isEdit?.job_location || "",
-            salary: String(isEdit?.salary) || "",
+            salary: (isEdit?.salary) || "",
             required_skills: isEdit?.required_skills?.split(",") || [],
         });
     }, [isEdit]);
@@ -135,21 +137,6 @@ const ModalAddJobPost = (props) => {
                                             </div>
 
                                             <div className="form-group">
-                                                <label>Job Description</label>
-                                                <Field
-                                                    as="textarea"
-                                                    name="job_description"
-                                                    className="form-control"
-                                                    style={{ resize: "none" }}
-                                                />
-                                                <ErrorMessage
-                                                    name="job_description"
-                                                    component="div"
-                                                    className="text-danger"
-                                                />
-                                            </div>
-
-                                            <div className="form-group">
                                                 <label>Job Category</label>
                                                 <Field
                                                     as="select"
@@ -188,9 +175,9 @@ const ModalAddJobPost = (props) => {
                                             </div>
 
                                             <div className="form-group">
-                                                <label>Salary Range</label>
+                                                <label>Salary</label>
                                                 <Field
-                                                    type="text"
+                                                    type="number"
                                                     name="salary"
                                                     title="Only numbers are allowed"
                                                     className="form-control"
@@ -203,7 +190,9 @@ const ModalAddJobPost = (props) => {
                                             </div>
 
                                             <div className="form-group">
-                                                <label>Required Skills</label>
+                                                <label>Required Skills
+                                                    <MdInfoOutline title="Enter skill and press enter to add skill" className="ml-3" />
+                                                </label>
                                                 <TagsInput
                                                     value={initialValues.required_skills}
                                                     onChange={(newSkills) => setFieldValue("required_skills", newSkills)}
@@ -212,6 +201,35 @@ const ModalAddJobPost = (props) => {
                                                 />
                                                 <ErrorMessage
                                                     name="required_skills"
+                                                    component="div"
+                                                    className="text-danger"
+                                                />
+                                            </div>
+
+                                            <div className="form-group">
+                                                <label>Job Description</label>
+                                                <Editor
+                                                    apiKey="38m0w01zm6hkk6xe0sz59svlx0qgaq3ktgtfdop2m093c5x5"
+                                                    initialValue={initialValues.job_description}
+                                                    init={{
+                                                        height: 300,
+                                                        menubar: false,
+                                                        branding: false,
+                                                        resize: false,
+                                                        statusbar: false,
+                                                        plugins: [
+                                                            "advlist autolink lists link image charmap print preview anchor",
+                                                            "searchreplace visualblocks code fullscreen",
+                                                            "insertdatetime media table paste code help wordcount",
+                                                        ],
+                                                        toolbar: "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat",
+                                                    }}
+                                                    onEditorChange={(content) =>
+                                                        setFieldValue("job_description", content)
+                                                    }
+                                                />
+                                                <ErrorMessage
+                                                    name="job_description"
                                                     component="div"
                                                     className="text-danger"
                                                 />

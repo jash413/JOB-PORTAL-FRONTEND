@@ -16,6 +16,7 @@ const EmployerApplicationsList = () => {
 
     const [jobApplications, setJobApplications] = useState([]);
     const [jobCategories, setJobCategories] = useState([]);
+    const [jobFilter, setJobFilter] = useState([]);
     const [status] = useState([
         { value: "pending", label: "Pending" },
         { value: "accepted", label: "Accepted" },
@@ -24,7 +25,7 @@ const EmployerApplicationsList = () => {
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         page: 1,
-        limit: 10,
+        limit: 5,
         // sortBy: "",
         // sortOrder: "",
         // status: "",
@@ -107,6 +108,29 @@ const EmployerApplicationsList = () => {
         fetchJobs();
     }, [filters]);
 
+
+    useEffect(() => {
+        const fetchJobRecords = async () => {
+            try {
+                const response = await axiosInterceptors.post(
+                    REQ.GET_JOBPOST_RECORDS,
+                    { page: 1, limit: 1000 }
+                );
+                setJobFilter(
+                    response?.records?.map((application) => ({
+                        value: application?.job_id,
+                        label: application?.job_title,
+                    }))
+                );
+            } catch (error) {
+                console.error("Error", error);
+            }
+        };
+
+        fetchJobRecords();
+    }, []);
+
+
     useEffect(() => {
         axiosInterceptors
             .post(REQ.JOB_CATEGORIES, {
@@ -150,65 +174,39 @@ const EmployerApplicationsList = () => {
                                     margin: "0px 15px",
                                 }}
                             >
-                                <div className="d-flex flex-column flex-lg-row align-items-end align-items-lg-center justify-content-between w-100 px-5">
-                                    {/* Label for Filter */}
-                                    <div className="d-flex flex-column flex-lg-row align-items-center mb-3 mb-lg-0 gap-2">
-                                        <p
-                                            className="mb-0 font-weight-bold text-muted d-none d-xl-block"
-                                            style={{
-                                                whiteSpace: "nowrap",
-                                            }}
-                                        >
-                                            Filter by Job:
-                                        </p>
-                                        {/* Job Category Select */}
-                                        <div
-                                            className="w-100 ml-0 ml-lg-5"
-                                            style={{
-                                                minWidth: "300px",
-                                            }}
-                                        >
+                                <div className="d-flex flex-column flex-lg-row align-items-stretch justify-content-between w-100 px-3 px-lg-5 gap-3">
+                                    <div className="d-flex flex-column flex-lg-row flex-wrap align-items-center gap-3 w-100">
+                                        <div className="col-12 col-lg-4">
                                             <Select
                                                 isClearable
                                                 options={jobCategories}
                                                 placeholder="Select job category"
                                                 className="form-select w-100"
-                                                onChange={(option) =>
-                                                    handleFilterChange({ job_cate: option?.value })
-                                                }
+                                                onChange={(option) => handleFilterChange({ job_cate: option?.value })}
                                             />
                                         </div>
-                                    </div>
-
-                                    <div className="d-flex flex-column flex-lg-row align-items-center mb-3 mb-lg-0 gap-2">
-                                        <p
-                                            className="mb-0 font-weight-bold text-muted d-none d-xl-block"
-                                            style={{
-                                                whiteSpace: "nowrap",
-                                            }}
-                                        >
-                                            Filter by status:
-                                        </p>
-                                        {/* Job Category Select */}
-                                        <div
-                                            className="w-100 ml-0 ml-lg-5"
-                                            style={{
-                                                minWidth: "300px",
-                                            }}
-                                        >
+                                        <div className="col-12 col-lg-4">
+                                            <Select
+                                                isClearable
+                                                options={jobFilter}
+                                                placeholder="Select job by post"
+                                                className="form-select w-100"
+                                                onChange={(option) => handleFilterChange({ job_id: option?.value })}
+                                            />
+                                        </div>
+                                        <div className="col-12 col-lg-4">
                                             <Select
                                                 isClearable
                                                 options={status}
                                                 defaultValue={[]}
                                                 placeholder="Select application status"
                                                 className="form-select w-100"
-                                                onChange={(option) =>
-                                                    handleFilterChange({ status: option?.value })
-                                                }
+                                                onChange={(option) => handleFilterChange({ status: option?.value })}
                                             />
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="bg-white shadow-8 pt-7 rounded pb-9 px-11">
@@ -400,7 +398,7 @@ const EmployerApplicationsList = () => {
                         </button>
                     </div>
                 </Modal.Body>
-            </Modal >
+            </Modal>
         </>
     );
 };

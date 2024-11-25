@@ -49,7 +49,7 @@ const Check = ({ children, isActive, onClick }) => {
 };
 
 const Sidebar = ({ setFilters }) => {
-  const [rangeValues, setRangeValues] = useState([70, 150]);
+  const [rangeValues, setRangeValues] = useState([80000, 15000000]);
   const [jobCategories, setJobCategories] = useState([]);
   const [postedTime, setPostedTime] = useState(undefined);
 
@@ -122,6 +122,18 @@ const Sidebar = ({ setFilters }) => {
     }));
   };
 
+  function formatSalary(amount) {
+    if (amount < 1000) {
+      return amount.toString();
+    } else if (amount < 1000000) {
+      return (amount / 1000).toFixed(1) + "K";
+    } else if (amount < 1000000000) {
+      return (amount / 1000000).toFixed(1) + "M";
+    } else {
+      return (amount / 1000000000).toFixed(1) + "B";
+    }
+  }
+
   return (
     <>
       {/* <!-- Sidebar Start --> */}
@@ -157,7 +169,8 @@ const Sidebar = ({ setFilters }) => {
                   white-space: nowrap;
                 `}
               >
-                ${rangeValues[0].toFixed()} - {rangeValues[1].toFixed()}K
+                ${formatSalary(rangeValues[0].toFixed())} -{" "}
+                {formatSalary(rangeValues[1].toFixed())}K
               </span>
             </p>
           </div>

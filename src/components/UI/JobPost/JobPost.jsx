@@ -101,6 +101,29 @@ const JobPost = () => {
         }
     };
 
+    const toggleJobStatus = async (jobId, job) => {
+        try {
+            const updatedStatus = job.status === "active" ? "inactive" : "active";
+            const payload = {
+                job_title: job?.job_title,
+                job_description: job?.job_description,
+                job_cate: job?.job_cate,
+                job_location: job?.job_location,
+                salary: job?.salary,
+                required_skills: job?.required_skills,
+                status: updatedStatus,
+            };
+
+            await axiosInterceptors.put(REQ?.UPDATE_JOB_DETAILS(jobId), payload);
+            toast.success(`Job status updated to ${updatedStatus}`);
+
+            fetchJobs();
+        } catch (error) {
+            console.error("Error updating job status:", error);
+            toast.error("Failed to update job status");
+        }
+    };
+
     useEffect(() => {
         axiosInterceptors
             .post(REQ.JOB_CATEGORIES, {
@@ -275,6 +298,15 @@ const JobPost = () => {
                                                 <th
                                                     scope="col"
                                                     className="pl-4 border-0 font-size-4 font-weight-normal text-truncate"
+                                                    onClick={() =>
+                                                        handleSortChange("status")
+                                                    }
+                                                >
+                                                    Status {getSortIcon("status")}
+                                                </th>
+                                                <th
+                                                    scope="col"
+                                                    className="pl-4 border-0 font-size-4 font-weight-normal text-truncate"
                                                 ></th>
                                                 <th
                                                     scope="col"
@@ -318,6 +350,24 @@ const JobPost = () => {
                                                             <h3 className="font-size-4 font-weight-bold text-black-2 mb-0">
                                                                 {job.totalApplications}
                                                             </h3>
+                                                        </td>
+                                                        <td className="table-y-middle py-7 min-width-px-205">
+                                                            <div className="form-check form-switch">
+                                                                <input
+                                                                    className="form-switch"
+                                                                    type="checkbox"
+                                                                    role="switch"
+                                                                    id={`status-switch-${job.id}`}
+                                                                    checked={job.status === "active"}
+                                                                    onChange={() => toggleJobStatus(job.job_id, job)}
+                                                                />
+                                                                <label
+                                                                    className="form-check-label ml-3"
+                                                                    htmlFor={`status-switch-${job.id}`}
+                                                                >
+                                                                    {job.status === "active" ? "Active" : "Inactive"}
+                                                                </label>
+                                                            </div>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-80">
                                                             <span

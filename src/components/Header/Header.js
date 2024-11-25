@@ -130,7 +130,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li className="nav-item">
-                          <Link to="/job-details" className="nav-link active">
+                          <Link to="/job-detailss" className="nav-link active">
                             My Application
                           </Link>
                         </li>
