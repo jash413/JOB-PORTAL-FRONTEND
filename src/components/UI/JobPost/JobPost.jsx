@@ -7,7 +7,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import moment from "moment/moment";
 import { toast } from "react-toastify";
 import { Oval } from "react-loader-spinner";
-import { Select } from "../../Core";
+import { Select, Switch } from "../../Core";
 import GlobalContext from "../../../context/GlobalContext";
 import { REQ } from "../../../libs/constants";
 import axiosInterceptors from "../../../libs/integration/axiosInterceptors";
@@ -352,14 +352,12 @@ const JobPost = () => {
                                                             </h3>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-205">
-                                                            <div className="form-check form-switch">
-                                                                <input
-                                                                    className="form-switch"
-                                                                    type="checkbox"
-                                                                    role="switch"
+                                                            <div className="d-flex align-items-center">
+                                                                <Switch
+                                                                    bg="primary"
                                                                     id={`status-switch-${job.id}`}
-                                                                    checked={job.status === "active"}
-                                                                    onChange={() => toggleJobStatus(job.job_id, job)}
+                                                                    active={job.status === "active"}
+                                                                    onClick={() => toggleJobStatus(job.job_id, job)}
                                                                 />
                                                                 <label
                                                                     className="form-check-label ml-3"

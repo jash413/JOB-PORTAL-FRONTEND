@@ -175,8 +175,8 @@ const EmployerApplicationsList = () => {
                                 }}
                             >
                                 <div className="d-flex flex-column flex-lg-row align-items-stretch justify-content-between w-100 px-3 px-lg-5 gap-3">
-                                    <div className="d-flex flex-column flex-lg-row flex-wrap align-items-center gap-3 w-100">
-                                        <div className="col-12 col-lg-4">
+                                    <div className="d-flex flex-column flex-lg-row flex-wrap justify-content-between align-items-center gap-3 w-100">
+                                        <div className="">
                                             <Select
                                                 isClearable
                                                 options={jobCategories}
@@ -185,16 +185,17 @@ const EmployerApplicationsList = () => {
                                                 onChange={(option) => handleFilterChange({ job_cate: option?.value })}
                                             />
                                         </div>
-                                        <div className="col-12 col-lg-4">
+                                        <div className="">
                                             <Select
                                                 isClearable
                                                 options={jobFilter}
-                                                placeholder="Select job by post"
+                                                placeholder="Select by job post"
                                                 className="form-select w-100"
                                                 onChange={(option) => handleFilterChange({ job_id: option?.value })}
+
                                             />
                                         </div>
-                                        <div className="col-12 col-lg-4">
+                                        <div className="">
                                             <Select
                                                 isClearable
                                                 options={status}

@@ -135,36 +135,32 @@ const Footer = () => {
                     <ul className="widget-links pl-0 list-unstyled list-hover-primary">
                       <li className="mb-6">
                         <Link
-                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
+                          href="https://initinfologic.com/"
                         >
                           About us
                         </Link>
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
+                          href="https://initinfologic.com/"
                         >
                           Contact us
                         </Link>
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
+                          href="https://initinfologic.com/"
                         >
                           Careers
                         </Link>
                       </li>
                       <li className="mb-6">
                         <Link
-                          to="/https://initinfologic.com/"
                           className="heading-default-color font-size-4 font-weight-normal"
-                          href=""
+                          href="https://initinfologic.com/"
                         >
                           Press
                         </Link>

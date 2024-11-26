@@ -5,7 +5,7 @@ import GlobalContext from "../../context/GlobalContext";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup"; // Import Yup for validation
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
-import { REQ } from "../../libs/constants";
+import { REQ, TINYMCE_API_KEY } from "../../libs/constants";
 import { toast } from "react-toastify";
 import { TagsInput } from "react-tag-input-component";
 import { jobFormValidationSchema } from "../../utils/validations/validations";
@@ -209,7 +209,7 @@ const ModalAddJobPost = (props) => {
                                             <div className="form-group">
                                                 <label>Job Description</label>
                                                 <Editor
-                                                    apiKey="38m0w01zm6hkk6xe0sz59svlx0qgaq3ktgtfdop2m093c5x5"
+                                                    apiKey={TINYMCE_API_KEY}
                                                     initialValue={initialValues.job_description}
                                                     init={{
                                                         height: 300,
