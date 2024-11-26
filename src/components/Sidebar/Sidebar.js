@@ -5,10 +5,11 @@ import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { REQ } from "../../libs/constants";
 import { Select } from "../Core";
 import GlobalContext from "../../context/GlobalContext";
+import { MdCurrencyRupee } from "react-icons/md";
 
-const STEP = 1;
-const MIN = 50;
-const MAX = 180;
+const STEP = 10000;
+const MIN = 80000;
+const MAX = 15000000;
 
 const CheckStyled = styled.span`
   cursor: pointer;
@@ -49,7 +50,7 @@ const Check = ({ children, isActive, onClick }) => {
 };
 
 const Sidebar = ({ setFilters }) => {
-  const [rangeValues, setRangeValues] = useState([80000, 15000000]);
+  const [rangeValues, setRangeValues] = useState([250000, 3000000]);
   const [jobCategories, setJobCategories] = useState([]);
   const [postedTime, setPostedTime] = useState(undefined);
 
@@ -169,8 +170,9 @@ const Sidebar = ({ setFilters }) => {
                   white-space: nowrap;
                 `}
               >
-                ${formatSalary(rangeValues[0].toFixed())} -{" "}
-                {formatSalary(rangeValues[1].toFixed())}K
+                <MdCurrencyRupee size={18} className="text-primary" />
+                {formatSalary(rangeValues[0].toFixed())} -{" "}
+                {formatSalary(rangeValues[1].toFixed())}
               </span>
             </p>
           </div>

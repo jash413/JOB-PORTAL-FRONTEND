@@ -9,7 +9,7 @@ import withAuth from "../hooks/withAuth";
 import { REQ } from "../libs/constants";
 import { Oval } from "react-loader-spinner";
 import axiosInterceptors from "../libs/integration/axiosInterceptors";
-import { MdClear } from "react-icons/md";
+import { MdClear, MdCurrencyRupee } from "react-icons/md";
 import { toast } from "react-toastify";
 import GlobalContext from "../context/GlobalContext";
 
@@ -28,6 +28,7 @@ const SearchGrid = () => {
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [search, setSearch] = useState(gContext?.searchQuery?.search ?? "");
   const [location, setLocation] = useState(
     gContext?.searchQuery?.location ?? ""
@@ -50,7 +51,8 @@ const SearchGrid = () => {
   });
 
   const fetchJobs = async (isLoadMore = false) => {
-    setLoading(true);
+    if (!isLoadMore) setLoading(true);
+    else setLoadingMore(true);
 
     const updatedFilters = {
       ...filters,
@@ -74,7 +76,8 @@ const SearchGrid = () => {
     } catch (error) {
       console.error("Error fetching job posts", error);
     } finally {
-      setLoading(false);
+      if (!isLoadMore) setLoading(false);
+      else setLoadingMore(false);
     }
   };
 
@@ -87,13 +90,16 @@ const SearchGrid = () => {
   };
 
   const handleLoadMore = () => {
-    if (pagination.currentPage < pagination.totalPages) {
-      setFilters((prev) => ({ ...prev, page: prev.page + 1 }));
+    if (!loadingMore && pagination.hasNextPage) {
+      setFilters((prev) => ({
+        ...prev,
+        page: prev.page + 1,
+      }));
     }
   };
 
   useEffect(() => {
-    fetchJobs();
+    fetchJobs(filters.page > 1);
   }, [filters]);
 
   useEffect(() => {
@@ -257,7 +263,9 @@ const SearchGrid = () => {
                     <div className="d-flex align-items-center justify-content-between">
                       <h5 className="font-size-4 font-weight-normal text-default-color">
                         <span className="heading-default-color">
-                          Total jobs ({pagination.totalItems})
+                          <h4 className="font-size-5 font-weight-semibold mb-6">
+                            Total jobs ({pagination.totalItems})
+                          </h4>
                         </span>
                         {/* results for{" "}
                       <span className="heading-default-color">UI Designer</span> */}
@@ -285,6 +293,10 @@ const SearchGrid = () => {
                                 <ul className="list-unstyled mb-1 card-tag-list">
                                   <li>
                                     <Link className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3">
+                                      <MdCurrencyRupee
+                                        size={15}
+                                        className="text-primary"
+                                      />
                                       {job?.salary
                                         ? formatSalary(job?.salary)
                                         : "00"}
@@ -299,7 +311,11 @@ const SearchGrid = () => {
                                 ></p>
                                 <div className="card-btn-group">
                                   <span
-                                    onClick={() => handleJobApply(job.job_id)}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      handleJobApply(job.job_id);
+                                    }}
                                     className="btn btn-green text-uppercase btn-medium rounded-3"
                                   >
                                     Apply Now
@@ -320,13 +336,14 @@ const SearchGrid = () => {
                         )}
                       </div>
                     </div>
-                    {pagination.currentPage < pagination.totalPages && (
+                    {pagination.hasNextPage && (
                       <div className="text-center pt-5 pt-lg-13">
                         <button
                           className="btn btn-primary text-uppercase font-size-3"
-                          onClick={handleLoadMore}
+                          onClick={() => handleLoadMore()}
+                          disabled={loadingMore}
                         >
-                          Load More
+                          {loadingMore ? "Loading..." : "Load More"}
                         </button>
                       </div>
                     )}

@@ -1,4 +1,5 @@
 export const SERVER = process.env.GATSBY_API_URL;
+export const TINYMCE_API_KEY = process.env.GATSBY_TINYMCE_API_KEY;
 
 export const REQ = {
   REFRESH_TOKEN: SERVER + "/auth/refresh-token",
@@ -45,4 +46,6 @@ export const REQ = {
     SERVER + "/api/v1/job-posts/get-job-posts-accessible-to-candidate",
   JOB_APPLIED: SERVER + "/api/v1/job-applications/apply",
   GET_EMPLOYER_DASHBOARD_STATS: SERVER + "/api/v1/employers/dashboard-data",
+  GET_CANDIDATE_APPLICATIONS:
+    SERVER + "/api/v1/job-applications/candidate-applications",
 };

@@ -15,6 +15,8 @@ const withoutAuth = (WrappedComponent) => {
       const currentPath = window.location.pathname;
       if (userType === "EMP" && currentPath === "/") {
         navigate("/profile");
+      } else if (userType === "CND" && currentPath === "/") {
+        navigate("/profile");
       } else {
         setLoading(false);
       }

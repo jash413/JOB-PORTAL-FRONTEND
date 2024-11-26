@@ -40,6 +40,7 @@ const withAuth = (WrappedComponent) => {
           "/company-profile",
           "/essential",
           "/search-jobs",
+          "/my-applications",
           "/job-details",
         ];
         const allowedPathsForEMP = [
@@ -52,6 +53,7 @@ const withAuth = (WrappedComponent) => {
           "/dashboard-request-access",
           "/essential",
         ];
+
         if (userType === "EMP" && currentPath === "/") {
           navigate("/profile");
         } else if (
