@@ -4,7 +4,6 @@ import LazyLoad from "react-lazyload";
 import PageWrapper from "../components/PageWrapper";
 
 import withAuth from "../hooks/withAuth";
-import ModalAddJobPost from "../components/ModalAddJobPost";
 import JobPost from "../components/UI/JobPost";
 import EmployerApplicationsList from "../components/UI/EmployerApplicationsList";
 import axiosInterceptors from "../libs/integration/axiosInterceptors";
@@ -137,7 +136,6 @@ const DashboardMain = () => {
             </div>
           </div>
         </div>
-        <ModalAddJobPost />
       </PageWrapper>
     </>
   );

@@ -46,6 +46,7 @@ const CandidateProfile = () => {
 
   const [mappedExperienceData, setMappedExperienceData] = useState([]);
   const [selectedExperience, setSelectedExperience] = useState(null);
+  const [canInfo, setCanInfo] = useState(null);
   const [canBio, setCanBio] = useState(null);
   const [canSkills, setCanSkills] = useState(null);
 
@@ -194,6 +195,7 @@ const CandidateProfile = () => {
       if (response?.can_skill) {
         setCanSkills(response?.can_skill);
       }
+      setCanInfo(response);
     } catch (error) {
       console.error("Error fetching candidate details:", error);
     }
@@ -291,7 +293,7 @@ const CandidateProfile = () => {
                 <div className="row">
                   {/* <!-- Left Sidebar Start --> */}
                   <div className="col-12 col-xxl-3 col-lg-4 col-md-5 mb-11 mb-lg-0">
-                    <ProfileSidebar />
+                    <ProfileSidebar canInfo={canInfo} />
                   </div>
                   {/* <!-- Left Sidebar End --> */}
                   {/* <!-- Middle Content --> */}
@@ -616,6 +618,7 @@ const CandidateProfile = () => {
             <ModalProfile
               fetchDetails={fetchCandidateDetails}
               fetchUserProfile={fetchUserProfile}
+              canInfo={canInfo}
             />
           </>
         ) : (

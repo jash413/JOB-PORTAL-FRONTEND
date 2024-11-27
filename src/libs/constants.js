@@ -1,5 +1,7 @@
 export const SERVER = process.env.GATSBY_API_URL;
+export const PROD_SERVER = process.env.GATSBY_PROD_API_URL;
 export const TINYMCE_API_KEY = process.env.GATSBY_TINYMCE_API_KEY;
+export const GOOGLE_MAPS_API_KEY = process.env.GATSBY_GOOGLE_MAPS_API_KEY;
 
 export const REQ = {
   REFRESH_TOKEN: SERVER + "/auth/refresh-token",
@@ -19,7 +21,10 @@ export const REQ = {
   CREATE_EXPERIENCE: SERVER + "/api/v1/experience",
   CANDIDATE_EXP_LIST: SERVER + "/api/v1/experience/candidate",
   GET_CANDIDATE: SERVER + "/api/v1/candidates/:id",
-  DOWNLOAD_RESUME: SERVER + "/api/v1/candidates/:id/resume",
+  DOWNLOAD_RESUME: (can_id) =>
+    PROD_SERVER + `/api/v1/candidates/${can_id}/resume`,
+  DOWNLOAD_PROFILE_IMG: (can_id) =>
+    PROD_SERVER + `/api/v1/candidates/${can_id}/profile-image`,
   CANDIDATE_EDUCATION: SERVER + "/api/v1/education",
   UPDATE_CANDIDATE_EDUCATION: SERVER + "/api/v1/education/:id",
   CAND_EDU_DETAILS_LIST: SERVER + "/api/v1/education/get-edu-details",
@@ -48,4 +53,8 @@ export const REQ = {
   GET_EMPLOYER_DASHBOARD_STATS: SERVER + "/api/v1/employers/dashboard-data",
   GET_CANDIDATE_APPLICATIONS:
     SERVER + "/api/v1/job-applications/candidate-applications",
+  GET_LOCATIONS_PLACEHOLDER: (value) =>
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+      value
+    )}&key=${GOOGLE_MAPS_API_KEY}`,
 };

@@ -79,11 +79,10 @@ const Footer = () => {
                 <div className="media-body pl-5">
                   <p className="mb-0 font-size-4 text-white">Contact us at</p>
                   <Link
-                    to="/#"
                     className="mb-0 font-size-4 font-weight-bold"
-                    href="mailto:support@uxtheme.net"
+                    href="mailto:info@initinfologic.com"
                   >
-                    support@uxtheme.net
+                    info@initinfologic.com
                   </Link>
                 </div>
               </div>

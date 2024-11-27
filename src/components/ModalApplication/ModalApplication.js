@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "gatsby";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
@@ -11,6 +11,7 @@ import { REQ } from "../../libs/constants";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
 import { toast } from "react-toastify";
 import { calculateDuration } from "../../utils";
+import { MdDownload } from "react-icons/md";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -26,6 +27,7 @@ const ModalStyled = styled(Modal)`
 `;
 
 const ModalApplication = (props) => {
+  const [profileImage, setProfileImage] = useState(null);
   const gContext = useContext(GlobalContext);
   const pathName = typeof window !== "undefined" ? window.location.href : "";
 
@@ -53,6 +55,47 @@ const ModalApplication = (props) => {
     }
   };
 
+  const handleDownload = async (fileName) => {
+    try {
+      const response = await axiosInterceptors.get(
+        REQ.DOWNLOAD_RESUME(applicantDetails?.can_code),
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(response);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${fileName}_resume.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (applicantDetails?.can_code) {
+      const fetchProfileImg = async () => {
+        try {
+          const response = await axiosInterceptors.get(
+            REQ.DOWNLOAD_PROFILE_IMG(applicantDetails?.can_code),
+            { responseType: "blob" }
+          );
+          if (response) {
+            const imageUrl = URL.createObjectURL(response);
+            setProfileImage(imageUrl);
+          }
+        } catch (error) {
+          console.error("Error fetching profile image:", error);
+        }
+      };
+      fetchProfileImg();
+    }
+  }, [applicantDetails?.can_code]);
+
   return (
     <ModalStyled
       {...props}
@@ -79,20 +122,24 @@ const ModalApplication = (props) => {
                   <div className="bg-white shadow-9 rounded-4">
                     <div className="px-5 text-center border-bottom border-mercury">
                       <div className="py-11">
-                        <Link to="/#" className="mb-4">
-                          <img className="circle-54" src={imgP} alt="" />
+                        <Link className="mb-4">
+                          <img
+                            className="circle-54"
+                            src={profileImage ?? imgP}
+                            alt=""
+                          />
                         </Link>
                         <h4 className="mb-0">
                           <p className="text-black-2 font-size-6 font-weight-semibold">
                             {applicantDetails?.can_name}
                           </p>
                         </h4>
-                        <p className="mb-8">
+                        {/* <p className="mb-8">
                           <p className="text-gray font-size-4">
                             Product Designer
                           </p>
-                        </p>
-                        <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
+                        </p> */}
+                        {/* <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
                           <Link
                             to="/#"
                             className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
@@ -123,7 +170,7 @@ const ModalApplication = (props) => {
                           >
                             <i className="fab fa-behance"></i>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     {/* <!-- Top End --> */}
@@ -166,12 +213,23 @@ const ModalApplication = (props) => {
                       {/* <!-- Single List --> */}
                       {/* <!-- Single List --> */}
                       <div className="mb-7">
-                        <p className="font-size-4 mb-0">Website Linked</p>
-                        <h5 className="font-size-4 font-weight-semibold mb-0">
-                          <Link to="/#" className="text-break">
-                            www.nameac.com
-                          </Link>
-                        </h5>
+                        <p className="font-size-4 mb-0">Resume</p>
+                        {applicantDetails && applicantDetails?.can_resume ? (
+                          <div className="my-3 px-2 py-1 d-flex w-max justify-content-between align-items-center">
+                            <p className="mb-0 font-size-3">{`${applicantDetails?.can_name}'s resume`}</p>
+                            <span style={{ cursor: "pointer" }}>
+                              <MdDownload
+                                onClick={() =>
+                                  handleDownload(applicantDetails?.can_name)
+                                }
+                              />
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="font-size-3 mb-0">
+                            Resume not uploaded
+                          </p>
+                        )}
                       </div>
                       {/* <!-- Single List --> */}
                     </div>

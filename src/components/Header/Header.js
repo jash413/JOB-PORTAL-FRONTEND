@@ -105,7 +105,10 @@ const Header = () => {
           >
             {/* <!-- Brand Logo--> */}
             <div className="brand-logo">
-              <Logo white={gContext.header.theme === "dark"} />
+              <Logo
+                className="header-logo"
+                white={gContext.header.theme === "dark"}
+              />
             </div>
             {gContext?.authenticated && (
               <div className="collapse navbar-collapse">

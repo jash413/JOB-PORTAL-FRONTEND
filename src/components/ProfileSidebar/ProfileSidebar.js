@@ -1,19 +1,61 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "gatsby";
 import { VscVerified, VscUnverified } from "react-icons/vsc";
 import imgP from "../../assets/image/l3/png/pro-img.png";
 import GlobalContext from "../../context/GlobalContext";
-import { MdEdit } from "react-icons/md";
+import { MdDownload, MdEdit } from "react-icons/md";
+import axiosInterceptors from "../../libs/integration/axiosInterceptors";
+import { REQ } from "../../libs/constants";
 
 const Sidebar = (props) => {
+  const { canInfo } = props;
   const gContext = useContext(GlobalContext);
   const userDetails = JSON.parse(gContext?.user);
   const userType = userDetails?.login_type;
+  const [profileImg, setProfileImg] = useState(null);
+
+  const handleDownload = async (fileName) => {
+    try {
+      const response = await axiosInterceptors.get(
+        REQ.DOWNLOAD_RESUME(canInfo?.can_code),
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(response);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${fileName}_resume.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (canInfo?.can_code) {
+      const fetchProfileImg = async () => {
+        try {
+          const response = await axiosInterceptors.get(
+            REQ.DOWNLOAD_PROFILE_IMG(canInfo?.can_code),
+            { responseType: "blob" }
+          );
+          const imageUrl = URL.createObjectURL(response);
+          setProfileImg(imageUrl);
+        } catch (error) {
+          console.error("Error fetching profile image:", error);
+        }
+      };
+      fetchProfileImg();
+    }
+  }, [canInfo?.can_code]);
 
   return (
     <>
       {/* <!-- Sidebar Start --> */}
-
       <div {...props}>
         <div className="pl-lg-5">
           {/* <!-- Top Start --> */}
@@ -40,19 +82,24 @@ const Sidebar = (props) => {
                   </span>
                 )}
               </div>
-              <div className="py-11">
-                <Link to="/#" className="mb-4">
-                  <img className="circle-54" src={imgP} alt="" />
+              <div className="py-5">
+                <Link className="mb-4">
+                  <img
+                    className="circle-54"
+                    style={{ objectFit: "cover" }}
+                    src={profileImg ?? imgP}
+                    alt=""
+                  />
                 </Link>
                 <h4 className="mb-0">
                   <p className="text-black-2 font-size-6 font-weight-semibold">
                     {userDetails?.login_name}
                   </p>
                 </h4>
-                <p className="mb-8">
+                {/* <p className="mb-8">
                   <p className="text-gray font-size-4">Product Designer</p>
-                </p>
-                <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
+                </p> */}
+                {/* <div className="icon-link d-flex align-items-center justify-content-center flex-wrap">
                   <Link
                     to="/#"
                     className="text-smoke circle-32 bg-concrete mr-5 hover-bg-green"
@@ -83,7 +130,7 @@ const Sidebar = (props) => {
                   >
                     <i className="fab fa-behance"></i>
                   </Link>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* <!-- Top End --> */}
@@ -160,23 +207,26 @@ const Sidebar = (props) => {
                   )}
                 </div>
               </div>
-              {/* <!-- Single List --> */}
-              {/* <!-- Single List --> */}
-              <div className="mb-7">
-                <p className="font-size-4 mb-0">Website Linked</p>
-                <h5 className="font-size-4 font-weight-semibold mb-0">
-                  <Link to="/#" className="text-break">
-                    www.nameac.com
-                  </Link>
-                </h5>
-              </div>
+
+              {canInfo && canInfo?.can_resume && (
+                <div className="mb-7">
+                  <p className="font-size-4 mb-0">Resume</p>
+                  <div className="my-3 px-2 py-1 d-flex w-max justify-content-between align-items-center">
+                    <p className="mb-0 font-size-3">{`${canInfo?.can_name}'s resume`}</p>
+                    <span style={{ cursor: "pointer" }}>
+                      <MdDownload
+                        onClick={() => handleDownload(canInfo?.can_name)}
+                      />
+                    </span>
+                  </div>
+                </div>
+              )}
               {/* <!-- Single List --> */}
             </div>
             {/* <!-- Bottom End --> */}
           </div>
         </div>
       </div>
-
       {/* <!-- Sidebar End --> */}
     </>
   );
