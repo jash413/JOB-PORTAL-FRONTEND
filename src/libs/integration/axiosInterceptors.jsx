@@ -50,6 +50,11 @@ axiosInterceptors.interceptors.response.use(
           localStorage.setItem("user", null);
           navigate("/");
         }
+        if (response.status === 401) {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+          navigate("/");
+        }
         return axiosInterceptors(originalConfig);
       } catch (_error) {
         return Promise.reject(_error);

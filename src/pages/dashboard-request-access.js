@@ -261,7 +261,7 @@ const DashboardRequestAccess = () => {
             </div>
           </div>
         </div>
-        {/* <ModalAddJobPost fetchJobs={fetchJobs} /> */}
+        <ModalAddJobPost />
       </PageWrapper>
     </>
   );

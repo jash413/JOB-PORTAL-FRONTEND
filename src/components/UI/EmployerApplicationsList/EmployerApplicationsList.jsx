@@ -275,14 +275,17 @@ const EmployerApplicationsList = () => {
                                                             </h3>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-125">
-                                                            <h3 className="font-size-4 font-weight-normal text-black-2 mb-0">
+                                                            <h3 className="font-size-4 font-weight-normal text-black-2 mb-0 text-nowrap">
                                                                 {moment(job.appliedAt).format("DD MMM, YYYY")}
                                                             </h3>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-155">
                                                             <span
-                                                                className={`badge ${job.status === "pending" ? "bg-warning text-dark" : "bg-danger text-white"
+                                                                className={`rounded-3 font-weight-semibold ${job.status === "pending" ? "bg-warning text-dark" : "bg-danger text-white"
                                                                     }`}
+                                                                style={{
+                                                                    padding: "2px 8px",
+                                                                }}
                                                             >
                                                                 {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
                                                             </span>
@@ -296,13 +299,13 @@ const EmployerApplicationsList = () => {
                                                                         data: job,
                                                                     });
                                                                 }}
-                                                                className="font-size-3 font-weight-bold text-black-2 text-uppercase">
+                                                                className="font-size-3 font-weight-bold text-black-2 text-uppercase line-height-1p2">
                                                                 View Application
                                                             </h3>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-155">
                                                             <h3
-                                                                className="font-size-3 font-weight-bold text-green text-uppercase"
+                                                                className="font-size-3 font-weight-bold text-green text-uppercase line-height-0"
                                                                 onClick={() => openConfirmationModal(job.id, "accepted")}
                                                             >
                                                                 Accept
@@ -310,7 +313,7 @@ const EmployerApplicationsList = () => {
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-155">
                                                             <h3
-                                                                className={`font-size-3 font-weight-bold text-red-2 text-uppercase ${job.status === "rejected" && "text-muted"}`}
+                                                                className={`font-size-3 font-weight-bold text-red-2 text-uppercase line-height-0 ${job.status === "rejected" && "text-muted"}`}
                                                                 onClick={() => {
                                                                     if (job.status === "pending") {
                                                                         openConfirmationModal(job.id, "rejected")

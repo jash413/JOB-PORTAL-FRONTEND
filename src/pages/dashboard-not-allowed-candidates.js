@@ -229,6 +229,7 @@ const DashboardNotAllowedCandidates = () => {
             </div>
           </div>
         </div>
+        <ModalAddJobPost />
       </PageWrapper>
     </>
   );

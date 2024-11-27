@@ -5,12 +5,13 @@ import GlobalContext from "../../context/GlobalContext";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { canProfileValidationSchema } from "../../utils/validations/validations";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
-import { REQ, SERVER } from "../../libs/constants";
+import { PROD_SERVER, REQ, SERVER } from "../../libs/constants";
 import { FaCamera, FaUpload } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
 import { VscChromeClose } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import { TagsInput } from "react-tag-input-component";
+import { MdDownload } from "react-icons/md";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -111,7 +112,7 @@ const ResumeUpload = ({ setFieldValue }) => {
 };
 
 const ModalProfile = (props) => {
-  const { fetchDetails, fetchUserProfile } = props;
+  const { fetchDetails, fetchUserProfile, canInfo } = props;
   const gContext = useContext(GlobalContext);
   const [profileImage, setProfileImage] = useState(null);
   const [candidateRegistered, setCandidateRegistered] = useState(false);
@@ -147,18 +148,26 @@ const ModalProfile = (props) => {
   };
 
   const handleDownload = async (fileName) => {
-    const response = await axiosInterceptors.get(
-      REQ.DOWNLOAD_RESUME.replace(":id", candidateId)
-    );
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${fileName}_resume`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    try {
+      const response = await axiosInterceptors.get(
+        REQ.DOWNLOAD_RESUME(candidateId),
+        {
+          responseType: 'blob',
+        }
+      );
+
+      const url = window.URL.createObjectURL(response);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${fileName}_resume.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    }
   };
+
 
   const handleSubmit = async (values, actions) => {
     const formData = new FormData();
@@ -254,7 +263,7 @@ const ModalProfile = (props) => {
             profileImage: null,
             resume: null,
           });
-          setResumeLink(`${SERVER}/${response?.can_resume}`);
+          setResumeLink(`${PROD_SERVER}/${response?.can_resume}`);
           if (response?.can_code) {
             setCandidateRegistered(true);
             setCandidateId(response?.can_code);
@@ -265,6 +274,26 @@ const ModalProfile = (props) => {
         });
     }
   }, [gContext.profileModal]);
+
+
+  useEffect(() => {
+    if (canInfo?.can_code) {
+      const fetchProfileImg = async () => {
+        try {
+          const response = await axiosInterceptors.get(
+            REQ.DOWNLOAD_PROFILE_IMG(canInfo?.can_code),
+            { responseType: "blob" }
+          );
+          if (response) {
+            setProfileImage(response);
+          }
+        } catch (error) {
+          console.error("Error fetching profile image:", error);
+        }
+      };
+      fetchProfileImg();
+    }
+  }, [canInfo?.can_code]);
 
   return (
     <ModalStyled
@@ -412,18 +441,20 @@ const ModalProfile = (props) => {
                         />
                       </div>
 
-                      <div className="form-group">
-                        <label>Resume</label>
-                        <ResumeUpload setFieldValue={setFieldValue} />
-                      </div>
-                      {/* {resumeLink && (
-                                                <div className="file-preview mt-3 border px-2 py-1 d-flex w-max justify-content-between align-items-center">
-                                                    <p className="mb-0">{`${values?.can_name}_resume`}</p>
-                                                    <span onClick={() => handleDownload(values?.can_name)} style={{ cursor: "pointer" }}>
-                                                        <VscChromeClose />
-                                                    </span>
-                                                </div>
-                                            )} */}
+
+                      {resumeLink ? (
+                        <div className="file-preview my-3 border px-2 py-1 d-flex w-max justify-content-between align-items-center">
+                          <p className="mb-0">{`${values?.can_name}'s resume`}</p>
+                          <span style={{ cursor: "pointer" }}>
+                            <MdDownload onClick={() => handleDownload(values?.can_name)} />
+                            <VscChromeClose className="ml-3" onClick={() => setResumeLink(null)} />
+                          </span>
+                        </div>)
+                        : (<div className="form-group">
+                          <label>Resume</label>
+                          <ResumeUpload setFieldValue={setFieldValue} />
+                        </div>
+                        )}
 
                       <div className="d-flex justify-content-end">
                         <button

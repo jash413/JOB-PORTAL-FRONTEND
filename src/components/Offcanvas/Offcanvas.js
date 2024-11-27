@@ -67,7 +67,7 @@ const Offcanvas = ({ show, onHideOffcanvas, children, ...rest }) => {
         <Container>
           <div className="p-3">
             <LogoContainer className="my-3">
-              <Logo onClick={onHideOffcanvas} />
+              <Logo className="header-logo" onClick={onHideOffcanvas} />
             </LogoContainer>
             <div className="pt-4">{children}</div>
           </div>
