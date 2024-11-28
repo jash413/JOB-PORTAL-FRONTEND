@@ -322,7 +322,7 @@ const JobPost = () => {
                                                             scope="row"
                                                             className="pl-6 border-0 py-7 min-width-px-235"
                                                         >
-                                                            <h3 className="font-size-4 mb-0 font-weight-semibold text-black-2">
+                                                            <h3 className="font-size-4 mb-0 font-weight-semibold text-black-2 mt-1">
                                                                 {job.job_title}
                                                             </h3>
                                                         </th>

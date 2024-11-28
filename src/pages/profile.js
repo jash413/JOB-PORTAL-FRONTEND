@@ -263,10 +263,10 @@ const CandidateProfile = () => {
                       Your profile approval status is currently pending. Please
                       check back soon. For furture assistance, contact support{" "}
                       <a
-                        href="mailto:justcamp@support.com"
+                        href="mailto:info@initinfologic.com"
                         className="font-weight-bold"
                       >
-                        justcamp@support.com
+                        info@initinfologic.com
                       </a>
                       .
                     </p>
@@ -652,10 +652,10 @@ const CandidateProfile = () => {
                       Your profile approval status is currently pending. Please
                       check back soon. For furture assistance, contact support{" "}
                       <a
-                        href="mailto:justcamp@support.com"
+                        href="mailto:info@initinfologic.com"
                         className="font-weight-bold"
                       >
-                        justcamp@support.com
+                        info@initinfologic.com
                       </a>
                       .
                     </p>
