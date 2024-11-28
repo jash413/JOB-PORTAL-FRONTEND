@@ -265,7 +265,7 @@ const EmployerApplicationsList = () => {
                                                 jobApplications?.map((job, id) => (
                                                     <tr className="border border-color-2" key={id}>
                                                         <th scope="row" className="pl-6 border-0 py-7 min-width-px-235">
-                                                            <h3 className="font-size-4 mb-0 font-weight-semibold text-black-2">
+                                                            <h3 className="font-size-4 font-weight-semibold text-black-2 mt-3">
                                                                 {job.candidate.can_name}
                                                             </h3>
                                                         </th>
@@ -299,13 +299,13 @@ const EmployerApplicationsList = () => {
                                                                         data: job,
                                                                     });
                                                                 }}
-                                                                className="font-size-3 font-weight-bold text-black-2 text-uppercase line-height-1p2">
+                                                                className="font-size-3 font-weight-bold text-black-2 text-uppercase line-height-1p2 mt-3">
                                                                 View Application
                                                             </h3>
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-155">
                                                             <h3
-                                                                className="font-size-3 font-weight-bold text-green text-uppercase line-height-0"
+                                                                className="font-size-3 font-weight-bold text-green text-uppercase line-height-0 mt-3"
                                                                 onClick={() => openConfirmationModal(job.id, "accepted")}
                                                             >
                                                                 Accept
@@ -313,7 +313,7 @@ const EmployerApplicationsList = () => {
                                                         </td>
                                                         <td className="table-y-middle py-7 min-width-px-155">
                                                             <h3
-                                                                className={`font-size-3 font-weight-bold text-red-2 text-uppercase line-height-0 ${job.status === "rejected" && "text-muted"}`}
+                                                                className={`font-size-3 font-weight-bold text-red-2 text-uppercase line-height-0 mt-3 ${job.status === "rejected" && "text-muted"}`}
                                                                 onClick={() => {
                                                                     if (job.status === "pending") {
                                                                         openConfirmationModal(job.id, "rejected")
