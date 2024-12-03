@@ -105,7 +105,8 @@ const GlobalProvider = ({ children }) => {
       return (
         parsedUser?.user_approval_status !== 0 &&
         parsedUser?.email_ver_status !== 0 &&
-        parsedUser?.user_approval_status !== 0
+        parsedUser?.user_approval_status !== 0 &&
+        parsedUser?.profile_created !== 0
       );
     } catch (error) {
       console.error("Invalid JSON in user:", error);

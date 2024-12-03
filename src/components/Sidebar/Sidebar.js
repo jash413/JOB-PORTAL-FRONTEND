@@ -8,7 +8,7 @@ import GlobalContext from "../../context/GlobalContext";
 import { MdCurrencyRupee } from "react-icons/md";
 
 const STEP = 10000;
-const MIN = 80000;
+const MIN = 5000;
 const MAX = 15000000;
 
 const CheckStyled = styled.span`
@@ -50,7 +50,7 @@ const Check = ({ children, isActive, onClick }) => {
 };
 
 const Sidebar = ({ setFilters }) => {
-  const [rangeValues, setRangeValues] = useState([250000, 3000000]);
+  const [rangeValues, setRangeValues] = useState([5000, 3000000]);
   const [jobCategories, setJobCategories] = useState([]);
   const [postedTime, setPostedTime] = useState(undefined);
 

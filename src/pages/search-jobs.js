@@ -85,8 +85,8 @@ const SearchGrid = () => {
     setSearch(e.target.value);
   };
 
-  const handleLocationChange = (selectedOption) => {
-    setLocation(selectedOption.value);
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
   };
 
   const handleLoadMore = () => {
@@ -199,20 +199,14 @@ const SearchGrid = () => {
                       </div>
                       {/* <!-- .select-city starts --> */}
                       <div className="form-group position-relative w-lg-50 w-xl-55 w-xxl-50">
-                        <Select
-                          options={defaultCountries}
+                        <input
+                          className="form-control focus-reset pl-13"
+                          type="text"
+                          id="keyword"
+                          placeholder="Search by location..."
+                          value={location}
                           onChange={handleLocationChange}
-                          // value={location}
-                          value={
-                            defaultCountries.find(
-                              (option) => option.value === location
-                            ) || null
-                          }
-                          defaultValue={[]}
-                          className="pl-8 h-100 arrow-3 font-size-4 d-flex align-items-center w-100"
-                          border={false}
                         />
-
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
                           <i className="icon icon-pin-3 text-primary font-weight-bold"></i>
                         </span>

@@ -27,7 +27,8 @@ const withAuth = (WrappedComponent) => {
           );
         } else if (
           userDetails?.email_ver_status === 0 ||
-          userDetails?.phone_ver_status === 0
+          userDetails?.phone_ver_status === 0 ||
+          userDetails?.profile_created === 0
         ) {
           toast.warn(
             "You need to complete verification steps to access this page."

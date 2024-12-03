@@ -160,24 +160,36 @@ const MyApplications = () => {
                             <Link
                               to={`/job-details/${applications.job_id}`}
                               key={id}
-                              className="col-12 col-lg-4"
+                              className="col-12 col-lg-4 h-100 d-flex"
                             >
-                              {/* <!-- Start Feature One --> */}
-                              <div className="bg-white px-8 pt-9 pb-7 rounded-4 mb-9 feature-cardOne-adjustments">
-                                <span className="font-size-3 d-block mb-0 text-gray">
+                              <div
+                                className="bg-white p-6 rounded-4 mb-4 d-flex flex-column"
+                                style={{
+                                  minHeight: "350px",
+                                  height: "100%",
+                                }}
+                              >
+                                <span className="font-size-3 d-block mb-2 text-muted">
                                   {applications?.job_post?.employer?.cmp_name}
                                 </span>
-                                <h2 className="mt-n4">
-                                  <span className="font-size-7 text-black-2 font-weight-bold mb-4">
+                                <h2 className="mt-0">
+                                  <span className="font-size-5 font-weight-bold text-dark">
                                     {applications?.job_post?.job_title}
                                   </span>
                                 </h2>
-                                <ul className="list-unstyled mb-1 card-tag-list">
+                                <ul className="list-unstyled mb-3">
                                   <li>
-                                    <Link className="bg-regent-opacity-15 text-eastern font-size-3 rounded-3">
+                                    <Link
+                                      className="bg-light text-primary p-2 rounded"
+                                      style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        fontSize: "14px",
+                                      }}
+                                    >
                                       <MdCurrencyRupee
                                         size={15}
-                                        className="text-primary"
+                                        className="me-1"
                                       />
                                       {applications?.job_post?.salary
                                         ? formatSalary(
@@ -188,26 +200,38 @@ const MyApplications = () => {
                                   </li>
                                 </ul>
                                 <p
-                                  className="mb-7 font-size-4 text-gray job-description"
+                                  className="text-muted mb-4"
+                                  style={{
+                                    fontSize: "14px",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 3, // Limits description to 3 lines
+                                    WebkitBoxOrient: "vertical",
+                                  }}
                                   dangerouslySetInnerHTML={{
                                     __html:
                                       applications?.job_post?.job_description,
                                   }}
                                 ></p>
-                                <div className="card-btn-group">
+                                <div className="mt-auto">
                                   <button
-                                    disable={true}
+                                    disabled
+                                    className="btn btn-outline-dark text-uppercase w-100"
+                                    style={{
+                                      fontSize: "14px",
+                                      padding: "10px",
+                                      borderRadius: "5px",
+                                    }}
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                     }}
-                                    className="btn btn-reset text-uppercase btn-medium rounded-3 border border-black radius-md"
                                   >
                                     Applied
                                   </button>
                                 </div>
                               </div>
-                              {/* <!-- End Feature One --> */}
                             </Link>
                           ))
                         ) : (
