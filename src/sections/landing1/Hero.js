@@ -78,13 +78,13 @@ const Hero = () => {
                       </div>
                       {/* <!-- .select-city starts --> */}
                       <div className="form-group position-relative">
-                        <Select
-                          options={defaultCountries}
-                          defaultValue={[]}
-                          placeholder="Select Location"
-                          className="pl-8 h-100 arrow-3 font-size-4 d-flex align-items-center w-100"
-                          border={false}
-                          onChange={(selected) => setLocation(selected.value)}
+                        <input
+                          className="form-control focus-reset pl-13"
+                          type="text"
+                          id="location"
+                          placeholder="Search by location..."
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
                         />
 
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">

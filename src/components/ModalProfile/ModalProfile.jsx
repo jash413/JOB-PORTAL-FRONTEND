@@ -74,6 +74,16 @@ const ResumeUpload = ({ setFieldValue }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => {
       const selectedFile = acceptedFiles[0];
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        toast.info("File size should be less than 5 MB", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setFile(null);
+        setFieldValue("resume", null);
+        return;
+      }
+
       setFile(selectedFile);
       setFieldValue("resume", selectedFile);
     },
