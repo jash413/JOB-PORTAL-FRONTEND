@@ -7,6 +7,14 @@ export const loginUserValidationSchema = Yup.object({
   password: Yup.string().required("Password is required"),
 });
 
+export const loginPhoneUserValidationSchema = Yup.object({
+  login_mobile: Yup.string()
+    .matches(/^[0-9]+$/, "Phone number must only contain digits")
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number cannot exceed 15 digits")
+    .required("Phone is required"),
+});
+
 export const registerUserValidationSchema = Yup.object({
   login_name: Yup.string().required("Name is required"),
   login_email: Yup.string()

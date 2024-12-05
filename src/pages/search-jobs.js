@@ -38,7 +38,7 @@ const SearchGrid = () => {
     limit: 10,
     search: "",
     job_location: "",
-    job_cate: null,
+    // job_cate: null,
   });
   const [pagination, setPagination] = useState({
     totalItems: 0,
@@ -61,7 +61,7 @@ const SearchGrid = () => {
         filters?.job_location?.trim() === ""
           ? undefined
           : filters?.job_location,
-      job_cate: filters?.job_cate ?? undefined,
+      // job_cate: filters?.job_cate ?? undefined,
     };
 
     try {
@@ -85,9 +85,9 @@ const SearchGrid = () => {
     setSearch(e.target.value);
   };
 
-  const handleLocationChange = (e) => {
-    setLocation(e.target.value);
-  };
+  // const handleLocationChange = (e) => {
+  //   setLocation(e.target.value);
+  // };
 
   const handleLoadMore = () => {
     if (!loadingMore && pagination.hasNextPage) {
@@ -106,7 +106,7 @@ const SearchGrid = () => {
     if (gContext?.searchQuery?.bring) {
       gContext.setSearchQuery({
         search: "",
-        location: "",
+        // location: "",
         bring: false,
       });
       setFilters((prev) => ({
@@ -115,10 +115,10 @@ const SearchGrid = () => {
           gContext?.searchQuery?.search?.trim() === ""
             ? undefined
             : gContext?.searchQuery?.search,
-        job_cate:
-          gContext?.searchQuery?.location?.trim() === ""
-            ? undefined
-            : gContext?.searchQuery?.location,
+        // job_cate:
+        //   gContext?.searchQuery?.location?.trim() === ""
+        //     ? undefined
+        //     : gContext?.searchQuery?.location,
       }));
     }
   }, [gContext?.searchQuery?.bring]);
@@ -127,7 +127,7 @@ const SearchGrid = () => {
     setFilters((prev) => ({
       ...prev,
       search,
-      job_location: location,
+      // job_location: location,
     }));
   };
 
@@ -135,10 +135,10 @@ const SearchGrid = () => {
     setFilters((prev) => ({
       ...prev,
       search: "",
-      job_location: "",
+      // job_location: "",
     }));
     setSearch("");
-    setLocation("");
+    // setLocation("");
   };
 
   const handleJobApply = async (jobId) => {
@@ -198,7 +198,7 @@ const SearchGrid = () => {
                         </span>
                       </div>
                       {/* <!-- .select-city starts --> */}
-                      <div className="form-group position-relative w-lg-50 w-xl-55 w-xxl-50">
+                      {/* <div className="form-group position-relative w-lg-50 w-xl-55 w-xxl-50">
                         <input
                           className="form-control focus-reset pl-13"
                           type="text"
@@ -210,7 +210,7 @@ const SearchGrid = () => {
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
                           <i className="icon icon-pin-3 text-primary font-weight-bold"></i>
                         </span>
-                      </div>
+                      </div> */}
                       {/* <!-- ./select-city ends --> */}
                       {(filters.search || filters.job_location) && (
                         <div

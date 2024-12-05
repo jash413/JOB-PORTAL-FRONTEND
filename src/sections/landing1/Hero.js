@@ -24,7 +24,7 @@ const Hero = () => {
     if (gContext.authVerified) {
       gContext.setSearchQuery({
         search: jobTitle,
-        location: location,
+        // location: location,
         bring: true,
       });
       navigate("/search-jobs");
@@ -32,7 +32,7 @@ const Hero = () => {
       gContext.toggleSignInModal();
       gContext.setSearchQuery({
         search: jobTitle,
-        location: location,
+        // location: location,
         bring: true,
       });
     }
@@ -77,7 +77,7 @@ const Hero = () => {
                         </span>
                       </div>
                       {/* <!-- .select-city starts --> */}
-                      <div className="form-group position-relative">
+                      {/* <div className="form-group position-relative">
                         <input
                           className="form-control focus-reset pl-13"
                           type="text"
@@ -90,7 +90,7 @@ const Hero = () => {
                         <span className="h-100 w-px-50 pos-abs-tl d-flex align-items-center justify-content-center font-size-6">
                           <i className="icon icon-pin-3 text-primary font-weight-bold"></i>
                         </span>
-                      </div>
+                      </div> */}
                       {/* <!-- ./select-city ends --> */}
                     </div>
                     {/* <!-- .Hero Button --> */}

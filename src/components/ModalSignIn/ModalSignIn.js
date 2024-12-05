@@ -6,7 +6,10 @@ import { useFormik } from "formik";
 import { REQ } from "../../libs/constants";
 import { toast } from "react-toastify";
 import axiosInterceptors from "../../libs/integration/axiosInterceptors";
-import { loginUserValidationSchema } from "../../utils/validations/validations";
+import {
+  loginPhoneUserValidationSchema,
+  loginUserValidationSchema,
+} from "../../utils/validations/validations";
 import OtpInput from "react-otp-input";
 import { navigate } from "gatsby";
 import axios from "axios";
@@ -29,6 +32,10 @@ const ModalSignIn = (props) => {
   const companyRegistered = gContext.companyRegistered;
   const [userDetail, setUserDetail] = useState(null);
   // const [isRemember, setIsRemember] = useState(false);
+  const [activeTab, setActiveTab] = useState("email");
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [loginOtp, setLoginOtp] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
 
   const handleClose = () => {
     gContext.toggleSignInModal();
@@ -38,6 +45,8 @@ const ModalSignIn = (props) => {
   const togglePassword = () => {
     setShowPass(!showPass);
   };
+
+  const handleTabChange = (tab) => setActiveTab(tab);
 
   const handleRememberMeChange = () => {
     // setIsRemember(!isRemember);
@@ -243,6 +252,33 @@ const ModalSignIn = (props) => {
     },
   });
 
+  const formikMobile = useFormik({
+    initialValues: {
+      login_mobile: "",
+    },
+    validationSchema: loginPhoneUserValidationSchema,
+    onSubmit: async (values, { setSubmitting, resetForm, setErrors }) => {
+      // console.log(isRemember, "signIn");
+      try {
+        const response = await axiosInterceptors.post(REQ.LOGIN_MOBILE_USER, {
+          login_mobile: values.login_mobile,
+        });
+        setIsOtpSent(true);
+        toast.success("OTP sent successfully. Please enter it below.");
+      } catch (error) {
+        const errorMessage =
+          error?.data?.error ||
+          error?.data?.message ||
+          "Error logging in. Please try again.";
+
+        toast.error(errorMessage);
+        setErrors({ apiError: errorMessage });
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
   useEffect(() => {
     if (resendTimer > 0) {
       const timerId = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -316,6 +352,76 @@ const ModalSignIn = (props) => {
 
   const handleGoogleFailure = (error) => {
     toast.error("Google login failed!");
+  };
+
+  const handleOtpSubmit = async () => {
+    try {
+      const response = await axiosInterceptors.post(
+        REQ.VERIFY_MOBILE_LOGIN_OTP,
+        {
+          login_mobile: formikMobile.values.login_mobile,
+          otp: loginOtp,
+        }
+      );
+      const { email_ver_status, phone_ver_status } = response.user;
+      const token = response.token;
+
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("user", JSON.stringify(response?.user));
+
+      gContext.setUser(JSON.stringify(response?.user));
+      gContext.setToken(token);
+      if (phone_ver_status === 0) {
+        setVerificationStep("phone");
+        setOtp("");
+        setPhoneNumber(response?.user?.login_mobile);
+        await sendPhoneOtp();
+      } else if (email_ver_status === 0) {
+        setVerificationStep("email");
+        setEmail(response?.user?.login_email);
+        await sendEmailVerify();
+      } else {
+        const successMessage =
+          response?.data || response?.message || "User login successful!";
+        toast.success(successMessage);
+
+        if (
+          response?.user?.login_type === "EMP" &&
+          response?.user?.phone_ver_status === 1 &&
+          response?.user?.email_ver_status === 1 &&
+          response?.user?.user_approval_status === 1
+        ) {
+          navigate("/dashboard-main");
+        } else if (
+          response?.user?.login_type === "EMP" &&
+          (response?.user?.phone_ver_status === 0 ||
+            response?.user?.email_ver_status === 0 ||
+            response?.user?.user_approval_status === 0)
+        ) {
+          navigate("/profile");
+        } else if (
+          response?.user?.login_type === "CND" &&
+          response?.user?.phone_ver_status === 1 &&
+          response?.user?.email_ver_status === 1 &&
+          response?.user?.user_approval_status === 1 &&
+          gContext?.searchQuery?.bring
+        ) {
+          navigate("/search-jobs");
+        } else if (response?.user?.login_type === "CND") {
+          navigate("/profile");
+        }
+        gContext.toggleSignInModal();
+      }
+      fetchUserProfile();
+      setActiveTab("email");
+      setIsOtpSent(false);
+    } catch (error) {
+      const errorMessage =
+        error?.data?.error ||
+        error?.data?.message ||
+        "Error verifying OTP. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -444,97 +550,195 @@ const ModalSignIn = (props) => {
                     <div className="or-devider">
                       <span className="font-size-3 line-height-reset ">Or</span>
                     </div>
-                    <form action="/" onSubmit={formik.handleSubmit}>
-                      <div className="form-group">
-                        <label
-                          htmlFor="email"
-                          className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
-                        >
-                          E-mail
-                        </label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          placeholder="example@gmail.com"
-                          id="email"
-                          {...formik.getFieldProps("email")}
-                        />
-                        {formik.errors.email && formik.touched.email ? (
-                          <div className="text-danger">
-                            {formik.errors.email}
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="form-group">
-                        <label
-                          htmlFor="password"
-                          className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
-                        >
-                          Password
-                        </label>
-                        <div className="position-relative">
-                          <input
-                            type={showPass ? "password" : "text"}
-                            className="form-control"
-                            id="password"
-                            placeholder="Enter password"
-                            {...formik.getFieldProps("password")}
-                          />
-                          <a
-                            href="/#"
-                            className="show-password pos-abs-cr fas mr-6 text-black-2"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              togglePassword();
-                            }}
+                    {/* Tabs for switching */}
+                    <div className="d-flex justify-content-center mb-4">
+                      <button
+                        className={`btn ${
+                          activeTab === "email"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        } mx-2`}
+                        onClick={() => handleTabChange("email")}
+                      >
+                        Email
+                      </button>
+                      <button
+                        className={`btn ${
+                          activeTab === "phone"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        } mx-2`}
+                        onClick={() => handleTabChange("phone")}
+                      >
+                        Phone
+                      </button>
+                    </div>
+                    {activeTab === "email" && (
+                      <form action="/" onSubmit={formik.handleSubmit}>
+                        <div className="form-group">
+                          <label
+                            htmlFor="email"
+                            className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
                           >
-                            <span className="d-none">none</span>
-                          </a>
-                          {formik.errors.password && formik.touched.password ? (
+                            E-mail
+                          </label>
+                          <input
+                            type="email"
+                            className="form-control"
+                            placeholder="example@gmail.com"
+                            id="email"
+                            {...formik.getFieldProps("email")}
+                          />
+                          {formik.errors.email && formik.touched.email ? (
                             <div className="text-danger">
-                              {formik.errors.password}
+                              {formik.errors.email}
                             </div>
                           ) : null}
                         </div>
-                      </div>
-                      <div className="form-group d-flex flex-wrap justify-content-between">
-                        <label
-                          htmlFor="terms-check"
-                          className="gr-check-input d-flex  mr-3"
-                        >
-                          <input
-                            className="d-none"
-                            type="checkbox"
-                            id="terms-check"
-                            // checked={gContext?.rememberMe}
-                            onChange={handleRememberMeChange}
-                          />
-                          <span className="checkbox mr-5"></span>
-                          <span className="font-size-3 mb-0 line-height-reset mb-1 d-block">
-                            Remember Me
-                          </span>
-                        </label>
-                        <a
-                          href="/#"
-                          className="font-size-3 text-dodger line-height-reset"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            gContext.toggleSignInModal();
-                            gContext.toggleForgetPasswordModal();
-                          }}
-                        >
-                          Forget Password
-                        </a>
-                      </div>
-                      <div className="form-group mb-8">
-                        <button
-                          className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase"
-                          disabled={formik.isSubmitting}
-                        >
-                          Log in{" "}
-                        </button>
-                      </div>
-                    </form>
+                        <div className="form-group">
+                          <label
+                            htmlFor="password"
+                            className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
+                          >
+                            Password
+                          </label>
+                          <div className="position-relative">
+                            <input
+                              type={showPass ? "password" : "text"}
+                              className="form-control"
+                              id="password"
+                              placeholder="Enter password"
+                              {...formik.getFieldProps("password")}
+                            />
+                            <a
+                              href="/#"
+                              className="show-password pos-abs-cr fas mr-6 text-black-2"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                togglePassword();
+                              }}
+                            >
+                              <span className="d-none">none</span>
+                            </a>
+                            {formik.errors.password &&
+                            formik.touched.password ? (
+                              <div className="text-danger">
+                                {formik.errors.password}
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                        <div className="form-group d-flex flex-wrap justify-content-between">
+                          <label
+                            htmlFor="terms-check"
+                            className="gr-check-input d-flex  mr-3"
+                          >
+                            <input
+                              className="d-none"
+                              type="checkbox"
+                              id="terms-check"
+                              // checked={gContext?.rememberMe}
+                              onChange={handleRememberMeChange}
+                            />
+                            <span className="checkbox mr-5"></span>
+                            <span className="font-size-3 mb-0 line-height-reset mb-1 d-block">
+                              Remember Me
+                            </span>
+                          </label>
+                          <a
+                            href="/#"
+                            className="font-size-3 text-dodger line-height-reset"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              gContext.toggleSignInModal();
+                              gContext.toggleForgetPasswordModal();
+                            }}
+                          >
+                            Forget Password
+                          </a>
+                        </div>
+                        <div className="form-group mb-8">
+                          <button
+                            className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase"
+                            disabled={formik.isSubmitting}
+                          >
+                            Log in{" "}
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                    {activeTab === "phone" && (
+                      <form onSubmit={formikMobile.handleSubmit}>
+                        {!isOtpSent ? (
+                          <div>
+                            <div className="form-group">
+                              <label
+                                htmlFor="login_mobile"
+                                className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
+                              >
+                                Phone Number
+                              </label>
+                              <input
+                                type="tel"
+                                className="form-control"
+                                placeholder="Enter phone number"
+                                id="login_mobile"
+                                {...formikMobile.getFieldProps("login_mobile")}
+                              />
+                              {formikMobile.errors.login_mobile &&
+                              formikMobile.touched.login_mobile ? (
+                                <div className="text-danger">
+                                  {formikMobile.errors.login_mobile}
+                                </div>
+                              ) : null}
+                            </div>
+                            <button
+                              className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase"
+                              disabled={formikMobile.isSubmitting}
+                            >
+                              Send OTP
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            <p className="mb-0 font-size-4 text-black text-center">
+                              We sent a code to{" "}
+                              {formikMobile.values.login_mobile
+                                ? "*".repeat(
+                                    formikMobile.values.login_mobile?.length - 4
+                                  ) +
+                                  formikMobile.values.login_mobile?.slice(-4)
+                                : ""}
+                            </p>
+                            <div className="my-8 mx-auto d-flex justify-content-center align">
+                              <OtpInput
+                                value={loginOtp}
+                                onChange={setLoginOtp}
+                                numInputs={6}
+                                renderSeparator={<span>-</span>}
+                                renderInput={(props) => <input {...props} />}
+                                inputStyle={{
+                                  width: "50px",
+                                  height: "50px",
+                                  fontSize: "24px",
+                                  padding: "10px",
+                                  borderRadius: "8px",
+                                  border: "1px solid #ccc",
+                                  textAlign: "center",
+                                }}
+                              />
+                            </div>
+                            <button
+                              className="btn btn-primary btn-medium w-100 rounded-5 text-uppercase"
+                              onClick={handleOtpSubmit}
+                              disabled={loginOtp.length !== 6}
+                            >
+                              Verify OTP and Log in
+                            </button>
+                          </div>
+                        )}
+                      </form>
+                    )}
                   </>
                 ) : verificationStep === "phone" ? (
                   <div className="pt-8 pb-10 pl-6 pr-6 h-100 d-flex flex-column dark-mode-texts">
