@@ -8,7 +8,7 @@ const GlobalProvider = ({ children }) => {
   const [showSidebarDashboard, setShowSidebarDashboard] = useState(true);
   const [searchQuery, setSearchQuery] = useState({
     search: "",
-    location: "",
+    // location: "",
     bring: false,
   });
   const [applicationModalVisible, setApplicationModalVisible] = useState({
