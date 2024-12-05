@@ -12,6 +12,7 @@ import { VscChromeClose } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import { TagsInput } from "react-tag-input-component";
 import { MdDownload } from "react-icons/md";
+import { Switch } from "../Core";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -129,6 +130,7 @@ const ModalProfile = (props) => {
     can_about: "",
     profileImage: null,
     resume: null,
+    open_to_job: false,
   });
 
   const handleClose = () => {
@@ -178,6 +180,7 @@ const ModalProfile = (props) => {
     formData.append("can_job_cate", values.can_job_cate);
     formData.append("can_skill", values.can_skill.join(","));
     formData.append("can_about", values.can_about);
+    formData.append("open_to_job", values.open_to_job ? 1 : 0);
 
     const currentDate = new Date().toISOString().split("T")[0];
     formData.append("reg_date", currentDate);
@@ -262,6 +265,7 @@ const ModalProfile = (props) => {
             can_about: response?.can_about || "",
             profileImage: null,
             resume: null,
+            open_to_job: response?.open_to_job || false,
           });
           setResumeLink(`${PROD_SERVER}/${response?.can_resume}`);
           if (response?.can_code) {
@@ -342,6 +346,24 @@ const ModalProfile = (props) => {
                             <FaCamera color="white" size={16} />
                           </CameraIconWrapper>
                         </ProfilePictureWrapper>
+                      </div>
+
+                      <div className="form-group">
+                        <label>Open to Job Opportunities</label>
+                        <div className="d-flex align-items-center">
+                          <Switch
+                            bg="primary"
+                            id={`status-switch-${canInfo?.can_code}`}
+                            active={values.open_to_job}
+                            onClick={() => setFieldValue("open_to_job", !values.open_to_job)}
+                          />
+                          {/* <label
+                            className="form-check-label ml-3"
+                            htmlFor={`status-switch-${canInfo?.can_code}`}
+                          >
+                            {values.open_to_job ? "Active" : "Inactive"}
+                          </label> */}
+                        </div>
                       </div>
 
                       <div className="form-group">
