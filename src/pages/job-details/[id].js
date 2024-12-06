@@ -145,17 +145,6 @@ const JobDetails = ({ params }) => {
                       </div>
                     </div>
                     <div className="row pt-9">
-                      <div className="col-6">
-                        {/* <!-- card-btn-group start --> */}
-                        <div className="card-btn-group">
-                          <span
-                            onClick={() => handleJobApply(jobDetails?.job_id)}
-                            className="btn btn-green text-uppercase btn-medium rounded-3 w-180 mr-4 mb-5"
-                          >
-                            Apply to this job
-                          </span>
-                        </div>
-                      </div>
                     </div>
                   </div>
                   {/* <!-- End Single Featured Job --> */}

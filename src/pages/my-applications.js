@@ -216,19 +216,25 @@ const MyApplications = () => {
                                 ></p>
                                 <div className="mt-auto">
                                   <button
-                                    disabled
-                                    className="btn btn-outline-dark text-uppercase w-100"
+                                    className="btn text-uppercase w-100"
                                     style={{
                                       fontSize: "14px",
                                       padding: "10px",
                                       borderRadius: "5px",
+                                      backgroundColor:
+                                        applications.status === "pending"
+                                          ? "#ff8a65"
+                                          : applications.status === "accepted"
+                                          ? "#00c853"
+                                          : "#f8285a",
+                                      color: "#fff",
                                     }}
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                     }}
                                   >
-                                    Applied
+                                    {applications.status}
                                   </button>
                                 </div>
                               </div>
