@@ -61,7 +61,7 @@ a.hover-bg-green {
 
   &:hover {
     color: $white !important;
-    background-color: $green !important;
+    background-color: $init !important;
   }
 }
 .hover-text-hitgray,
@@ -76,7 +76,7 @@ a.hover-text-hitgray {
 .hover-border-green{
   border: 2px solid transparent;
   &:hover{
-    border: 2px solid $green;
+    border: 2px solid $init;
   }
 }
 
@@ -95,8 +95,8 @@ a.hover-text-hitgray {
   border-bottom: 2px solid transparent;
   &:hover,
   &.active {
-    border-bottom: 2px solid $green;
-    color: $green;
+    border-bottom: 2px solid $init;
+    color: $init;
   }
 }
 .pagination{
