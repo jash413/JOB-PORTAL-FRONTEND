@@ -32,17 +32,9 @@ export const useFetchExperienceDetails = () => {
       const { records } = response;
       if (records.length > 0) {
         setExperienceData(records);
-      } else {
-        toast.info("No experience records found.");
       }
     } catch (error) {
       console.error(error);
-      if (
-        error?.data?.error !==
-        "Access forbidden: You do not have permission to access this resource."
-      ) {
-        toast.error("Error fetching experience details:");
-      }
     }
   };
 
