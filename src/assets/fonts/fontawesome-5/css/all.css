@@ -5851,7 +5851,7 @@ readers do not read off random characters that represent icons */
 
 .sidebar-icons:hover,
 .sidebar-icons.active {
-  color: #00b074;
+  color: #f8285a;
 }
 
 .job-description {

@@ -143,10 +143,10 @@ const MyApplications = () => {
                     <Oval
                       height={50}
                       width={50}
-                      color="#4fa94d"
+                      color="#f8285a"
                       visible={true}
                       ariaLabel="oval-loading"
-                      secondaryColor="#4fa94d"
+                      secondaryColor="#f8285a"
                       strokeWidth={2}
                       strokeWidthSecondary={2}
                     />

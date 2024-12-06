@@ -33,7 +33,7 @@ const CheckStyled = styled.span`
     &::before {
       content: "\f14a";
       font-weight: 900;
-      color: #00b074;
+      color: #f8285a;
     }
   }
 `;
@@ -221,7 +221,7 @@ const Sidebar = ({ setFilters }) => {
                       borderRadius: "4px",
                       background: getTrackBackground({
                         values: rangeValues,
-                        colors: ["#ccc", "#00b074", "#ccc"],
+                        colors: ["#ccc", "#f8285a", "#ccc"],
                         min: MIN,
                         max: MAX,
                       }),
