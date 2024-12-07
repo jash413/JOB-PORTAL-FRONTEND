@@ -149,6 +149,7 @@ const SearchGrid = () => {
       })
       .then((response) => {
         toast.success("Job applied successfully.");
+        fetchJobs();
       })
       .catch((error) => {
         console.error("Error fetching job categories:", error);
