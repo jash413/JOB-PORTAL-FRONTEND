@@ -138,12 +138,6 @@ const Sidebar = (props) => {
             <div className="px-9 pt-lg-5 pt-9 pt-xl-9 pb-5">
               <h5 className="text-black-2 mb-8 font-size-5">Contact Info</h5>
               {/* <!-- Single List --> */}
-              <div className="mb-7">
-                <p className="font-size-4 mb-0">Location</p>
-                <h5 className="font-size-4 font-weight-semibold mb-0 text-black-2 text-break">
-                  New York , USA
-                </h5>
-              </div>
               {/* <!-- Single List --> */}
               {/* <!-- Single List --> */}
               <div className="mb-7">

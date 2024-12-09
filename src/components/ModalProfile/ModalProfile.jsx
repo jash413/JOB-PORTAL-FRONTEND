@@ -162,7 +162,7 @@ const ModalProfile = (props) => {
       const response = await axiosInterceptors.get(
         REQ.DOWNLOAD_RESUME(candidateId),
         {
-          responseType: 'blob',
+          responseType: "blob",
         }
       );
 
@@ -177,7 +177,6 @@ const ModalProfile = (props) => {
       console.error("Error downloading the file:", error);
     }
   };
-
 
   const handleSubmit = async (values, actions) => {
     const formData = new FormData();
@@ -206,7 +205,7 @@ const ModalProfile = (props) => {
           formData
         );
         const userDetails = JSON.parse(gContext?.user);
-
+        toast.success("Profile updated successfully!");
         const updatedUserDetails = {
           ...userDetails,
           can_code: response?.can_code,
@@ -221,7 +220,7 @@ const ModalProfile = (props) => {
           formData
         );
         const userDetails = JSON.parse(gContext?.user);
-
+        toast.success("Profile created successfully!");
         const updatedUserDetails = {
           ...userDetails,
           can_code: response?.can_code,
@@ -232,7 +231,7 @@ const ModalProfile = (props) => {
         fetchUserProfile();
       }
     } catch (error) {
-      console.error("API error:", error);
+      toast.error(error?.data?.error);
     } finally {
       actions.setSubmitting(false);
     }
@@ -284,7 +283,6 @@ const ModalProfile = (props) => {
         });
     }
   }, [gContext.profileModal]);
-
 
   useEffect(() => {
     if (canInfo?.can_code) {
@@ -424,7 +422,9 @@ const ModalProfile = (props) => {
                         <label>Skills</label>
                         <TagsInput
                           value={initialValues?.can_skill}
-                          onChange={(newSkills) => setFieldValue("can_skill", newSkills)}
+                          onChange={(newSkills) =>
+                            setFieldValue("can_skill", newSkills)
+                          }
                           name="can_skill"
                           placeHolder="Enter skills and press enter"
                         />
@@ -451,20 +451,25 @@ const ModalProfile = (props) => {
                         />
                       </div>
 
-
                       {resumeLink ? (
                         <div className="file-preview my-3 border px-2 py-1 d-flex w-max justify-content-between align-items-center">
                           <p className="mb-0">{`${values?.can_name}'s resume`}</p>
                           <span style={{ cursor: "pointer" }}>
-                            <MdDownload onClick={() => handleDownload(values?.can_name)} />
-                            <VscChromeClose className="ml-3" onClick={() => setResumeLink(null)} />
+                            <MdDownload
+                              onClick={() => handleDownload(values?.can_name)}
+                            />
+                            <VscChromeClose
+                              className="ml-3"
+                              onClick={() => setResumeLink(null)}
+                            />
                           </span>
-                        </div>)
-                        : (<div className="form-group">
+                        </div>
+                      ) : (
+                        <div className="form-group">
                           <label>Resume</label>
                           <ResumeUpload setFieldValue={setFieldValue} />
                         </div>
-                        )}
+                      )}
 
                       <div className="d-flex justify-content-end">
                         <button
