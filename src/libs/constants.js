@@ -24,9 +24,9 @@ export const REQ = {
   CANDIDATE_EXP_LIST: SERVER + "/api/v1/experience/candidate",
   GET_CANDIDATE: SERVER + "/api/v1/candidates/:id",
   DOWNLOAD_RESUME: (can_id) =>
-    PROD_SERVER + `/api/v1/candidates/${can_id}/resume`,
+    SERVER + `/api/v1/candidates/${can_id}/resume`,
   DOWNLOAD_PROFILE_IMG: (can_id) =>
-    PROD_SERVER + `/api/v1/candidates/${can_id}/profile-image`,
+    SERVER + `/api/v1/candidates/${can_id}/profile-image`,
   CANDIDATE_EDUCATION: SERVER + "/api/v1/education",
   UPDATE_CANDIDATE_EDUCATION: SERVER + "/api/v1/education/:id",
   CAND_EDU_DETAILS_LIST: SERVER + "/api/v1/education/get-edu-details",
