@@ -123,17 +123,18 @@ const ModalSignIn = (props) => {
         }
       );
       toast.success("OTP verified successfully");
-      const { email_ver_status } = response.user;
-      gContext.setUser(JSON.stringify(response?.user));
+      const { email_ver_status } = response?.response?.user;
+      gContext.setUser(JSON.stringify(response?.response?.user));
       if (email_ver_status === 0) {
         setVerificationStep("email");
-        setEmail(response?.user?.login_email);
+        setEmail(response?.response?.user?.login_email);
         await sendEmailVerify();
       } else {
         setVerificationStep(null);
         gContext.toggleSignInModal();
       }
     } catch (error) {
+      console.error("Error verifying OTP:", error);
       toast.error("Error verifying OTP. Please try again.");
     }
   };
